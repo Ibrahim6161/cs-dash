@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "timestamp": "2026-04-08T15:40:57.865Z",
+    "trending_url": "https://pricempire.com/app/trending/cases?page=1&sort=current&order=DESC",
+    "page": 1,
+    "limit": 50,
+    "source": "cases file (cases.json)",
+    "provider": "CS.MONEY",
+    "provider_keys": [
+      "csmoneym",
+      "csmoney"
+    ],
+    "currency": "EUR",
+    "scraped": 29,
+    "errors": 0
+  },
+  "map": {
+    "Winter Offensive Weapon Case": 13.08,
+    "Falchion Case": 1.52,
+    "Chroma Case": 5.63,
+    "Operation Phoenix Weapon Case": 4.49,
+    "Horizon Case": 1.71,
+    "Snakebite Case": 0.65,
+    "Operation Breakout Weapon Case": 8.39,
+    "Spectrum Case": 4.6,
+    "Spectrum 2 Case": 3.38,
+    "Prisma 2 Case": 1.37,
+    "Shadow Case": 1.91,
+    "Chroma 2 Case": 4.14,
+    "Glove Case": 14.76,
+    "Danger Zone Case": 1.37,
+    "Clutch Case": 0.84,
+    "Prisma Case": 1.86,
+    "Huntsman Weapon Case": 10.55,
+    "Revolver Case": 3.72,
+    "Gamma Case": 3.69,
+    "CS20 Case": 1.38,
+    "Gamma 2 Case": 3.67,
+    "Chroma 3 Case": 3.67,
+    "Operation Wildfire Case": 4.5,
+    "Operation Vanguard Weapon Case": 5.65,
+    "Fracture Case": 0.64,
+    "Dreams & Nightmares Case": 1.61,
+    "Recoil Case": 0.45,
+    "Revolution Case": 0.31,
+    "Kilowatt Case": 0.29
+  },
+  "errors": []
+}

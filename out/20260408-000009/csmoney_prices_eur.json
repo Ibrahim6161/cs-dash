@@ -1,0 +1,185 @@
+{
+  "meta": {
+    "timestamp": "2026-04-07T21:57:07.945Z",
+    "trending_url": "https://pricempire.com/app/trending/cases?page=1&sort=current&order=DESC",
+    "page": 1,
+    "limit": 50,
+    "provider": "CS.MONEY via /cs2-marketplaces/csmoneym",
+    "currency": "EUR",
+    "scraped": 1,
+    "errors": 28
+  },
+  "map": {
+    "Winter Offensive Weapon Case": 11.52
+  },
+  "errors": [
+    {
+      "slug": "falchion-case",
+      "name": "Falchion Case",
+      "url": "https://pricempire.com/cs2-items/container/falchion-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "chroma-case",
+      "name": "Chroma Case",
+      "url": "https://pricempire.com/cs2-items/container/chroma-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "operation-phoenix-weapon-case",
+      "name": "Operation Phoenix Weapon Case",
+      "url": "https://pricempire.com/cs2-items/container/operation-phoenix-weapon-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "horizon-case",
+      "name": "Horizon Case",
+      "url": "https://pricempire.com/cs2-items/container/horizon-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "snakebite-case",
+      "name": "Snakebite Case",
+      "url": "https://pricempire.com/cs2-items/container/snakebite-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "operation-breakout-weapon-case",
+      "name": "Operation Breakout Weapon Case",
+      "url": "https://pricempire.com/cs2-items/container/operation-breakout-weapon-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "spectrum-case",
+      "name": "Spectrum Case",
+      "url": "https://pricempire.com/cs2-items/container/spectrum-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "spectrum-2-case",
+      "name": "Spectrum 2 Case",
+      "url": "https://pricempire.com/cs2-items/container/spectrum-2-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "prisma-2-case",
+      "name": "Prisma 2 Case",
+      "url": "https://pricempire.com/cs2-items/container/prisma-2-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "shadow-case",
+      "name": "Shadow Case",
+      "url": "https://pricempire.com/cs2-items/container/shadow-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "chroma-2-case",
+      "name": "Chroma 2 Case",
+      "url": "https://pricempire.com/cs2-items/container/chroma-2-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "glove-case",
+      "name": "Glove Case",
+      "url": "https://pricempire.com/cs2-items/container/glove-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "danger-zone-case",
+      "name": "Danger Zone Case",
+      "url": "https://pricempire.com/cs2-items/container/danger-zone-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "clutch-case",
+      "name": "Clutch Case",
+      "url": "https://pricempire.com/cs2-items/container/clutch-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "prisma-case",
+      "name": "Prisma Case",
+      "url": "https://pricempire.com/cs2-items/container/prisma-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "huntsman-weapon-case",
+      "name": "Huntsman Weapon Case",
+      "url": "https://pricempire.com/cs2-items/container/huntsman-weapon-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "revolver-case",
+      "name": "Revolver Case",
+      "url": "https://pricempire.com/cs2-items/container/revolver-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "gamma-case",
+      "name": "Gamma Case",
+      "url": "https://pricempire.com/cs2-items/container/gamma-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "cs20-case",
+      "name": "CS20 Case",
+      "url": "https://pricempire.com/cs2-items/container/cs20-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "gamma-2-case",
+      "name": "Gamma 2 Case",
+      "url": "https://pricempire.com/cs2-items/container/gamma-2-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "chroma-3-case",
+      "name": "Chroma 3 Case",
+      "url": "https://pricempire.com/cs2-items/container/chroma-3-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "operation-wildfire-case",
+      "name": "Operation Wildfire Case",
+      "url": "https://pricempire.com/cs2-items/container/operation-wildfire-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "operation-vanguard-weapon-case",
+      "name": "Operation Vanguard Weapon Case",
+      "url": "https://pricempire.com/cs2-items/container/operation-vanguard-weapon-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "fracture-case",
+      "name": "Fracture Case",
+      "url": "https://pricempire.com/cs2-items/container/fracture-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "dreams-nightmares-case",
+      "name": "Dreams & Nightmares Case",
+      "url": "https://pricempire.com/cs2-items/container/dreams-nightmares-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "recoil-case",
+      "name": "Recoil Case",
+      "url": "https://pricempire.com/cs2-items/container/recoil-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "revolution-case",
+      "name": "Revolution Case",
+      "url": "https://pricempire.com/cs2-items/container/revolution-case",
+      "reason": "EUR_NOT_SET"
+    },
+    {
+      "slug": "kilowatt-case",
+      "name": "Kilowatt Case",
+      "url": "https://pricempire.com/cs2-items/container/kilowatt-case",
+      "reason": "EUR_NOT_SET"
+    }
+  ]
+}

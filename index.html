@@ -1,0 +1,198 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS Case Investment Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar panel">
+      <div>
+        <p class="eyebrow">Automated watchtower</p>
+        <h1>CS case investment dashboard</h1>
+        <p class="subcopy">One service for refreshes, pricing snapshots, and readable case analysis.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="status-pill" id="statusPill">Connecting…</div>
+        <button class="button primary" id="refreshButton">Refresh now</button>
+        <button class="button" id="saveConfigButton">Save automation</button>
+      </div>
+    </header>
+
+    <section class="sync-strip panel">
+      <div class="sync-meta">
+        <div>
+          <p class="eyebrow">Sync status</p>
+          <h3 id="syncHeadline">Waiting for dashboard data</h3>
+          <p id="syncSubline" class="muted">No refresh activity yet.</p>
+        </div>
+        <div class="sync-stats">
+          <div class="mini-stat">
+            <span>Last synced</span>
+            <strong id="lastSyncedAt">—</strong>
+          </div>
+          <div class="mini-stat">
+            <span>Current step</span>
+            <strong id="currentStepLabel">Idle</strong>
+          </div>
+        </div>
+      </div>
+      <div class="progress-shell">
+        <div class="progress-bar">
+          <span id="progressFill"></span>
+        </div>
+        <div class="progress-meta">
+          <span id="progressLabel">0%</span>
+          <span id="progressHint">Ready</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero-grid" id="heroGrid">
+      <article class="hero-card panel">
+        <p class="eyebrow">Universe</p>
+        <h2 id="heroCases">0</h2>
+        <p id="heroGrades" class="muted">Waiting for data</p>
+      </article>
+      <article class="hero-card panel accent-teal">
+        <p class="eyebrow">Top candidate</p>
+        <h2 id="heroTopCase">—</h2>
+        <p id="heroTopMeta" class="muted">No ranking yet</p>
+      </article>
+      <article class="hero-card panel accent-gold">
+        <p class="eyebrow">Market pulse</p>
+        <h2 id="heroPulse">—</h2>
+        <p id="heroPulseMeta" class="muted">Loading momentum</p>
+      </article>
+      <article class="hero-card panel accent-rose">
+        <p class="eyebrow">Next refresh</p>
+        <h2 id="heroNextRun">—</h2>
+        <p id="heroUpdated" class="muted">No scheduler data</p>
+      </article>
+    </section>
+
+    <main class="layout">
+      <section class="panel explorer">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Case explorer</p>
+            <h3>Find the setup you want to study</h3>
+          </div>
+          <div class="control-stack compact">
+            <label>
+              <span>Grade</span>
+              <select id="gradeFilter">
+                <option value="ALL">All grades</option>
+                <option value="GOOD">Green only</option>
+                <option value="WARN">Yellow only</option>
+                <option value="BAD">Red only</option>
+              </select>
+            </label>
+            <label>
+              <span>Sort</span>
+              <select id="sortSelect">
+                <option value="edge">Edge</option>
+                <option value="buyNow">Buy now</option>
+                <option value="value">Value</option>
+                <option value="riskAsc">Lowest risk</option>
+                <option value="scarcity">Scarcity</option>
+                <option value="marketCapUsd">Liquidity</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Search cases" />
+          <div class="tab-row">
+            <button class="tab active" data-tab="top">Top picks</button>
+            <button class="tab" data-tab="value">Value</button>
+            <button class="tab" data-tab="risk">Low risk</button>
+            <button class="tab" data-tab="liquid">Liquid</button>
+            <button class="tab" data-tab="scarce">Scarce</button>
+          </div>
+        </div>
+
+        <div class="case-list" id="caseList"></div>
+      </section>
+
+      <section class="panel focus">
+        <div class="panel-head">
+          <div>
+            <p class="eyebrow">Selected case</p>
+            <h3 id="focusTitle">Choose a case</h3>
+          </div>
+          <div class="focus-actions">
+            <a class="button" id="focusLink" href="#" target="_blank" rel="noopener">Open source page</a>
+          </div>
+        </div>
+
+        <div id="focusContent" class="focus-content empty-state">
+          <p>Select a case from the explorer to see the full investment read.</p>
+        </div>
+      </section>
+
+      <aside class="panel side">
+        <div class="side-section">
+          <p class="eyebrow">Automation</p>
+          <h3>Refresh settings</h3>
+          <form id="configForm" class="control-stack">
+            <label class="toggle-row">
+              <span>Scheduler enabled</span>
+              <input type="checkbox" id="cfgSchedulerEnabled" />
+            </label>
+            <label>
+              <span>Interval (minutes)</span>
+              <input type="number" id="cfgIntervalMinutes" min="15" max="1440" step="15" />
+            </label>
+            <label class="toggle-row">
+              <span>Run on startup</span>
+              <input type="checkbox" id="cfgRunOnStartup" />
+            </label>
+            <label class="toggle-row">
+              <span>Headless browser</span>
+              <input type="checkbox" id="cfgHeadless" />
+            </label>
+            <label>
+              <span>Price scrape limit</span>
+              <input type="number" id="cfgPriceLimit" min="5" max="100" step="1" />
+            </label>
+            <label class="toggle-row">
+              <span>Run timeseries step</span>
+              <input type="checkbox" id="cfgTimeseries" />
+            </label>
+            <label>
+              <span>Rating strictness</span>
+              <input type="range" id="cfgStrictness" min="0" max="100" step="1" />
+              <strong id="cfgStrictnessValue">55</strong>
+            </label>
+          </form>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Source health</p>
+          <h3>Freshness</h3>
+          <div id="sourcesList" class="source-list"></div>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Refresh log</p>
+          <h3>Pipeline activity</h3>
+          <div id="logList" class="log-list"></div>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Snapshots</p>
+          <h3>Recent runs</h3>
+          <div id="snapshotList" class="snapshot-list"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="dashboard.js"></script>
+</body>
+</html>

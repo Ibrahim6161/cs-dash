@@ -1,0 +1,436 @@
+[
+	{
+		"date": "2013-08-14",
+		"type": "add_common",
+		"case": "CS:GO Weapon Case"
+	},
+	{
+		"date": "2013-08-14",
+		"type": "add_common",
+		"case": "eSports 2013 Case"
+	},
+	{
+		"date": "2013-11-08",
+		"type": "add_common",
+		"case": "CS:GO Weapon Case 2"
+	},
+	{
+		"date": "2013-11-28",
+		"type": "move_to_rare",
+		"case": "CS:GO Weapon Case"
+	},
+	{
+		"date": "2013-12-18",
+		"type": "add_common",
+		"case": "Winter Offensive Weapon Case"
+	},
+	{
+		"date": "2013-12-18",
+		"type": "add_common",
+		"case": "eSports 2013 Winter Case"
+	},
+	{
+		"date": "2013-12-18",
+		"type": "discontinue",
+		"case": "eSports 2013 Case"
+	},
+	{
+		"date": "2014-02-05",
+		"type": "add_to_rare",
+		"case": "Operation Bravo Case"
+	},
+	{
+		"date": "2014-02-12",
+		"type": "move_to_rare",
+		"case": "CS:GO Weapon Case 2"
+	},
+	{
+		"date": "2014-02-12",
+		"type": "add_common",
+		"case": "CS:GO Weapon Case 3"
+	},
+	{
+		"date": "2014-02-20",
+		"type": "add_common",
+		"case": "Operation Phoenix Weapon Case"
+	},
+	{
+		"date": "2014-05-01",
+		"type": "add_common",
+		"case": "Huntsman Weapon Case"
+	},
+	{
+		"date": "2014-07-01",
+		"type": "add_common",
+		"case": "Operation Breakout Weapon Case"
+	},
+	{
+		"date": "2014-07-10",
+		"type": "add_common",
+		"case": "eSports 2014 Summer Case"
+	},
+	{
+		"date": "2014-07-10",
+		"type": "discontinue",
+		"case": "eSports 2013 Winter Case"
+	},
+	{
+		"date": "2014-10-01",
+		"type": "move_to_rare",
+		"case": "Winter Offensive Weapon Case"
+	},
+	{
+		"date": "2015-01-08",
+		"type": "add_common",
+		"case": "Chroma Case"
+	},
+	{
+		"date": "2015-01-15",
+		"type": "discontinue",
+		"case": "eSports 2014 Summer Case"
+	},
+	{
+		"date": "2015-03-31",
+		"type": "add_common",
+		"case": "Operation Vanguard Weapon Case"
+	},
+	{
+		"date": "2015-04-15",
+		"type": "move_to_rare",
+		"case": "Huntsman Weapon Case"
+	},
+	{
+		"date": "2015-04-15",
+		"type": "move_to_rare",
+		"case": "CS:GO Weapon Case 3"
+	},
+	{
+		"date": "2015-04-15",
+		"type": "add_common",
+		"case": "Chroma 2 Case"
+	},
+	{
+		"date": "2015-05-26",
+		"type": "add_common",
+		"case": "Falchion Case"
+	},
+	{
+		"date": "2015-09-17",
+		"type": "move_to_rare",
+		"case": "Chroma Case"
+	},
+	{
+		"date": "2015-09-17",
+		"type": "add_common",
+		"case": "Shadow Case"
+	},
+	{
+		"date": "2015-12-08",
+		"type": "add_common",
+		"case": "Revolver Case"
+	},
+	{
+		"date": "2015-12-08",
+		"type": "move_to_rare",
+		"case": "Operation Phoenix Weapon Case"
+	},
+	{
+		"date": "2015-12-08",
+		"type": "move_to_rare",
+		"case": "Operation Vanguard Weapon Case"
+	},
+	{
+		"date": "2016-02-17",
+		"type": "add_common",
+		"case": "Operation Wildfire Case"
+	},
+	{
+		"date": "2016-04-20",
+		"type": "add_common",
+		"case": "Chroma 3 Case"
+	},
+	{
+		"date": "2016-04-20",
+		"type": "move_to_rare",
+		"case": "Operation Breakout Weapon Case"
+	},
+	{
+		"date": "2016-06-15",
+		"type": "add_common",
+		"case": "Gamma Case"
+	},
+	{
+		"date": "2016-06-15",
+		"type": "move_to_rare",
+		"case": "Falchion Case"
+	},
+	{
+		"date": "2016-08-18",
+		"type": "add_common",
+		"case": "Gamma 2 Case"
+	},
+	{
+		"date": "2016-08-18",
+		"type": "move_to_rare",
+		"case": "Shadow Case"
+	},
+	{
+		"date": "2016-11-28",
+		"type": "add_common",
+		"case": "Glove Case"
+	},
+	{
+		"date": "2016-11-28",
+		"type": "move_to_rare",
+		"case": "Revolver Case"
+	},
+	{
+		"date": "2017-03-15",
+		"type": "add_common",
+		"case": "Spectrum Case"
+	},
+	{
+		"date": "2017-03-15",
+		"type": "move_to_rare",
+		"case": "Chroma 2 Case"
+	},
+	{
+		"date": "2017-09-14",
+		"type": "add_common",
+		"case": "Spectrum 2 Case"
+	},
+	{
+		"date": "2017-09-14",
+		"type": "move_to_rare",
+		"case": "Operation Wildfire Case"
+	},
+	{
+		"date": "2017-11-13",
+		"type": "add_to_rare",
+		"case": "Operation Hydra Case"
+	},
+	{
+		"date": "2018-02-15",
+		"type": "add_common",
+		"case": "Clutch Case"
+	},
+	{
+		"date": "2018-02-15",
+		"type": "move_to_rare",
+		"case": "Gamma Case"
+	},
+	{
+		"date": "2018-08-02",
+		"type": "add_common",
+		"case": "Horizon Case"
+	},
+	{
+		"date": "2018-12-06",
+		"type": "add_common",
+		"case": "Danger Zone Case"
+	},
+	{
+		"date": "2018-12-06",
+		"type": "move_to_rare",
+		"case": "Glove Case"
+	},
+	{
+		"date": "2019-03-13",
+		"type": "add_common",
+		"case": "Prisma Case"
+	},
+	{
+		"date": "2019-03-13",
+		"type": "move_to_rare",
+		"case": "Spectrum Case"
+	},
+	{
+		"date": "2019-10-18",
+		"type": "prime_reset"
+	},
+	{
+		"date": "2019-10-18",
+		"type": "add_common",
+		"case": "CS20 Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "add_common",
+		"case": "Clutch Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "add_common",
+		"case": "Danger Zone Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "add_common",
+		"case": "Prisma Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "add_common",
+		"case": "Spectrum 2 Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "np_add",
+		"case": "Gamma Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "np_add",
+		"case": "Gamma 2 Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "np_add",
+		"case": "Shadow Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "np_add",
+		"case": "Chroma 2 Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "np_add",
+		"case": "Spectrum Case"
+	},
+	{
+		"date": "2019-10-26",
+		"type": "np_add",
+		"case": "Revolver Case"
+	},
+	{
+		"date": "2019-11-19",
+		"type": "np_remove",
+		"case": "Spectrum Case"
+	},
+	{
+		"date": "2020-03-31",
+		"type": "add_common",
+		"case": "Prisma 2 Case"
+	},
+	{
+		"date": "2020-03-31",
+		"type": "prime_to_np",
+		"case": "Spectrum 2 Case"
+	},
+	{
+		"date": "2020-03-31",
+		"type": "np_remove",
+		"case": "Shadow Case"
+	},
+	{
+		"date": "2020-03-31",
+		"type": "np_remove",
+		"case": "Chroma 2 Case"
+	},
+	{
+		"date": "2020-03-31",
+		"type": "np_add",
+		"case": "Horizon Case"
+	},
+	{
+		"date": "2020-03-31",
+		"type": "np_add",
+		"case": "Chroma 3 Case"
+	},
+	{
+		"date": "2020-08-06",
+		"type": "add_common",
+		"case": "Fracture Case"
+	},
+	{
+		"date": "2020-08-06",
+		"type": "prime_to_np",
+		"case": "CS20 Case"
+	},
+	{
+		"date": "2020-08-06",
+		"type": "np_remove",
+		"case": "Gamma Case"
+	},
+	{
+		"date": "2021-05-03",
+		"type": "add_common",
+		"case": "Snakebite Case"
+	},
+	{
+		"date": "2021-05-03",
+		"type": "move_to_rare",
+		"case": "Prisma Case"
+	},
+	{
+		"date": "2021-06-03",
+		"type": "np_all_to_rare"
+	},
+	{
+		"date": "2021-06-03",
+		"type": "move_to_rare",
+		"case": "Horizon Case"
+	},
+	{
+		"date": "2021-06-03",
+		"type": "move_to_rare",
+		"case": "Chroma 3 Case"
+	},
+	{
+		"date": "2022-01-20",
+		"type": "add_common",
+		"case": "Dreams & Nightmares Case"
+	},
+	{
+		"date": "2022-01-20",
+		"type": "move_to_rare",
+		"case": "Danger Zone Case"
+	},
+	{
+		"date": "2022-07-01",
+		"type": "add_common",
+		"case": "Recoil Case"
+	},
+	{
+		"date": "2022-07-01",
+		"type": "move_to_rare",
+		"case": "Prisma 2 Case"
+	},
+	{
+		"date": "2023-02-10",
+		"type": "add_common",
+		"case": "Revolution Case"
+	},
+	{
+		"date": "2023-02-10",
+		"type": "move_to_rare",
+		"case": "Clutch Case"
+	},
+	{
+		"date": "2023-06-01",
+		"type": "drop_rate_change",
+		"title": "Drop System Update",
+		"note": "Valve changed weekly case drops from idling on any server to requiring XP/level-ups in official Valve servers. This lowers our estimated drops per MAU from 2.3 to 1.5."
+	},
+	{
+		"date": "2024-02-06",
+		"type": "add_common",
+		"case": "Kilowatt Case"
+	},
+	{
+		"date": "2024-02-06",
+		"type": "move_to_rare",
+		"case": "Snakebite Case"
+	},
+	{
+		"date": "2025-09-16",
+		"type": "add_common",
+		"case": "Genesis Terminal"
+	},
+	{
+		"date": "2025-09-16",
+		"type": "move_to_rare",
+		"case": "Fracture Case"
+	}
+]

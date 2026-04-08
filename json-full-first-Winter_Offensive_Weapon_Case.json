@@ -1,0 +1,30 @@
+{
+  "url": "https://csstonks.com/config/settings.json",
+  "body": {
+    "dates": {
+      "cacheRelease": "2019-10-18",
+      "nonPrimeStart": "2019-10-26",
+      "nonPrimeEnd": "2021-06-03",
+      "casesPerAccountChange": "2023-06-01"
+    },
+    "dropSplits": {
+      "preCacheCommonShare": 0.99,
+      "preCacheRareShare": 0.01,
+      "primeCommonShare": 0.99,
+      "primeRareShare": 0.01
+    },
+    "casesPerAccount": {
+      "first": 2.3,
+      "second": 1.8,
+      "after": 1.2
+    },
+    "casesPerAccountDates": {
+      "firstChange": "2016-10-15",
+      "secondChange": "2021-06-02"
+    },
+    "playerShares": {
+      "nonPrimeShare": 0.125,
+      "primeShareAfterNpRemoval": 0.9
+    }
+  }
+}

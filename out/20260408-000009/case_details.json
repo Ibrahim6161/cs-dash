@@ -1,0 +1,1079 @@
+{
+  "timestamp": "2026-04-07T21:52:35.998Z",
+  "source": "C:\\Users\\Assassin61\\Documents\\CSGO\\cases.json",
+  "cases": [
+    {
+      "case": "Winter Offensive Weapon Case",
+      "url": "https://csstonks.com/case/Winter%20Offensive%20Weapon%20Case",
+      "totals": {
+        "remaining": 323480,
+        "dropped": 15046476,
+        "unboxed": 14722996,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 323480,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 323480,
+          "percent": -1.75
+        },
+        "delta6m": {
+          "value": 323480,
+          "percent": -1.75
+        },
+        "delta12m": {
+          "value": 323480,
+          "percent": -1.75
+        },
+        "extinction": {
+          "months": 28.6,
+          "approxDate": "2028-02-17"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Winter_Offensive_Weapon_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Falchion Case",
+      "url": "https://csstonks.com/case/Falchion%20Case",
+      "totals": {
+        "remaining": 4316245,
+        "dropped": 58682815,
+        "unboxed": 54366570,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 4316245,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 4316245,
+          "percent": -2.48
+        },
+        "delta6m": {
+          "value": 4316245,
+          "percent": -2.48
+        },
+        "delta12m": {
+          "value": 4316245,
+          "percent": -2.48
+        },
+        "extinction": {
+          "months": 36.9,
+          "approxDate": "2028-10-27"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Falchion_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Chroma Case",
+      "url": "https://csstonks.com/case/Chroma%20Case",
+      "totals": {
+        "remaining": 1964505,
+        "dropped": 34832880,
+        "unboxed": 32868375,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 1964505,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 1964505,
+          "percent": -0.88
+        },
+        "delta6m": {
+          "value": 1964505,
+          "percent": -0.88
+        },
+        "delta12m": {
+          "value": 1964505,
+          "percent": -0.88
+        },
+        "extinction": {
+          "months": 44.2,
+          "approxDate": "2029-06-07"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Chroma_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Operation Phoenix Weapon Case",
+      "url": "https://csstonks.com/case/Operation%20Phoenix%20Weapon%20Case",
+      "totals": {
+        "remaining": 3822406,
+        "dropped": 64136146,
+        "unboxed": 60313740,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 3822406,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 3822406,
+          "percent": -3.47
+        },
+        "delta6m": {
+          "value": 3822406,
+          "percent": -3.47
+        },
+        "delta12m": {
+          "value": 3822406,
+          "percent": -3.47
+        },
+        "extinction": {
+          "months": 45.1,
+          "approxDate": "2029-07-02"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Operation_Phoenix_Weapon_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Horizon Case",
+      "url": "https://csstonks.com/case/Horizon%20Case",
+      "totals": {
+        "remaining": 11850690,
+        "dropped": 55901971,
+        "unboxed": 44051281,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 11850690,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 11850690,
+          "percent": -1.21
+        },
+        "delta6m": {
+          "value": 11850690,
+          "percent": -1.21
+        },
+        "delta12m": {
+          "value": 11850690,
+          "percent": -1.21
+        },
+        "extinction": {
+          "months": 60.6,
+          "approxDate": "2030-10-19"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Horizon_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Snakebite Case",
+      "url": "https://csstonks.com/case/Snakebite%20Case",
+      "totals": {
+        "remaining": 66668971,
+        "dropped": 159540020,
+        "unboxed": 92871049,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 66668971,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 66668971,
+          "percent": -0.89
+        },
+        "delta6m": {
+          "value": 66668971,
+          "percent": -0.89
+        },
+        "delta12m": {
+          "value": 66668971,
+          "percent": -0.89
+        },
+        "extinction": {
+          "months": 102.1,
+          "approxDate": "2034-04-04"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Snakebite_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Operation Breakout Weapon Case",
+      "url": "https://csstonks.com/case/Operation%20Breakout%20Weapon%20Case",
+      "totals": {
+        "remaining": 14363871,
+        "dropped": 80627336,
+        "unboxed": 66263465,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 14363871,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 14363871,
+          "percent": -0.87
+        },
+        "delta6m": {
+          "value": 14363871,
+          "percent": -0.87
+        },
+        "delta12m": {
+          "value": 14363871,
+          "percent": -0.87
+        },
+        "extinction": {
+          "months": 114.8,
+          "approxDate": "2035-04-25"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Operation_Breakout_Weapon_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Spectrum Case",
+      "url": "https://csstonks.com/case/Spectrum%20Case",
+      "totals": {
+        "remaining": 18818427,
+        "dropped": 76215235,
+        "unboxed": 57396808,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 18818427,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 18818427,
+          "percent": -0.5
+        },
+        "delta6m": {
+          "value": 18818427,
+          "percent": -0.5
+        },
+        "delta12m": {
+          "value": 18818427,
+          "percent": -0.5
+        },
+        "extinction": {
+          "months": 134.3,
+          "approxDate": "2036-12-07"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Spectrum_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Spectrum 2 Case",
+      "url": "https://csstonks.com/case/Spectrum%202%20Case",
+      "totals": {
+        "remaining": 31032960,
+        "dropped": 114953661,
+        "unboxed": 83920701,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 31032960,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 2,
+          "percent": -0.69
+        },
+        "delta6m": {
+          "value": 2,
+          "percent": -0.69
+        },
+        "delta12m": {
+          "value": 2,
+          "percent": -0.69
+        },
+        "extinction": {
+          "months": 138.5,
+          "approxDate": "2037-04-15"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Spectrum_2_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Prisma 2 Case",
+      "url": "https://csstonks.com/case/Prisma%202%20Case",
+      "totals": {
+        "remaining": 68781988,
+        "dropped": 147617694,
+        "unboxed": 78835706,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 68781988,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 2,
+          "percent": -0.6
+        },
+        "delta6m": {
+          "value": 2,
+          "percent": -0.6
+        },
+        "delta12m": {
+          "value": 2,
+          "percent": -0.6
+        },
+        "extinction": {
+          "months": 159.6,
+          "approxDate": "2039-01-17"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Prisma_2_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Shadow Case",
+      "url": "https://csstonks.com/case/Shadow%20Case",
+      "totals": {
+        "remaining": 16343915,
+        "dropped": 55489213,
+        "unboxed": 39145298,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 16343915,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 16343915,
+          "percent": -0.63
+        },
+        "delta6m": {
+          "value": 16343915,
+          "percent": -0.63
+        },
+        "delta12m": {
+          "value": 16343915,
+          "percent": -0.63
+        },
+        "extinction": {
+          "months": 170.2,
+          "approxDate": "2039-12-06"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Shadow_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Chroma 2 Case",
+      "url": "https://csstonks.com/case/Chroma%202%20Case",
+      "totals": {
+        "remaining": 31765462,
+        "dropped": 101923105,
+        "unboxed": 70157643,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 31765462,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 2,
+          "percent": -0.39
+        },
+        "delta6m": {
+          "value": 2,
+          "percent": -0.39
+        },
+        "delta12m": {
+          "value": 2,
+          "percent": -0.39
+        },
+        "extinction": {
+          "months": 179.4,
+          "approxDate": "2040-09-11"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Chroma_2_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Glove Case",
+      "url": "https://csstonks.com/case/Glove%20Case",
+      "totals": {
+        "remaining": 18329562,
+        "dropped": 78424061,
+        "unboxed": 60094499,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 18329562,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 18329562,
+          "percent": -0.48
+        },
+        "delta6m": {
+          "value": 18329562,
+          "percent": -0.48
+        },
+        "delta12m": {
+          "value": 18329562,
+          "percent": -0.48
+        },
+        "extinction": {
+          "months": 183.4,
+          "approxDate": "2041-01-12"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Glove_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Danger Zone Case",
+      "url": "https://csstonks.com/case/Danger%20Zone%20Case",
+      "totals": {
+        "remaining": 89429908,
+        "dropped": 185525163,
+        "unboxed": 96095255,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 89429908,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 89429908,
+          "percent": -0.41
+        },
+        "delta6m": {
+          "value": 89429908,
+          "percent": -0.41
+        },
+        "delta12m": {
+          "value": 89429908,
+          "percent": -0.41
+        },
+        "extinction": {
+          "months": 214.2,
+          "approxDate": "2043-08-07"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Danger_Zone_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Clutch Case",
+      "url": "https://csstonks.com/case/Clutch%20Case",
+      "totals": {
+        "remaining": 107910450,
+        "dropped": 265459594,
+        "unboxed": 157549144,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 107910450,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 107910450,
+          "percent": -0.48
+        },
+        "delta6m": {
+          "value": 107910450,
+          "percent": -0.48
+        },
+        "delta12m": {
+          "value": 107910450,
+          "percent": -0.48
+        },
+        "extinction": {
+          "months": 214.5,
+          "approxDate": "2043-08-16"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Clutch_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Prisma Case",
+      "url": "https://csstonks.com/case/Prisma%20Case",
+      "totals": {
+        "remaining": 72200434,
+        "dropped": 141399402,
+        "unboxed": 69198968,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 72200434,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 72200434,
+          "percent": -0.43
+        },
+        "delta6m": {
+          "value": 72200434,
+          "percent": -0.43
+        },
+        "delta12m": {
+          "value": 72200434,
+          "percent": -0.43
+        },
+        "extinction": {
+          "months": 214.8,
+          "approxDate": "2043-08-26"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Prisma_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Huntsman Weapon Case",
+      "url": "https://csstonks.com/case/Huntsman%20Weapon%20Case",
+      "totals": {
+        "remaining": 3157994,
+        "dropped": 27970566,
+        "unboxed": 24812572,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 3157994,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 3157994,
+          "percent": -1.14
+        },
+        "delta6m": {
+          "value": 3157994,
+          "percent": -1.14
+        },
+        "delta12m": {
+          "value": 3157994,
+          "percent": -1.14
+        },
+        "extinction": {
+          "months": 219.5,
+          "approxDate": "2044-01-14"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Huntsman_Weapon_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Revolver Case",
+      "url": "https://csstonks.com/case/Revolver%20Case",
+      "totals": {
+        "remaining": 38445678,
+        "dropped": 67303850,
+        "unboxed": 28858172,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 38445678,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 38445678,
+          "percent": -0.39
+        },
+        "delta6m": {
+          "value": 38445678,
+          "percent": -0.39
+        },
+        "delta12m": {
+          "value": 38445678,
+          "percent": -0.39
+        },
+        "extinction": {
+          "months": 268,
+          "approxDate": "2048-01-30"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Revolver_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Gamma Case",
+      "url": "https://csstonks.com/case/Gamma%20Case",
+      "totals": {
+        "remaining": 30476483,
+        "dropped": 80425525,
+        "unboxed": 49949042,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 30476483,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 30476483,
+          "percent": -0.34
+        },
+        "delta6m": {
+          "value": 30476483,
+          "percent": -0.34
+        },
+        "delta12m": {
+          "value": 30476483,
+          "percent": -0.34
+        },
+        "extinction": {
+          "months": 287.4,
+          "approxDate": "2049-09-12"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Gamma_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "CS20 Case",
+      "url": "https://csstonks.com/case/CS20%20Case",
+      "totals": {
+        "remaining": 38568704,
+        "dropped": 71598376,
+        "unboxed": 33029672,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 38568704,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 20,
+          "percent": -0.34
+        },
+        "delta6m": {
+          "value": 20,
+          "percent": -0.34
+        },
+        "delta12m": {
+          "value": 20,
+          "percent": -0.34
+        },
+        "extinction": {
+          "months": 321.2,
+          "approxDate": "2052-07-06"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-CS20_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Gamma 2 Case",
+      "url": "https://csstonks.com/case/Gamma%202%20Case",
+      "totals": {
+        "remaining": 64842261,
+        "dropped": 138616240,
+        "unboxed": 73773979,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 64842261,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 2,
+          "percent": -0.24
+        },
+        "delta6m": {
+          "value": 2,
+          "percent": -0.24
+        },
+        "delta12m": {
+          "value": 2,
+          "percent": -0.24
+        },
+        "extinction": {
+          "months": 323.9,
+          "approxDate": "2052-09-26"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Gamma_2_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Chroma 3 Case",
+      "url": "https://csstonks.com/case/Chroma%203%20Case",
+      "totals": {
+        "remaining": 99191981,
+        "dropped": 151326832,
+        "unboxed": 52134851,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 99191981,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 3,
+          "percent": -0.19
+        },
+        "delta6m": {
+          "value": 3,
+          "percent": -0.19
+        },
+        "delta12m": {
+          "value": 3,
+          "percent": -0.19
+        },
+        "extinction": {
+          "months": 422.7,
+          "approxDate": "2060-12-19"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Chroma_3_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Operation Wildfire Case",
+      "url": "https://csstonks.com/case/Operation%20Wildfire%20Case",
+      "totals": {
+        "remaining": 47834066,
+        "dropped": 73598547,
+        "unboxed": 25764481,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 47834066,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 47834066,
+          "percent": -0.16
+        },
+        "delta6m": {
+          "value": 47834066,
+          "percent": -0.16
+        },
+        "delta12m": {
+          "value": 47834066,
+          "percent": -0.16
+        },
+        "extinction": {
+          "months": 647.5,
+          "approxDate": "2079-09-14"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Operation_Wildfire_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Operation Vanguard Weapon Case",
+      "url": "https://csstonks.com/case/Operation%20Vanguard%20Weapon%20Case",
+      "totals": {
+        "remaining": 15957639,
+        "dropped": 36782609,
+        "unboxed": 20824970,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 15957639,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 15957639,
+          "percent": -0.07
+        },
+        "delta6m": {
+          "value": 15957639,
+          "percent": -0.07
+        },
+        "delta12m": {
+          "value": 15957639,
+          "percent": -0.07
+        },
+        "extinction": {
+          "months": 1060.2,
+          "approxDate": "2114-02-04"
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Operation_Vanguard_Weapon_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Fracture Case",
+      "url": "https://csstonks.com/case/Fracture%20Case",
+      "totals": {
+        "remaining": 180779527,
+        "dropped": 343314830,
+        "unboxed": 162535303,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 180779527,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 180779527,
+          "percent": 0.07
+        },
+        "delta6m": {
+          "value": 180779527,
+          "percent": 0.07
+        },
+        "delta12m": {
+          "value": 180779527,
+          "percent": 0.07
+        },
+        "extinction": {
+          "months": null,
+          "approxDate": null
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Fracture_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Dreams & Nightmares Case",
+      "url": "https://csstonks.com/case/Dreams%20%26%20Nightmares%20Case",
+      "totals": {
+        "remaining": 92465096,
+        "dropped": 251285528,
+        "unboxed": 158820432,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 92465096,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 92465096,
+          "percent": 2.81
+        },
+        "delta6m": {
+          "value": 92465096,
+          "percent": 2.81
+        },
+        "delta12m": {
+          "value": 92465096,
+          "percent": 2.81
+        },
+        "extinction": {
+          "months": null,
+          "approxDate": null
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Dreams_&_Nightmares_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Recoil Case",
+      "url": "https://csstonks.com/case/Recoil%20Case",
+      "totals": {
+        "remaining": 122203079,
+        "dropped": 229693030,
+        "unboxed": 107489951,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 122203079,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 122203079,
+          "percent": 2.71
+        },
+        "delta6m": {
+          "value": 122203079,
+          "percent": 2.71
+        },
+        "delta12m": {
+          "value": 122203079,
+          "percent": 2.71
+        },
+        "extinction": {
+          "months": null,
+          "approxDate": null
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Recoil_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Revolution Case",
+      "url": "https://csstonks.com/case/Revolution%20Case",
+      "totals": {
+        "remaining": 79778678,
+        "dropped": 197543159,
+        "unboxed": 117764481,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 79778678,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 79778678,
+          "percent": 3.08
+        },
+        "delta6m": {
+          "value": 79778678,
+          "percent": 3.08
+        },
+        "delta12m": {
+          "value": 79778678,
+          "percent": 3.08
+        },
+        "extinction": {
+          "months": null,
+          "approxDate": null
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Revolution_Case.png",
+        "page": null
+      }
+    },
+    {
+      "case": "Kilowatt Case",
+      "url": "https://csstonks.com/case/Kilowatt%20Case",
+      "totals": {
+        "remaining": 65463973,
+        "dropped": 125935427,
+        "unboxed": 60471454,
+        "price": 0,
+        "marketCap": 0
+      },
+      "pageCards": {
+        "currentRemainingSupply": 65463973,
+        "priceUSD": 0,
+        "marketCapUSD": 0,
+        "delta1m": {
+          "value": 65463973,
+          "percent": 4.76
+        },
+        "delta6m": {
+          "value": 65463973,
+          "percent": 4.76
+        },
+        "delta12m": {
+          "value": 65463973,
+          "percent": 4.76
+        },
+        "extinction": {
+          "months": null,
+          "approxDate": null
+        }
+      },
+      "screenshots": {
+        "mode": "chart-section",
+        "chart": "chart-Kilowatt_Case.png",
+        "page": null
+      }
+    }
+  ]
+}

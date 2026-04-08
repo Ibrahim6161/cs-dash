@@ -1,0 +1,32 @@
+{
+  "source": "manual",
+  "steps": [
+    {
+      "id": "cases",
+      "label": "CSStonks universe",
+      "durationMs": 5076,
+      "success": true
+    },
+    {
+      "id": "details",
+      "label": "Case details",
+      "durationMs": 85920,
+      "success": true
+    },
+    {
+      "id": "csmoney",
+      "label": "PriceEmpire CS.MONEY",
+      "durationMs": 15845,
+      "success": true
+    },
+    {
+      "id": "csfloat",
+      "label": "PriceEmpire CSFloat",
+      "durationMs": 13611,
+      "success": true
+    }
+  ],
+  "startedAt": "2026-04-08T14:37:52.942Z",
+  "finishedAt": null,
+  "success": false
+}

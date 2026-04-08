@@ -1,0 +1,27 @@
+{
+  "scheduler": {
+    "enabled": true,
+    "intervalMinutes": 360,
+    "runOnStartup": true
+  },
+  "refresh": {
+    "headless": true,
+    "slowMo": 0,
+    "pricePage": 1,
+    "priceLimit": 50,
+    "includeTimeseries": false
+  },
+  "analysis": {
+    "strictness": 55
+  },
+  "paths": {
+    "cases": "cases.json",
+    "details": "case_details.json",
+    "pricempire": "pricempire_prices_eur.json",
+    "csmoney": "csmoney_prices_eur.json",
+    "csfloat": "csfloat_prices_eur.json",
+    "timeseries": "case-timeseries.json",
+    "shotsDir": "shots",
+    "snapshotsDir": "out"
+  }
+}

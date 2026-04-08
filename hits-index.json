@@ -1,0 +1,34 @@
+[
+  {
+    "idx": 0,
+    "url": "https://csstonks.com/data/events.json",
+    "status": 200,
+    "kind": "fetch",
+    "file": "hit-001.txt",
+    "size": 7453
+  },
+  {
+    "idx": 4,
+    "url": "https://csstonks.com/config/settings.json",
+    "status": 200,
+    "kind": "fetch",
+    "file": "hit-002.txt",
+    "size": 539
+  },
+  {
+    "idx": 8,
+    "url": "https://pub-8ed615d2fb8c4b66b34a1bd7870d38bb.r2.dev/haloskins/overview.json",
+    "status": 200,
+    "kind": "fetch",
+    "file": "hit-003.txt",
+    "size": 3098583
+  },
+  {
+    "idx": 9,
+    "url": "https://pub-8ed615d2fb8c4b66b34a1bd7870d38bb.r2.dev/csgo/crates_v1.json",
+    "status": 200,
+    "kind": "fetch",
+    "file": "hit-004.txt",
+    "size": 6158463
+  }
+]

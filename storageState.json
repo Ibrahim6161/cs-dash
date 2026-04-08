@@ -1,0 +1,125 @@
+{
+  "cookies": [
+    {
+      "name": "i18n_redirected",
+      "value": "en",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1801352397.201323,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "pricempire-theme",
+      "value": "slate",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1801352397.201495,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "skins-banner-dismissed",
+      "value": "false",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1770421197.201523,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "trending-provider",
+      "value": "",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1772408397.201547,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "trending-layout",
+      "value": "table",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1772408397.201566,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "trending-favorites-only",
+      "value": "false",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1772408397.201621,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "trending-columns-3",
+      "value": "%5B%22item%22%2C%22price%22%2C%22change_24h%22%2C%22change_7d%22%2C%22change_30d%22%2C%22chart%22%5D",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1772408397.201676,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.908685718.1769816398",
+      "domain": ".pricempire.com",
+      "path": "/",
+      "expires": 1804376415.069656,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cfzs_google-analytics_v4",
+      "value": "%7B%22lTnF_pageviewCounter%22%3A%7B%22v%22%3A%224%22%7D%7D",
+      "domain": ".pricempire.com",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cfz_google-analytics_v4",
+      "value": "%7B%22lTnF_engagementDuration%22%3A%7B%22v%22%3A%220%22%2C%22e%22%3A1801352415438%7D%2C%22lTnF_engagementStart%22%3A%7B%22v%22%3A%221769816415438%22%2C%22e%22%3A1801352415438%7D%2C%22lTnF_counter%22%3A%7B%22v%22%3A%224%22%2C%22e%22%3A1801352415438%7D%2C%22lTnF_ga4sid%22%3A%7B%22v%22%3A%222132982655%22%2C%22e%22%3A1769818215438%7D%2C%22lTnF_session_counter%22%3A%7B%22v%22%3A%221%22%2C%22e%22%3A1801352415438%7D%2C%22lTnF_ga4%22%3A%7B%22v%22%3A%2247b62a42-640e-48cc-9c97-413fd64e2e02%22%2C%22e%22%3A1801352415438%7D%2C%22lTnF__z_ga_audiences%22%3A%7B%22v%22%3A%2247b62a42-640e-48cc-9c97-413fd64e2e02%22%2C%22e%22%3A1801352397878%7D%2C%22lTnF_let%22%3A%7B%22v%22%3A%221769816415438%22%2C%22e%22%3A1801352415438%7D%7D",
+      "domain": ".pricempire.com",
+      "path": "/",
+      "expires": 1801352415.029581,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_5YMSVJKHTZ",
+      "value": "GS2.1.s1769816397$o1$g1$t1769816415$j42$l0$h0",
+      "domain": ".pricempire.com",
+      "path": "/",
+      "expires": 1804376415.06938,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "currency",
+      "value": "EUR",
+      "domain": "pricempire.com",
+      "path": "/",
+      "expires": 1804376416.475259,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

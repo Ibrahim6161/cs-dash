@@ -1,0 +1,14 @@
+{
+  "meta": {
+    "timestamp": "2026-04-07T20:56:49.114Z",
+    "trending_url": "https://pricempire.com/app/trending/cases?page=1&sort=current&order=DESC",
+    "page": 1,
+    "limit": 50,
+    "provider": "CS.MONEY via /cs2-marketplaces/csmoneym",
+    "currency": "EUR",
+    "scraped": 0,
+    "errors": 0
+  },
+  "map": {},
+  "errors": []
+}
