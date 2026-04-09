@@ -12,11 +12,13 @@
       <div class="hero-copy">
         <p class="eyebrow">Steam + CSStonks + SkinBaron</p>
         <h1>CS container dashboard</h1>
-        <p class="subcopy">Straight to the point: score, reason, Steam trend, orderbook, and whether SkinBaron still gives you a useful entry.</p>
+        <p class="subcopy">
+          Public Steam inventory lookup. Paste a Steam profile URL, vanity URL, or SteamID64.
+          No Steam login required.
+        </p>
       </div>
       <div class="topbar-actions">
         <div class="status-pill" id="statusPill">Connecting…</div>
-        <a class="button" id="steamConnectButton" href="/auth/steam/login">Connect Steam</a>
         <button class="button primary" id="refreshButton">Refresh data</button>
         <button class="button" id="saveConfigButton">Save automation</button>
       </div>
@@ -104,13 +106,26 @@
       <aside class="panel side">
         <div class="side-section">
           <p class="eyebrow">Portfolio</p>
-          <h2>Steam inventory</h2>
-          <div class="topbar-actions" style="justify-content:flex-start; margin-bottom:10px;">
-            <button class="button" id="steamRefreshButton" type="button">Refresh inventory</button>
+          <h2>Public Steam inventory</h2>
+
+          <div class="control-stack">
+            <label>
+              <span>Steam profile</span>
+              <input
+                id="steamProfileInput"
+                type="text"
+                placeholder="https://steamcommunity.com/id/naam or 7656119..."
+              />
+            </label>
+            <div class="topbar-actions" style="justify-content:flex-start; margin-top:10px;">
+              <button class="button primary" id="steamLookupButton" type="button">Check profile</button>
+              <button class="button" id="steamRefreshButton" type="button">Refresh inventory</button>
+            </div>
           </div>
+
           <div id="portfolioSummary" class="source-card">
-            <strong>Steam not connected</strong>
-            <span class="muted">Connect your public Steam inventory to see holdings.</span>
+            <strong>No profile loaded</strong>
+            <span class="muted">Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
           </div>
           <div id="portfolioList" class="portfolio-list"></div>
         </div>

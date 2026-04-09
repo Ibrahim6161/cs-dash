@@ -1,8 +1,9 @@
 const state = {
   payload: null,
-  steamSession: null,
   portfolio: null,
   portfolioLoading: false,
+  portfolioError: null,
+  portfolioQuery: "",
   selectedKey: null,
   liveMarket: new Map(),
   loadingMarketKey: null,
@@ -29,7 +30,10 @@ function escapeHtml(value) {
 function fmtNumber(value, digits = 0) {
   return value == null || !Number.isFinite(value)
     ? "—"
-    : Number(value).toLocaleString(undefined, { maximumFractionDigits: digits, minimumFractionDigits: digits });
+    : Number(value).toLocaleString(undefined, {
+        maximumFractionDigits: digits,
+        minimumFractionDigits: digits,
+      });
 }
 
 function fmtMoney(value, currency = "EUR", digits = 2) {
@@ -85,7 +89,9 @@ function toneClass(label) {
 function showToast(message, isError = false) {
   const toast = $("toast");
   toast.textContent = message;
-  toast.style.borderColor = isError ? "rgba(255, 117, 102, 0.36)" : "rgba(88, 184, 255, 0.36)";
+  toast.style.borderColor = isError
+    ? "rgba(255, 117, 102, 0.36)"
+    : "rgba(88, 184, 255, 0.36)";
   toast.classList.add("show");
   clearTimeout(showToast._timer);
   showToast._timer = setTimeout(() => toast.classList.remove("show"), 2200);
@@ -107,7 +113,9 @@ async function api(path, options = {}) {
 }
 
 function chartSvg(values, color = "#58b8ff") {
-  const points = (Array.isArray(values) ? values : []).filter((value) => value != null && Number.isFinite(value));
+  const points = (Array.isArray(values) ? values : []).filter(
+    (value) => value != null && Number.isFinite(value)
+  );
   if (!points.length) {
     return `<div class="muted">No chart data.</div>`;
   }
@@ -135,13 +143,12 @@ function chartSvg(values, color = "#58b8ff") {
   `;
 }
 
-function driverCard(driver) {
+function compareCard(label, value, note) {
   return `
     <article class="metric-card">
-      <span>${escapeHtml(driver.label)}</span>
-      <strong>${escapeHtml(driver.valueText)}</strong>
-      <p class="muted">${escapeHtml(driver.note)}</p>
-      <div class="metric-pill ${toneClass(driver.tone)}">${escapeHtml(driver.tone.toUpperCase())}</div>
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <p class="muted">${escapeHtml(note)}</p>
     </article>
   `;
 }
@@ -200,16 +207,6 @@ function startSteamQueue() {
       render();
     }
   }, 1500);
-}
-
-function compareCard(label, value, note) {
-  return `
-    <article class="metric-card">
-      <span>${escapeHtml(label)}</span>
-      <strong>${escapeHtml(value)}</strong>
-      <p class="muted">${escapeHtml(note)}</p>
-    </article>
-  `;
 }
 
 function getInvestmentThesis(item) {
@@ -398,11 +395,11 @@ async function ensureLiveMarket() {
   }
 }
 
-async function hydrateVisibleSteam(items) {
+function hydrateVisibleSteam(items) {
   queueSteamItems(items, false);
 }
 
-async function refreshVisibleSteam(items) {
+function refreshVisibleSteam(items) {
   queueSteamItems(items, false);
 }
 
@@ -458,59 +455,52 @@ function renderLogs(payload) {
 }
 
 function renderPortfolio() {
-  const button = $("steamConnectButton");
-  const refreshButton = $("steamRefreshButton");
-  const session = state.steamSession;
   const summary = $("portfolioSummary");
   const list = $("portfolioList");
+  const lookupButton = $("steamLookupButton");
+  const refreshButton = $("steamRefreshButton");
+  const input = $("steamProfileInput");
 
-  if (!session?.connected) {
-    button.textContent = "Connect Steam";
-    button.href = "/auth/steam/login";
-    button.dataset.mode = "connect";
-    refreshButton.disabled = true;
+  input.value = state.portfolioQuery || "";
+
+  lookupButton.disabled = state.portfolioLoading;
+  refreshButton.disabled = state.portfolioLoading || !state.portfolioQuery;
+
+  if (state.portfolioLoading) {
     summary.innerHTML = `
-      <strong>Steam not connected</strong>
-      <span class="muted">Connect your public Steam inventory to see holdings.</span>
+      <strong>Loading public Steam inventory...</strong>
+      <span class="muted">Reading public CS2 inventory.</span>
     `;
     list.innerHTML = "";
     return;
   }
 
-  button.textContent = "Disconnect Steam";
-  button.href = "#";
-  button.dataset.mode = "disconnect";
-  refreshButton.disabled = state.portfolioLoading;
-
-  if (state.portfolioLoading) {
+  if (state.portfolioError) {
     summary.innerHTML = `
-      <strong>Loading Steam inventory...</strong>
-      <span class="muted">Reading public CS2 inventory for ${escapeHtml(session.profile?.personaName || "your account")}.</span>
+      <strong>Inventory could not be loaded</strong>
+      <span class="muted">${escapeHtml(state.portfolioError)}</span>
+      <span class="muted">The Steam profile must exist and the inventory must be public.</span>
     `;
     list.innerHTML = "";
     return;
   }
 
   if (!state.portfolio) {
-    summary.innerHTML = state.portfolioError
-      ? `
-      <strong>Inventory kon niet geladen worden</strong>
-      <span class="muted">${escapeHtml(state.portfolioError)}</span>
-      <span class="muted">Zet je Steam inventory op public en klik daarna op Refresh inventory.</span>
-    `
-      : `
-      <strong>Connected as ${escapeHtml(session.profile?.personaName || session.profile?.steamId || "Steam account")}</strong>
-      <span class="muted">Inventory is connected but not loaded yet.</span>
+    summary.innerHTML = `
+      <strong>No profile loaded</strong>
+      <span class="muted">Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
     `;
     list.innerHTML = "";
     return;
   }
 
+  const profile = state.portfolio.profile || {};
   summary.innerHTML = `
     <strong>${fmtMoney(state.portfolio.totals.estimatedValueEur)} estimated value</strong>
     <span class="muted">${fmtNumber(state.portfolio.totals.uniqueItems)} unique items · ${fmtNumber(state.portfolio.totals.totalQuantity)} total units</span>
     <span class="muted">${fmtNumber(state.portfolio.totals.matchedItems)} matched to the dashboard pricing layer</span>
-    <span class="muted">${escapeHtml(state.portfolio.profile?.personaName || "Steam account")} � ${state.portfolio.cached ? "cached" : "fresh"} � ${fmtRelative(state.portfolio.fetchedAt)}</span>
+    <span class="muted">${escapeHtml(profile.personaName || profile.steamId || "Steam profile")} · ${state.portfolio.cached ? "cached" : "fresh"} · ${fmtRelative(state.portfolio.fetchedAt)}</span>
+    ${profile.profileUrl ? `<span class="muted"><a href="${escapeHtml(profile.profileUrl)}" target="_blank" rel="noopener">Open Steam profile</a></span>` : ""}
   `;
 
   const items = state.portfolio.items.slice(0, 16);
@@ -548,7 +538,6 @@ function renderFocus(payload, visibleItems) {
 
   const live = state.liveMarket.get(item.key);
   const loading = state.loadingMarketKey === item.key;
-  const buyRows = live?.orderbook?.buyLevels?.slice(0, 5) || [];
   const sellRows = live?.orderbook?.sellLevels?.slice(0, 5) || [];
 
   $("focusContent").className = "detail-shell";
@@ -602,8 +591,6 @@ function renderFocus(payload, visibleItems) {
           ${sellRows.map((row) => `<div class="market-row"><span>Sell ${fmtMoney(row.priceEur)}</span><span>${fmtNumber(row.quantity)}</span></div>`).join("") || `<span class="muted">No live orderbook yet.</span>`}
         </div>
       </article>
-
-
     </section>
 
     <section class="detail-grid">
@@ -687,49 +674,34 @@ async function loadDashboard(silent = false) {
   }
 }
 
-async function loadSteamSession(silent = false) {
-  try {
-    const payload = await api("/api/steam/auth/status");
-    state.steamSession = payload;
-    renderPortfolio();
-    if (state.steamSession?.connected) {
-      loadPortfolio(silent);
-    } else {
-      state.portfolio = null;
-    }
-  } catch (error) {
-    if (!silent) showToast(error.message, true);
-  }
-}
+async function loadPortfolio(forceRefresh = false) {
+  const query = $("steamProfileInput").value.trim();
+  if (!query || state.portfolioLoading) return;
 
-async function loadPortfolio(silent = false, forceRefresh = false) {
-  if (!state.steamSession?.connected || state.portfolioLoading) return;
   state.portfolioLoading = true;
+  state.portfolioError = null;
+  state.portfolioQuery = query;
   renderPortfolio();
+
   try {
-    const payload = await api(`/api/steam/inventory${forceRefresh ? "?refresh=1" : ""}`);
+    const payload = await api("/api/steam/public-inventory", {
+      method: "POST",
+      body: JSON.stringify({
+        query,
+        refresh: forceRefresh,
+      }),
+    });
     state.portfolio = payload;
     state.portfolioError = null;
   } catch (error) {
     state.portfolio = null;
-    if (!silent) showToast(error.message, true);
+    state.portfolioError = error.message;
+    showToast(error.message, true);
   } finally {
     state.portfolioLoading = false;
     renderPortfolio();
   }
 }
-async function disconnectSteam() {
-  try {
-    await api("/api/steam/logout", { method: "POST", body: "{}" });
-    state.steamSession = { connected: false, profile: null };
-    state.portfolio = null;
-    renderPortfolio();
-    showToast("Steam disconnected.");
-  } catch (error) {
-    showToast(error.message, true);
-  }
-}
-
 
 async function refreshNow() {
   try {
@@ -757,20 +729,16 @@ async function saveConfig() {
 function wire() {
   $("refreshButton").addEventListener("click", refreshNow);
   $("saveConfigButton").addEventListener("click", saveConfig);
-  $("steamRefreshButton").addEventListener("click", () => loadPortfolio(false, true));
-  $("steamConnectButton").addEventListener("click", async (event) => {
-    if (event.currentTarget.dataset.mode !== "disconnect") return;
-    event.preventDefault();
-    try {
-      await api("/api/steam/logout", { method: "POST", body: "{}" });
-      state.steamSession = { ok: true, connected: false, profile: null };
-      state.portfolio = null;
-      showToast("Steam disconnected.");
-      renderPortfolio();
-    } catch (error) {
-      showToast(error.message, true);
+  $("steamLookupButton").addEventListener("click", () => loadPortfolio(false));
+  $("steamRefreshButton").addEventListener("click", () => loadPortfolio(true));
+
+  $("steamProfileInput").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      loadPortfolio(false);
     }
   });
+
   $("cfgStrictness").addEventListener("input", (event) => {
     $("cfgStrictnessValue").textContent = event.target.value;
   });
@@ -780,46 +748,8 @@ function wire() {
   $("sortSelect").addEventListener("change", render);
 }
 
-function bootSteamFeedback() {
-  const params = new URLSearchParams(window.location.search);
-  const steam = params.get("steam");
-  const steamError = params.get("steam_error");
-  if (steam === "connected") {
-    showToast("Steam connected.");
-  } else if (steam === "disconnected") {
-    showToast("Steam disconnected.");
-  } else if (steamError) {
-    showToast(steamError, true);
-  }
-  if (steam || steamError) {
-    params.delete("steam");
-    params.delete("steam_error");
-    const next = `${window.location.pathname}${params.toString() ? `?${params.toString()}` : ""}${window.location.hash}`;
-    window.history.replaceState({}, "", next);
-  }
-}
-
 wire();
 startSteamQueue();
-bootSteamFeedback();
-loadSteamSession();
 loadDashboard();
 scheduleLiveSteamRefresh();
 setInterval(() => loadDashboard(true), 10000);
-setInterval(() => loadSteamSession(true), 60000);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
