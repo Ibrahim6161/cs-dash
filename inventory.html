@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Steam Inventory Explorer</title>
+  <link rel="stylesheet" href="dashboard-v2.css" />
+  <style>
+    .inventory-shell {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .inventory-sidebar {
+      position: sticky;
+      top: 18px;
+    }
+
+    .inventory-main {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .inventory-toolbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1.4fr) repeat(4, minmax(140px, 0.6fr));
+      gap: 12px;
+      align-items: end;
+    }
+
+    .inventory-toolbar label,
+    .inventory-search label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .inventory-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .inventory-stat-card {
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(115, 148, 176, 0.18);
+      background: rgba(17, 24, 36, 0.74);
+    }
+
+    .inventory-stat-card span {
+      display: block;
+      font-size: 12px;
+      color: #8ca0b8;
+      margin-bottom: 6px;
+    }
+
+    .inventory-stat-card strong {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 14px;
+    }
+
+    .inventory-card {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 220px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(115, 148, 176, 0.18);
+      background: linear-gradient(180deg, rgba(18, 25, 37, 0.9), rgba(13, 19, 31, 0.92));
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
+    }
+
+    .inventory-card img {
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 6px;
+    }
+
+    .inventory-card-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .inventory-card-title {
+      font-size: 15px;
+      line-height: 1.35;
+      margin: 0;
+    }
+
+    .inventory-card-values {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: auto;
+    }
+
+    .inventory-card-values strong {
+      font-size: 18px;
+    }
+
+    .inventory-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .inventory-profile {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .inventory-profile img {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.05);
+    }
+
+    .inventory-empty {
+      padding: 32px;
+      border-radius: 18px;
+      border: 1px dashed rgba(115, 148, 176, 0.3);
+      text-align: center;
+      color: #8ca0b8;
+    }
+
+    @media (max-width: 1180px) {
+      .inventory-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .inventory-sidebar {
+        position: static;
+      }
+
+      .inventory-toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .inventory-stats {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .inventory-toolbar,
+      .inventory-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar panel">
+      <div class="hero-copy">
+        <p class="eyebrow">Steam inventory explorer</p>
+        <h1>Public inventory browser</h1>
+        <p class="subcopy">Search, filter, sort, and browse public Steam inventory items in a full-page view.</p>
+      </div>
+      <div class="topbar-actions">
+        <a class="button" href="/dashboard-v2.html">Back to dashboard</a>
+      </div>
+    </header>
+
+    <div class="inventory-shell">
+      <aside class="inventory-sidebar panel">
+        <p class="eyebrow">Profile</p>
+        <h2>Load inventory</h2>
+
+        <div class="control-stack">
+          <label>
+            <span>Steam profile</span>
+            <input id="profileInput" type="text" placeholder="https://steamcommunity.com/id/name or 7656119..." />
+          </label>
+          <div class="topbar-actions" style="justify-content:flex-start;">
+            <button class="button primary" id="loadInventoryButton" type="button">Load inventory</button>
+            <button class="button" id="refreshInventoryButton" type="button">Refresh</button>
+          </div>
+        </div>
+
+        <div id="profileCard" class="source-card" style="margin-top:14px;">
+          <strong>No profile loaded</strong>
+          <span class="muted">Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
+        </div>
+      </aside>
+
+      <main class="inventory-main">
+        <section class="panel">
+          <div class="inventory-toolbar">
+            <label>
+              <span>Search item</span>
+              <input id="searchInput" type="search" placeholder="Search by name..." />
+            </label>
+
+            <label>
+              <span>Type</span>
+              <select id="typeFilter">
+                <option value="ALL">All</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Marketability</span>
+              <select id="marketableFilter">
+                <option value="ALL">All</option>
+                <option value="MARKETABLE">Marketable</option>
+                <option value="NON_MARKETABLE">Non-marketable</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Trade status</span>
+              <select id="tradableFilter">
+                <option value="ALL">All</option>
+                <option value="TRADABLE">Tradable</option>
+                <option value="LOCKED">Trade locked</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Sort</span>
+              <select id="sortSelect">
+                <option value="value_desc">Highest value</option>
+                <option value="value_asc">Lowest value</option>
+                <option value="qty_desc">Highest quantity</option>
+                <option value="name_asc">Name A-Z</option>
+                <option value="name_desc">Name Z-A</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <section class="inventory-stats">
+          <article class="inventory-stat-card">
+            <span>Total estimated value</span>
+            <strong id="statValue">—</strong>
+          </article>
+          <article class="inventory-stat-card">
+            <span>Unique items</span>
+            <strong id="statUnique">—</strong>
+          </article>
+          <article class="inventory-stat-card">
+            <span>Total units</span>
+            <strong id="statQuantity">—</strong>
+          </article>
+          <article class="inventory-stat-card">
+            <span>Marketable items</span>
+            <strong id="statMarketable">—</strong>
+          </article>
+        </section>
+
+        <section class="panel">
+          <div id="inventoryInfo" class="source-card">
+            <strong>Nothing loaded yet</strong>
+            <span class="muted">Load a public Steam inventory to browse it here.</span>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div id="inventoryGrid" class="inventory-grid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="inventory.js"></script>
+</body>
+</html>

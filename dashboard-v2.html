@@ -3,18 +3,252 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS Container Dashboard</title>
+  <title>CS Market Dashboard</title>
   <link rel="stylesheet" href="dashboard-v2.css" />
+  <style>
+    .tabbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+      margin-bottom: 14px;
+    }
+
+    .tab-button {
+      border: 1px solid rgba(115, 148, 176, 0.22);
+      background: rgba(18, 25, 37, 0.72);
+      color: #dbe7f5;
+      border-radius: 999px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font: inherit;
+      transition: 160ms ease;
+    }
+
+    .tab-button:hover {
+      border-color: rgba(88, 184, 255, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .tab-button.active {
+      background: rgba(30, 71, 108, 0.9);
+      border-color: rgba(88, 184, 255, 0.55);
+      box-shadow: 0 10px 24px rgba(29, 70, 105, 0.28);
+    }
+
+    .skins-workspace {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .skins-workspace.active {
+      display: flex;
+    }
+
+    .skin-hero-card {
+      border: 1px solid rgba(115, 148, 176, 0.18);
+      background: linear-gradient(180deg, rgba(19, 27, 40, 0.92), rgba(13, 19, 31, 0.96));
+      border-radius: 22px;
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 96px 1fr auto;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .skin-hero-card img {
+      width: 96px;
+      height: 96px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      padding: 8px;
+    }
+
+    .skin-hero-title {
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.05;
+    }
+
+    .skin-hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .skin-hero-actions {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .skin-grid-toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.3fr) repeat(4, minmax(120px, 0.6fr));
+      gap: 12px;
+    }
+
+    .skin-grid-toolbar label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .skin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .skin-card {
+      border: 1px solid rgba(115, 148, 176, 0.18);
+      background: linear-gradient(180deg, rgba(18, 25, 37, 0.9), rgba(13, 19, 31, 0.96));
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 220px;
+      cursor: pointer;
+      transition: 150ms ease;
+    }
+
+    .skin-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(88, 184, 255, 0.38);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+    }
+
+    .skin-card.active {
+      border-color: rgba(88, 184, 255, 0.55);
+      box-shadow: 0 12px 30px rgba(24, 86, 138, 0.18);
+    }
+
+    .skin-card-top {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .skin-card img {
+      width: 68px;
+      height: 68px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      padding: 6px;
+      flex: 0 0 auto;
+    }
+
+    .skin-card h3 {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .skin-card-values {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .skin-card-values strong {
+      font-size: 18px;
+    }
+
+    .skin-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .skin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .skin-stat-card {
+      border: 1px solid rgba(115, 148, 176, 0.18);
+      border-radius: 18px;
+      padding: 14px;
+      background: rgba(17, 24, 36, 0.72);
+    }
+
+    .skin-stat-card span {
+      display: block;
+      color: #8ca0b8;
+      font-size: 12px;
+      margin-bottom: 6px;
+    }
+
+    .skin-stat-card strong {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .explorer-subcopy {
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: #8ca0b8;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1220px) {
+      .skin-grid-toolbar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .skin-stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .skin-hero-card {
+        grid-template-columns: 80px 1fr;
+      }
+
+      .skin-hero-actions {
+        grid-column: 1 / -1;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .skin-grid-toolbar,
+      .skin-stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .skin-hero-card {
+        grid-template-columns: 1fr;
+      }
+
+      .skin-hero-card img {
+        width: 88px;
+        height: 88px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="page-shell">
     <header class="topbar panel">
       <div class="hero-copy">
         <p class="eyebrow">Steam + CSStonks + SkinBaron</p>
-        <h1>CS container dashboard</h1>
+        <h1>CS market dashboard</h1>
         <p class="subcopy">
-          Public Steam inventory lookup. Paste a Steam profile URL, vanity URL, or SteamID64.
-          No Steam login required.
+          Containers stay in the classic explorer. Skins get a dedicated grid view so the homepage stays fast and usable.
         </p>
       </div>
       <div class="topbar-actions">
@@ -52,12 +286,20 @@
         <div class="section-head">
           <div>
             <p class="eyebrow">Explorer</p>
-            <h2>All containers</h2>
+            <h2 id="explorerTitle">Market explorer</h2>
+            <p class="explorer-subcopy" id="explorerSubcopy">
+              Containers use the classic list. Skins switch to a fast grid view.
+            </p>
           </div>
           <div class="mini-status" id="lastSyncedAt">—</div>
         </div>
 
-        <div class="filter-grid">
+        <div class="tabbar">
+          <button class="tab-button active" id="tabContainers" type="button">Containers</button>
+          <button class="tab-button" id="tabSkins" type="button">Skins</button>
+        </div>
+
+        <div class="filter-grid" id="containerFilters">
           <label>
             <span>Search</span>
             <input id="searchInput" type="search" placeholder="Case, capsule, souvenir..." />
@@ -94,12 +336,117 @@
           </label>
         </div>
 
+        <div class="filter-grid hidden" id="skinFilters">
+          <label>
+            <span>Search skin</span>
+            <input id="skinSearchInput" type="search" placeholder="AK-47, Redline, AWP..." />
+          </label>
+          <label>
+            <span>Type</span>
+            <select id="skinTypeFilter">
+              <option value="ALL">All</option>
+            </select>
+          </label>
+          <label>
+            <span>Marketable</span>
+            <select id="skinMarketableFilter">
+              <option value="ALL">All</option>
+              <option value="MARKETABLE">Marketable</option>
+              <option value="NON_MARKETABLE">Non-marketable</option>
+            </select>
+          </label>
+          <label>
+            <span>Sort</span>
+            <select id="skinSortSelect">
+              <option value="value_desc">Highest price</option>
+              <option value="value_asc">Lowest price</option>
+              <option value="qty_desc">Highest quantity</option>
+              <option value="name_asc">Name A-Z</option>
+              <option value="name_desc">Name Z-A</option>
+            </select>
+          </label>
+        </div>
+
         <div class="case-list" id="caseList"></div>
+        <div class="source-card hidden" id="skinsSidebarInfo">
+          <strong>Skins tab active</strong>
+          <span class="muted">
+            Use the grid in the main workspace. This keeps the homepage usable even when the skin scrape grows large.
+          </span>
+        </div>
       </aside>
 
       <section class="panel detail">
         <div id="focusContent" class="empty-state">
           <p>Select an item to load score drivers, Steam chart, orderbook, and CSStonks context.</p>
+        </div>
+
+        <div id="skinsWorkspace" class="skins-workspace">
+          <section class="skin-stats-grid">
+            <article class="skin-stat-card">
+              <span>Visible skins</span>
+              <strong id="skinsVisibleCount">—</strong>
+            </article>
+            <article class="skin-stat-card">
+              <span>Tracked skins</span>
+              <strong id="skinsTotalCount">—</strong>
+            </article>
+            <article class="skin-stat-card">
+              <span>Marketable</span>
+              <strong id="skinsMarketableCount">—</strong>
+            </article>
+            <article class="skin-stat-card">
+              <span>Avg Steam price</span>
+              <strong id="skinsAvgPrice">—</strong>
+            </article>
+          </section>
+
+          <section class="skin-hero-card" id="skinHeroCard">
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <p>Select a skin card to view the detail panel.</p>
+            </div>
+          </section>
+
+          <section class="skin-grid-toolbar">
+            <label>
+              <span>Search</span>
+              <input id="skinSearchInputWide" type="search" placeholder="Search the loaded skin universe..." />
+            </label>
+            <label>
+              <span>Type</span>
+              <select id="skinTypeFilterWide">
+                <option value="ALL">All</option>
+              </select>
+            </label>
+            <label>
+              <span>Marketability</span>
+              <select id="skinMarketableFilterWide">
+                <option value="ALL">All</option>
+                <option value="MARKETABLE">Marketable</option>
+                <option value="NON_MARKETABLE">Non-marketable</option>
+              </select>
+            </label>
+            <label>
+              <span>Tradable</span>
+              <select id="skinTradableFilterWide">
+                <option value="ALL">All</option>
+                <option value="TRADABLE">Tradable</option>
+                <option value="LOCKED">Trade locked</option>
+              </select>
+            </label>
+            <label>
+              <span>Sort</span>
+              <select id="skinSortSelectWide">
+                <option value="value_desc">Highest price</option>
+                <option value="value_asc">Lowest price</option>
+                <option value="qty_desc">Highest quantity</option>
+                <option value="name_asc">Name A-Z</option>
+                <option value="name_desc">Name Z-A</option>
+              </select>
+            </label>
+          </section>
+
+          <section class="skin-grid" id="skinsGrid"></section>
         </div>
       </section>
 
@@ -120,6 +467,7 @@
             <div class="topbar-actions" style="justify-content:flex-start; margin-top:10px;">
               <button class="button primary" id="steamLookupButton" type="button">Check profile</button>
               <button class="button" id="steamRefreshButton" type="button">Refresh inventory</button>
+              <button class="button" id="openInventoryPageButton" type="button">Open full inventory</button>
             </div>
           </div>
 
