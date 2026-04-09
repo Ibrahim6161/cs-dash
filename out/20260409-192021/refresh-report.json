@@ -1,0 +1,20 @@
+{
+  "source": "manual",
+  "steps": [
+    {
+      "id": "skinbaron",
+      "label": "SkinBaron prices",
+      "durationMs": 4965,
+      "success": true
+    },
+    {
+      "id": "steam",
+      "label": "Steam summaries",
+      "durationMs": 124914,
+      "success": true
+    }
+  ],
+  "startedAt": "2026-04-09T17:18:11.137Z",
+  "finishedAt": "2026-04-09T17:20:21.016Z",
+  "success": true
+}

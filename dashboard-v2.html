@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS Container Dashboard</title>
+  <link rel="stylesheet" href="dashboard-v2.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar panel">
+      <div class="hero-copy">
+        <p class="eyebrow">Steam + CSStonks + SkinBaron</p>
+        <h1>CS container dashboard</h1>
+        <p class="subcopy">Straight to the point: score, reason, Steam trend, orderbook, and whether SkinBaron still gives you a useful entry.</p>
+      </div>
+      <div class="topbar-actions">
+        <div class="status-pill" id="statusPill">Connecting…</div>
+        <a class="button" id="steamConnectButton" href="/auth/steam/login">Connect Steam</a>
+        <button class="button primary" id="refreshButton">Refresh data</button>
+        <button class="button" id="saveConfigButton">Save automation</button>
+      </div>
+    </header>
+
+    <section class="overview-grid">
+      <article class="overview-card panel">
+        <span class="overview-label">Universe</span>
+        <strong id="heroUniverse">0</strong>
+        <p id="heroUniverseMeta" class="muted">Waiting for data</p>
+      </article>
+      <article class="overview-card panel accent">
+        <span class="overview-label">Top setup</span>
+        <strong id="heroTopName">—</strong>
+        <p id="heroTopMeta" class="muted">No ranking yet</p>
+      </article>
+      <article class="overview-card panel">
+        <span class="overview-label">Best Steam gap</span>
+        <strong id="heroDiscount">—</strong>
+        <p id="heroDiscountMeta" class="muted">Waiting for Steam coverage</p>
+      </article>
+      <article class="overview-card panel">
+        <span class="overview-label">Steam mover</span>
+        <strong id="heroTrend">—</strong>
+        <p id="heroTrendMeta" class="muted">Waiting for trend data</p>
+      </article>
+    </section>
+
+    <main class="workspace">
+      <aside class="panel explorer">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Explorer</p>
+            <h2>All containers</h2>
+          </div>
+          <div class="mini-status" id="lastSyncedAt">—</div>
+        </div>
+
+        <div class="filter-grid">
+          <label>
+            <span>Search</span>
+            <input id="searchInput" type="search" placeholder="Case, capsule, souvenir..." />
+          </label>
+          <label>
+            <span>Category</span>
+            <select id="categoryFilter">
+              <option value="ALL">All</option>
+              <option value="case">Cases</option>
+              <option value="capsule">Capsules</option>
+              <option value="souvenir">Souvenirs</option>
+              <option value="pins">Pins</option>
+              <option value="container">Other containers</option>
+            </select>
+          </label>
+          <label>
+            <span>Grade</span>
+            <select id="gradeFilter">
+              <option value="ALL">All</option>
+              <option value="GOOD">Green</option>
+              <option value="WARN">Orange</option>
+              <option value="BAD">Red</option>
+            </select>
+          </label>
+          <label>
+            <span>Sort</span>
+            <select id="sortSelect">
+              <option value="score">Investment score</option>
+              <option value="discount">Steam discount</option>
+              <option value="trend">Steam trend</option>
+              <option value="liquidity">Liquidity</option>
+              <option value="scarcity">Scarcity</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="case-list" id="caseList"></div>
+      </aside>
+
+      <section class="panel detail">
+        <div id="focusContent" class="empty-state">
+          <p>Select an item to load score drivers, Steam chart, orderbook, and CSStonks context.</p>
+        </div>
+      </section>
+
+      <aside class="panel side">
+        <div class="side-section">
+          <p class="eyebrow">Portfolio</p>
+          <h2>Steam inventory</h2>
+          <div class="topbar-actions" style="justify-content:flex-start; margin-bottom:10px;">
+            <button class="button" id="steamRefreshButton" type="button">Refresh inventory</button>
+          </div>
+          <div id="portfolioSummary" class="source-card">
+            <strong>Steam not connected</strong>
+            <span class="muted">Connect your public Steam inventory to see holdings.</span>
+          </div>
+          <div id="portfolioList" class="portfolio-list"></div>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Refresh</p>
+          <h2>Pipeline</h2>
+          <div class="progress-shell">
+            <div class="progress-bar"><span id="progressFill"></span></div>
+            <div class="progress-meta">
+              <span id="progressLabel">0%</span>
+              <span id="progressHint">Ready</span>
+            </div>
+          </div>
+          <p id="syncHeadline" class="headline-copy">Waiting for dashboard data</p>
+          <p id="syncSubline" class="muted">No refresh activity yet.</p>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Automation</p>
+          <h2>Settings</h2>
+          <form id="configForm" class="control-stack">
+            <label class="toggle-row">
+              <span>Scheduler enabled</span>
+              <input type="checkbox" id="cfgSchedulerEnabled" />
+            </label>
+            <label>
+              <span>Interval (minutes)</span>
+              <input type="number" id="cfgIntervalMinutes" min="15" max="1440" step="15" />
+            </label>
+            <label class="toggle-row">
+              <span>Run on startup</span>
+              <input type="checkbox" id="cfgRunOnStartup" />
+            </label>
+            <label class="toggle-row">
+              <span>Headless browser</span>
+              <input type="checkbox" id="cfgHeadless" />
+            </label>
+            <label>
+              <span>SkinBaron scrape limit</span>
+              <input type="number" id="cfgPriceLimit" min="5" max="1000" step="1" />
+            </label>
+            <label class="toggle-row">
+              <span>Run CSStonks timeseries</span>
+              <input type="checkbox" id="cfgTimeseries" />
+            </label>
+            <label>
+              <span>Rating strictness</span>
+              <input type="range" id="cfgStrictness" min="0" max="100" step="1" />
+              <strong id="cfgStrictnessValue">55</strong>
+            </label>
+          </form>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Freshness</p>
+          <h2>Sources</h2>
+          <div id="sourcesList" class="source-list"></div>
+        </div>
+
+        <div class="side-section">
+          <p class="eyebrow">Logs</p>
+          <h2>Recent activity</h2>
+          <div id="logList" class="log-list"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="dashboard-v2.js"></script>
+</body>
+</html>

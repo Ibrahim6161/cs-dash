@@ -1,0 +1,353 @@
+{
+  "ok": true,
+  "savedAt": "2026-04-09T17:50:26.101Z",
+  "steamId": "76561198283415948",
+  "profile": {
+    "steamId": "76561198283415948",
+    "personaName": "Assassin",
+    "profileUrl": "https://steamcommunity.com/profiles/76561198283415948/",
+    "avatar": "https://avatars.fastly.steamstatic.com/96fa7f84d239fdc1dbdbf795e3121d95447dce9b_full.jpg"
+  },
+  "raw": {
+    "assetCount": 264,
+    "descriptionCount": 6,
+    "sampleAssets": [
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342381874",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342381863",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342381847",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342381823",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342381811",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342379764",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342379748",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      },
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "49342378311",
+        "classid": "2727227113",
+        "instanceid": "0",
+        "amount": "1"
+      }
+    ],
+    "sampleDescriptions": [
+      {
+        "classid": "2727227113",
+        "instanceid": "0",
+        "market_hash_name": "Clutch Case",
+        "market_name": "Clutch Case",
+        "name": "Clutch Case",
+        "type": "Base Grade Container",
+        "tradable": 1,
+        "marketable": 1,
+        "commodity": 1
+      },
+      {
+        "classid": "2727227113",
+        "instanceid": "302028390",
+        "market_hash_name": "Clutch Case",
+        "market_name": "Clutch Case",
+        "name": "Clutch Case",
+        "type": "Base Grade Container",
+        "tradable": 1,
+        "marketable": 1,
+        "commodity": 1
+      },
+      {
+        "classid": "3106076656",
+        "instanceid": "0",
+        "market_hash_name": "Danger Zone Case",
+        "market_name": "Danger Zone Case",
+        "name": "Danger Zone Case",
+        "type": "Base Grade Container",
+        "tradable": 1,
+        "marketable": 1,
+        "commodity": 1
+      },
+      {
+        "classid": "3761545285",
+        "instanceid": "0",
+        "market_hash_name": "Prisma 2 Case",
+        "market_name": "Prisma 2 Case",
+        "name": "Prisma 2 Case",
+        "type": "Base Grade Container",
+        "tradable": 1,
+        "marketable": 1,
+        "commodity": 1
+      },
+      {
+        "classid": "3761545285",
+        "instanceid": "302028390",
+        "market_hash_name": "Prisma 2 Case",
+        "market_name": "Prisma 2 Case",
+        "name": "Prisma 2 Case",
+        "type": "Base Grade Container",
+        "tradable": 1,
+        "marketable": 1,
+        "commodity": 1
+      },
+      {
+        "classid": "4717330486",
+        "instanceid": "302028390",
+        "market_hash_name": "Dreams & Nightmares Case",
+        "market_name": "Dreams & Nightmares Case",
+        "name": "Dreams & Nightmares Case",
+        "type": "Base Grade Container",
+        "tradable": 1,
+        "marketable": 1,
+        "commodity": 1
+      }
+    ],
+    "debug": {
+      "steamId": "76561198283415948",
+      "appId": 730,
+      "contextId": 2,
+      "language": "english",
+      "pageSize": 2000,
+      "attempts": [
+        {
+          "stage": "modern",
+          "url": "https://steamcommunity.com/inventory/76561198283415948/730/2?l=english&count=2000",
+          "statusCode": 200,
+          "payloadKeys": [
+            "assets",
+            "descriptions",
+            "total_inventory_count",
+            "success",
+            "rwgrsn"
+          ],
+          "bodyPreview": "{\"assets\":[{\"appid\":730,\"contextid\":\"2\",\"assetid\":\"49342381874\",\"classid\":\"2727227113\",\"instanceid\":\"0\",\"amount\":\"1\"},{\"appid\":730,\"contextid\":\"2\",\"assetid\":\"49342381863\",\"classid\":\"2727227113\",\"instanceid\":\"0\",\"amount\":\"1\"},{\"appid\":730,\"contextid\":\"2\",\"assetid\":\"49342381847\",\"classid\":\"2727227113\",\"instanceid\":\"0\",\"amount\":\"1\"},{\"appid\":730,\"contextid\":\"2\",\"assetid\":\"49342381823\",\"classid\":\"2727..."
+        }
+      ]
+    }
+  },
+  "payload": {
+    "profile": {
+      "steamId": "76561198283415948",
+      "personaName": "Assassin",
+      "profileUrl": "https://steamcommunity.com/profiles/76561198283415948/",
+      "avatar": "https://avatars.fastly.steamstatic.com/96fa7f84d239fdc1dbdbf795e3121d95447dce9b_full.jpg"
+    },
+    "fetchedAt": "2026-04-09T17:50:26.101Z",
+    "totals": {
+      "uniqueItems": 4,
+      "totalQuantity": 264,
+      "matchedItems": 4,
+      "marketableItems": 4,
+      "estimatedValueEur": 392.48
+    },
+    "items": [
+      {
+        "key": "clutch case",
+        "name": "Clutch Case",
+        "type": "Base Grade Container",
+        "iconUrl": "https://community.fastly.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frHsVtqr8a_dsdKTAWDWVxLgjsrAwHSvgwEQk4m-ByYuqIC2eO1VyD5QiR_lK7EcxQQPYQA/96fx96f",
+        "marketHashName": "Clutch Case",
+        "tradable": true,
+        "marketable": true,
+        "commodity": true,
+        "quantity": 152,
+        "assets": 152,
+        "unitPriceEur": 1.07,
+        "totalPriceEur": 162.64000000000001,
+        "matched": true,
+        "source": "dashboard-steam-cache",
+        "listingUrl": "https://steamcommunity.com/market/listings/730/Clutch%20Case",
+        "dashboardKey": "clutch case",
+        "dashboardItem": {
+          "key": "clutch case",
+          "name": "Clutch Case",
+          "category": {
+            "key": "case",
+            "label": "Case"
+          },
+          "grade": {
+            "label": "WARN",
+            "tone": "warn",
+            "reason": "steam gap + confidence + steam trend"
+          },
+          "scores": {
+            "total": 0.5591337472762726,
+            "entry": 0.4060015525829439,
+            "risk": 0.45269540464826263,
+            "confidence": 0.8600000000000001,
+            "scarcity": 0.40380512712882377,
+            "trend": 0.6449275362318843,
+            "discount": 1,
+            "liquidity": 0.045562517654913835
+          }
+        }
+      },
+      {
+        "key": "prisma 2 case",
+        "name": "Prisma 2 Case",
+        "type": "Base Grade Container",
+        "iconUrl": "https://community.fastly.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_fr3cV6vT9avBvefWWDDGTxbZ14rhsTX7qkE90sDiHwt2pdC-TblJ2DsB1QPlK7Ee9riHKAA/96fx96f",
+        "marketHashName": "Prisma 2 Case",
+        "tradable": true,
+        "marketable": true,
+        "commodity": true,
+        "quantity": 60,
+        "assets": 60,
+        "unitPriceEur": 2.11,
+        "totalPriceEur": 126.6,
+        "matched": true,
+        "source": "dashboard-steam-cache",
+        "listingUrl": "https://steamcommunity.com/market/listings/730/Prisma%202%20Case",
+        "dashboardKey": "prisma 2 case",
+        "dashboardItem": {
+          "key": "prisma 2 case",
+          "name": "Prisma 2 Case",
+          "category": {
+            "key": "case",
+            "label": "Case"
+          },
+          "grade": {
+            "label": "WARN",
+            "tone": "warn",
+            "reason": "steam gap + confidence + scarcity"
+          },
+          "scores": {
+            "total": 0.5530295183832729,
+            "entry": 0.42162675301375097,
+            "risk": 0.4312256476755156,
+            "confidence": 0.8600000000000001,
+            "scarcity": 0.6206361098001887,
+            "trend": 0.483883964544722,
+            "discount": 1,
+            "liquidity": 0.049485118512621655
+          }
+        }
+      },
+      {
+        "key": "danger zone case",
+        "name": "Danger Zone Case",
+        "type": "Base Grade Container",
+        "iconUrl": "https://community.fastly.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_fr3MVv_H4a6FucPPBWjDIkbdz4rg4Syyyxxsi5mzRntuvJCqVbwAgDZBwRPlK7EcZJ5GkQA/96fx96f",
+        "marketHashName": "Danger Zone Case",
+        "tradable": true,
+        "marketable": true,
+        "commodity": true,
+        "quantity": 50,
+        "assets": 50,
+        "unitPriceEur": 1.99,
+        "totalPriceEur": 99.5,
+        "matched": true,
+        "source": "dashboard-steam-cache",
+        "listingUrl": "https://steamcommunity.com/market/listings/730/Danger%20Zone%20Case",
+        "dashboardKey": "danger zone case",
+        "dashboardItem": {
+          "key": "danger zone case",
+          "name": "Danger Zone Case",
+          "category": {
+            "key": "case",
+            "label": "Case"
+          },
+          "grade": {
+            "label": "WARN",
+            "tone": "warn",
+            "reason": "steam gap + confidence"
+          },
+          "scores": {
+            "total": 0.5403784508394212,
+            "entry": 0.39731210865737465,
+            "risk": 0.4554264926228551,
+            "confidence": 0.8600000000000001,
+            "scarcity": 0.5062153389628445,
+            "trend": 0.5129870129870129,
+            "discount": 1,
+            "liquidity": 0.046801571608330546
+          }
+        }
+      },
+      {
+        "key": "dreams nightmares case",
+        "name": "Dreams & Nightmares Case",
+        "type": "Base Grade Container",
+        "iconUrl": "https://community.fastly.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frnIV7Kb5OaU-JqfHDzXFle0u4LY8Gy_kkRgisGzcm4v4J3vDOAQmDMdyRvlK7EcmeCU3yw/96fx96f",
+        "marketHashName": "Dreams & Nightmares Case",
+        "tradable": true,
+        "marketable": true,
+        "commodity": true,
+        "quantity": 2,
+        "assets": 2,
+        "unitPriceEur": 1.87,
+        "totalPriceEur": 3.74,
+        "matched": true,
+        "source": "dashboard-steam-cache",
+        "listingUrl": "https://steamcommunity.com/market/listings/730/Dreams%20%26%20Nightmares%20Case",
+        "dashboardKey": "dreams nightmares case",
+        "dashboardItem": {
+          "key": "dreams nightmares case",
+          "name": "Dreams & Nightmares Case",
+          "category": {
+            "key": "case",
+            "label": "Case"
+          },
+          "grade": {
+            "label": "WARN",
+            "tone": "warn",
+            "reason": "steam gap + confidence + liquidity"
+          },
+          "scores": {
+            "total": 0.5774829095867139,
+            "entry": 0.4327087494278117,
+            "risk": 0.4127411972534009,
+            "confidence": 0.8600000000000001,
+            "scarcity": 0.4893957973045924,
+            "trend": 0.6574930995291444,
+            "discount": 1,
+            "liquidity": 0.6989419891630928
+          }
+        }
+      }
+    ]
+  }
+}

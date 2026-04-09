@@ -10,7 +10,7 @@
 const REFRESH_STEPS = [
   "CSStonks universe",
   "Case details",
-  "PriceEmpire marketplaces",
+  "SkinBaron prices",
   "Case timeseries",
 ];
 
@@ -130,11 +130,13 @@ function setStatusPill(status) {
 }
 
 function inferProgress(status, config, health) {
-  const enabledSteps = REFRESH_STEPS.filter((step) => config?.refresh?.includeTimeseries || step !== "Case timeseries");
+  const plannedSteps = Array.isArray(status.plannedSteps) && status.plannedSteps.length
+    ? status.plannedSteps
+    : REFRESH_STEPS.filter((step) => config?.refresh?.includeTimeseries || step !== "Case timeseries");
 
   if (status.running) {
-    const stepIndex = Math.max(0, enabledSteps.indexOf(status.currentStep));
-    const percent = enabledSteps.length ? Math.round((stepIndex / enabledSteps.length) * 100) : 0;
+    const stepIndex = Math.max(0, plannedSteps.indexOf(status.currentStep));
+    const percent = plannedSteps.length ? Math.round((stepIndex / plannedSteps.length) * 100) : 0;
     return {
       headline: "Refresh in progress",
       subline: status.currentStep ? `Now running: ${status.currentStep}` : "Preparing the refresh pipeline.",
@@ -332,7 +334,7 @@ function marketSnapshotNote(entry) {
   if (freshness) {
     details.push(fmtRelative(freshness));
   }
-  return details.length ? `PriceEmpire snapshot · ${details.join(" · ")}.` : "PriceEmpire snapshot.";
+  return details.length ? `SkinBaron snapshot · ${details.join(" · ")}.` : "SkinBaron snapshot.";
 }
 
 function normalizeSelectedCase(selected) {
@@ -351,14 +353,6 @@ function normalizeSelectedCase(selected) {
   };
 
   let marketplacePrices = Array.isArray(selected.marketplaces?.prices) ? [...selected.marketplaces.prices] : [];
-  if (!marketplacePrices.length) {
-    if (metrics.csmoneyEur != null) {
-      marketplacePrices.push({ providerName: "CS.MONEY", value: metrics.csmoneyEur });
-    }
-    if (metrics.csfloatEur != null) {
-      marketplacePrices.push({ providerName: "CSFloat", value: metrics.csfloatEur });
-    }
-  }
 
   marketplacePrices.sort((left, right) => (left.value ?? Number.POSITIVE_INFINITY) - (right.value ?? Number.POSITIVE_INFINITY));
 
@@ -373,8 +367,7 @@ function normalizeSelectedCase(selected) {
       details: !!sourceCoverage.details,
       marketplaces: !!sourceCoverage.marketplaces || marketplacePrices.length > 0,
       marketCount: Number.isFinite(Number(sourceCoverage.marketCount)) ? Number(sourceCoverage.marketCount) : marketplacePrices.length,
-      csmoney: !!sourceCoverage.csmoney || metrics.csmoneyEur != null,
-      csfloat: !!sourceCoverage.csfloat || metrics.csfloatEur != null,
+      skinbaron: !!sourceCoverage.skinbaron || metrics.skinbaronEur != null,
       chart: !!sourceCoverage.chart || !!screenshots.chartUrl,
     },
     screenshots,
@@ -391,9 +384,7 @@ function normalizeSelectedCase(selected) {
 function renderCoverage(selected) {
   const entries = [
     { label: "Case details", ok: selected.sourceCoverage.details, status: selected.sourceCoverage.details ? "Available" : "Missing" },
-    { label: "PriceEmpire", ok: selected.sourceCoverage.marketplaces, status: selected.sourceCoverage.marketplaces ? `${fmtNumber(selected.sourceCoverage.marketCount)} markets` : "Missing" },
-    { label: "CS.MONEY", ok: selected.sourceCoverage.csmoney, status: selected.sourceCoverage.csmoney ? "Available" : "Missing" },
-    { label: "CSFloat", ok: selected.sourceCoverage.csfloat, status: selected.sourceCoverage.csfloat ? "Available" : "Missing" },
+    { label: "SkinBaron", ok: selected.sourceCoverage.skinbaron, status: selected.sourceCoverage.skinbaron ? "Available" : "Missing" },
     { label: "Chart capture", ok: selected.sourceCoverage.chart, status: selected.sourceCoverage.chart ? "Available" : "Missing" },
   ];
 
@@ -429,7 +420,7 @@ function renderFocus(payload, visibleCases) {
     : `<article class="market-card"><span class="muted">Chart capture</span><strong>Unavailable</strong><p class="metric-note">No screenshot was saved for this case in the current dataset.</p></article>`;
   const marketplaceCards = selected.marketplaces.prices.length
     ? selected.marketplaces.prices.map((entry) => marketCard(entry.providerName, fmtMoney(entry.value, "EUR"), marketSnapshotNote(entry))).join("")
-    : `<article class="market-card"><span class="muted">PriceEmpire</span><strong>Unavailable</strong><p class="metric-note">No marketplace prices were matched for this case in the current snapshot.</p></article>`;
+    : `<article class="market-card"><span class="muted">SkinBaron</span><strong>Unavailable</strong><p class="metric-note">No SkinBaron price was matched for this case in the current snapshot.</p></article>`;
 
   $("focusContent").className = "focus-content";
   $("focusContent").innerHTML = `
@@ -463,8 +454,8 @@ function renderFocus(payload, visibleCases) {
     </section>
 
     <section class="market-grid">
-      ${marketCard("Best external", fmtMoney(selected.metrics.externalFloorEur, "EUR"), selected.marketplaces.prices.length ? `Lowest PriceEmpire quote across ${fmtNumber(selected.marketplaces.prices.length)} markets.` : "No marketplace quotes were matched.")}
-      ${marketCard("Markets tracked", fmtNumber(selected.marketplaces.prices.length), "Available PriceEmpire marketplace quotes for this case.")}
+      ${marketCard("Best external", fmtMoney(selected.metrics.externalFloorEur, "EUR"), selected.marketplaces.prices.length ? "Lowest SkinBaron quote in the current snapshot." : "No marketplace quotes were matched.")}
+      ${marketCard("Markets tracked", fmtNumber(selected.marketplaces.prices.length), "Available direct marketplace quotes for this case.")}
       ${marketCard("External spread", fmtPct(selected.metrics.externalSpreadPct), "Smaller spread means better marketplace agreement across the tracked markets.")}
       ${marketCard("Momentum windows", [selected.metrics.momentum1m, selected.metrics.momentum6m, selected.metrics.momentum12m].map((value) => fmtPct(value)).join(" / "), "1m / 6m / 12m supply change.")}
       ${marketplaceCards}
@@ -512,7 +503,7 @@ function renderSources(payload) {
     if (source.fallback) extra.push("legacy fallback");
     return `
       <article class="source-card">
-        <span class="source-pill ${tone}">${escapeHtml(name)}</span>
+        <span class="source-pill ${tone}">${escapeHtml(source.label || name)}</span>
         <strong>${source.path ? escapeHtml(source.path) : "—"}</strong>
         <span class="muted">${updated ? `${fmtRelative(updated)} · ${fmtDate(updated)}` : "No timestamp"}</span>
         ${extra.length ? `<span class="muted">${escapeHtml(extra.join(" · "))}</span>` : ""}

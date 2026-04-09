@@ -1,0 +1,24 @@
+{
+  "source": "startup",
+  "steps": [
+    {
+      "id": "skinbaron",
+      "label": "SkinBaron prices",
+      "durationMs": 1,
+      "success": false,
+      "optional": true,
+      "error": "spawn EPERM"
+    },
+    {
+      "id": "steam",
+      "label": "Steam summaries",
+      "durationMs": 1,
+      "success": false,
+      "optional": true,
+      "error": "spawn EPERM"
+    }
+  ],
+  "startedAt": "2026-04-09T16:55:19.748Z",
+  "finishedAt": "2026-04-09T16:55:19.751Z",
+  "success": true
+}

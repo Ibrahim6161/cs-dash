@@ -1,0 +1,26 @@
+{
+  "source": "startup",
+  "steps": [
+    {
+      "id": "cases",
+      "label": "CSStonks universe",
+      "durationMs": 5471,
+      "success": true
+    },
+    {
+      "id": "details",
+      "label": "Case details",
+      "durationMs": 85563,
+      "success": true
+    },
+    {
+      "id": "pricempire",
+      "label": "PriceEmpire marketplaces",
+      "durationMs": 17784,
+      "success": true
+    }
+  ],
+  "startedAt": "2026-04-08T17:28:03.105Z",
+  "finishedAt": "2026-04-08T17:29:51.923Z",
+  "success": true
+}

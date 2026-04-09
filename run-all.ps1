@@ -2,87 +2,142 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
-function Run-Step($name, $cmd) {
-  Write-Host "`n=== $name ===" -ForegroundColor Cyan
+function Get-PowerShellExe {
+  if (Get-Command pwsh -ErrorAction SilentlyContinue) {
+    return "pwsh"
+  }
+  if (Get-Command powershell -ErrorAction SilentlyContinue) {
+    return "powershell"
+  }
+  throw "Neither 'pwsh' nor 'powershell' was found in PATH."
+}
+
+function Assert-Exists($path, $label) {
+  if (-not (Test-Path -LiteralPath $path)) {
+    throw ("Missing {0}: {1}" -f $label, $path)
+  }
+}
+
+function Run-Step($name, [scriptblock]$cmd) {
+  Write-Host ""
+  Write-Host "=== $name ===" -ForegroundColor Cyan
   $t0 = Get-Date
-  & $cmd
-  $dt = (Get-Date) - $t0
-  Write-Host "OK: $name ($([int]$dt.TotalSeconds)s)" -ForegroundColor Green
+  try {
+    & $cmd
+    $dt = (Get-Date) - $t0
+    Write-Host "OK: $name ($([int]$dt.TotalSeconds)s)" -ForegroundColor Green
+  }
+  catch {
+    $dt = (Get-Date) - $t0
+    Write-Host "FAILED: $name ($([int]$dt.TotalSeconds)s)" -ForegroundColor Red
+    throw
+  }
 }
 
 # Folder where this script lives
 $ROOT = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $ROOT
 
-# Optional: ensure node is available
+# Check Node.js
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
   throw "node not found in PATH. Install Node.js or fix PATH."
 }
+
+$PSExe = Get-PowerShellExe
 
 # Outputs
 $OUT = Join-Path $ROOT "out"
 New-Item -ItemType Directory -Force -Path $OUT | Out-Null
 
-# Timestamped run folder (keeps history)
+# Timestamped run folder
 $STAMP = Get-Date -Format "yyyyMMdd-HHmmss"
 $RUN   = Join-Path $OUT $STAMP
 New-Item -ItemType Directory -Force -Path $RUN | Out-Null
 
-# Common files (latest)
-$LATEST_CASES         = Join-Path $ROOT "cases.json"
-$LATEST_DETAILS       = Join-Path $ROOT "case_details.json"
-$LATEST_TIMESERIES    = Join-Path $ROOT "case_timeseries.json"
-$LATEST_CSMONEY_EUR   = Join-Path $ROOT "csmoney_prices_eur.json"
-$LATEST_CSFLOAT_EUR   = Join-Path $ROOT "csfloat_prices_eur.json"
+# Script files
+$SCRIPT_CSSTONKS        = Join-Path $ROOT "scrape-csstonks.js"
+$SCRIPT_CASE_DETAILS    = Join-Path $ROOT "scrape-case-details.js"
+$SCRIPT_CASE_TIMESERIES = Join-Path $ROOT "scrape-case-timeseries.js"
+$SCRIPT_SKINBARON       = Join-Path $ROOT "scrape-skinbaron-containers-eur.cjs"
+$SCRIPT_STEAM           = Join-Path $ROOT "scrape-steam-market-data.cjs"
 
-# 1) csstonks universe snapshot (cases.json)
-Run-Step "scrape-csstonks (cases.json)" {
-  powershell -NoProfile -ExecutionPolicy Bypass -File ".\scrape-csstonks.ps1"
+# Latest outputs
+$LATEST_CASES       = Join-Path $ROOT "cases.json"
+$LATEST_DETAILS     = Join-Path $ROOT "case_details.json"
+$LATEST_TIMESERIES  = Join-Path $ROOT "case-timeseries.json"
+$LATEST_MARKETS_EUR = Join-Path $ROOT "pricempire_prices_eur.json"
+$LATEST_STEAM       = Join-Path $ROOT "steam_market_data.json"
+
+if (Test-Path -LiteralPath $SCRIPT_CSSTONKS) {
+  Run-Step "scrape-csstonks (cases.json)" {
+    & node $SCRIPT_CSSTONKS $LATEST_CASES
+  }
+} else {
+  Write-Warning "Skipping CSStonks universe: missing $SCRIPT_CSSTONKS"
 }
 
-# 2) case details (extinction + deltas)
-Run-Step "scrape-case-details (case_details.json)" {
-  powershell -NoProfile -ExecutionPolicy Bypass -File ".\scrape-case-details.ps1"
+if (Test-Path -LiteralPath $SCRIPT_CASE_DETAILS) {
+  Run-Step "scrape-case-details (case_details.json)" {
+    & node $SCRIPT_CASE_DETAILS `
+      --cases $LATEST_CASES `
+      --out $LATEST_DETAILS `
+      --shots (Join-Path $ROOT "shots") `
+      --headless
+  }
+} else {
+  Write-Warning "Skipping case details: missing $SCRIPT_CASE_DETAILS"
 }
 
-# 3) timeseries (optional but you listed it)
-Run-Step "scrape-case-timeseries (case_timeseries.json)" {
-  powershell -NoProfile -ExecutionPolicy Bypass -File ".\scrape-case-timeseries.ps1"
+if (Test-Path -LiteralPath $SCRIPT_CASE_TIMESERIES) {
+  Run-Step "scrape-case-timeseries (case-timeseries.json)" {
+    & node $SCRIPT_CASE_TIMESERIES
+  }
+} else {
+  Write-Warning "Skipping case timeseries: missing $SCRIPT_CASE_TIMESERIES"
 }
 
-# 4) PriceEmpire map (CSMONEY EUR) — interactive (headless 0) + slowmo
-Run-Step "scrape-pricempire (csmoney_prices_eur.json)" {
-  node ".\scrape-pricempire-map-once-eur.cjs" `
-    --out ".\csmoney_prices_eur.json" `
+Assert-Exists $SCRIPT_SKINBARON "script"
+Run-Step "scrape-skinbaron (pricempire_prices_eur.json)" {
+  & node $SCRIPT_SKINBARON `
+    --out $LATEST_MARKETS_EUR `
     --headless 0 `
-    --slowmo 50
+    --slowmo 50 `
+    --limit 500 `
+    --max-pages 12
 }
 
-# 5) PriceEmpire map (CSFLOAT EUR) — interactive (headless 0) + slowmo
-Run-Step "scrape-pricempire (csfloat_prices_eur.json)" {
-  node ".\scrape-pricempire-map-once-eur-csfloat.cjs" `
-    --out ".\csfloat_prices_eur.json" `
-    --headless 0 `
-    --slowmo 50
+if (Test-Path -LiteralPath $SCRIPT_STEAM) {
+  Run-Step "scrape-steam (steam_market_data.json)" {
+    & node $SCRIPT_STEAM `
+      --out $LATEST_STEAM `
+      --source $LATEST_MARKETS_EUR `
+      --cases $LATEST_CASES `
+      --limit 500 `
+      --concurrency 2
+  }
+} else {
+  Write-Warning "Skipping Steam scrape: missing $SCRIPT_STEAM"
 }
 
-# Copy a snapshot of outputs into timestamped folder
+# Copy outputs into timestamped snapshot folder
 $toCopy = @(
   $LATEST_CASES,
   $LATEST_DETAILS,
   $LATEST_TIMESERIES,
-  $LATEST_CSMONEY_EUR,
-  $LATEST_CSFLOAT_EUR
+  $LATEST_MARKETS_EUR,
+  $LATEST_STEAM
 )
 
 foreach ($f in $toCopy) {
-  if (Test-Path $f) {
-    Copy-Item -Force $f $RUN
-  } else {
+  if (Test-Path -LiteralPath $f) {
+    Copy-Item -LiteralPath $f -Destination $RUN -Force
+  }
+  else {
     Write-Warning "Missing output (not copied): $f"
   }
 }
 
-Write-Host "`nAll done. Outputs:" -ForegroundColor Cyan
-Write-Host "  Latest: $ROOT" -ForegroundColor Gray
+Write-Host ""
+Write-Host "All done. Outputs:" -ForegroundColor Cyan
+Write-Host "  Latest:   $ROOT" -ForegroundColor Gray
 Write-Host "  Snapshot: $RUN" -ForegroundColor Gray

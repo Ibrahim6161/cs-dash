@@ -1,12 +1,4 @@
 // scrape-case-timeseries.js
-// Node.js + Playwright scraper for csstonks.com case timeseries
-// Strategy:
-//  1) Parse embedded Next.js __NEXT_DATA__
-//  2) Capture JSON responses (fetch/XHR / _next/data/*.json)
-//  3) Extract timeseries from either:
-//     - Chart.js-like shape: { labels: [...], datasets: [{label, data:[...]}...] }
-//     - Key-based shape: { dates/month/... , remaining/supply , drops , unboxings , price }
-
 const { chromium } = require("playwright");
 const fs = require("fs");
 
@@ -24,388 +16,518 @@ function safeJsonParse(s) {
   }
 }
 
-function looksLikeSeriesObj(obj) {
-  if (!obj || typeof obj !== "object") return false;
-
-  let arrays = 0;
-  const keys = [];
-
-  const walk = (x) => {
-    if (x == null) return;
-    if (Array.isArray(x)) {
-      if (x.length >= 12) arrays++;
-      for (let i = 0; i < Math.min(x.length, 3); i++) walk(x[i]);
-      return;
-    }
-    if (typeof x === "object") {
-      for (const k of Object.keys(x)) {
-        keys.push(k.toLowerCase());
-        walk(x[k]);
-      }
-    }
-  };
-  walk(obj);
-
-  const keyStr = keys.join(" ");
-
-  // Timeseries / chart hints (Chart.js + domain hints)
-  const hint =
-    /labels|datasets|series|xaxis|chart|drop|unbox|remain|supply|price|month|date|time|label/.test(
-      keyStr
-    );
-
-  return arrays >= 2 && hint;
+function normalizeCaseName(s) {
+  return String(s || "").trim().toLowerCase();
 }
 
-function extractSeries(obj) {
-  const pickKey = (o, needles) => {
-    for (const k of Object.keys(o || {})) {
-      const lk = k.toLowerCase();
-      if (needles.some((n) => lk.includes(n))) return k;
-    }
-    return null;
+function isNumericLike(v) {
+  return typeof v === "number" || (typeof v === "string" && v.trim() !== "" && !isNaN(Number(v)));
+}
+
+function toNumberOrNull(v) {
+  if (v == null || v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
+function sortDateStrings(arr) {
+  return [...arr].sort((a, b) => String(a).localeCompare(String(b)));
+}
+
+function makeEmptySeries() {
+  return {
+    dates: [],
+    remaining: [],
+    drops: [],
+    unboxings: [],
+    price: [],
   };
+}
 
-  const normalizeLabel = (s) =>
-    String(s || "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, " ")
-      .trim();
+function isGoodSeries(out) {
+  return (
+    Array.isArray(out?.dates) &&
+    out.dates.length >= 12 &&
+    (
+      (Array.isArray(out.remaining) && out.remaining.length >= 12) ||
+      (Array.isArray(out.drops) && out.drops.length >= 12) ||
+      (Array.isArray(out.unboxings) && out.unboxings.length >= 12) ||
+      (Array.isArray(out.price) && out.price.length >= 12)
+    )
+  );
+}
 
-  const mapDatasetToField = (label) => {
-    const l = normalizeLabel(label);
-    if (/(remain|remaining|supply|in circulation|circulation)/.test(l))
-      return "remaining";
-    if (/(drop|dropped)/.test(l)) return "drops";
-    if (/(unbox|unboxing|opened|openings)/.test(l)) return "unboxings";
-    if (/(price|avg price|average price|median|value)/.test(l)) return "price";
-    return null;
-  };
+function mapDatasetToField(label) {
+  const l = String(label || "").toLowerCase();
+  if (/(remain|remaining|supply|circulation|in circulation)/.test(l)) return "remaining";
+  if (/(drop|dropped)/.test(l)) return "drops";
+  if (/(unbox|unboxing|opened|opening)/.test(l)) return "unboxings";
+  if (/(price|avg price|average price|value|median)/.test(l)) return "price";
+  return null;
+}
 
-  let best = null;
+function extractChartLike(obj) {
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
 
-  const tryChartJs = (x) => {
-    // Chart.js shape: { labels: [...], datasets: [{label, data:[...]}...] }
-    if (!x || typeof x !== "object" || Array.isArray(x)) return null;
+  const labels = obj.labels;
+  const datasets = obj.datasets;
 
-    const labelsKey = Object.keys(x).find((k) => k.toLowerCase() === "labels");
-    const datasetsKey = Object.keys(x).find(
-      (k) => k.toLowerCase() === "datasets"
-    );
+  if (!Array.isArray(labels) || labels.length < 12) return null;
+  if (!Array.isArray(datasets) || datasets.length < 1) return null;
 
-    if (!labelsKey || !datasetsKey) return null;
+  const out = makeEmptySeries();
+  out.dates = labels;
 
-    const labels = x[labelsKey];
-    const datasets = x[datasetsKey];
+  for (const ds of datasets) {
+    if (!ds || !Array.isArray(ds.data) || ds.data.length < 12) continue;
+    const field = mapDatasetToField(ds.label);
+    if (field) out[field] = ds.data;
+  }
 
-    if (!Array.isArray(labels) || labels.length < 12) return null;
-    if (!Array.isArray(datasets) || datasets.length < 2) return null;
+  if (isGoodSeries(out)) return out;
 
-    const out = {
-      dates: labels,
+  const arrays = datasets
+    .map((d) => d?.data)
+    .filter((a) => Array.isArray(a) && a.length >= 12);
+
+  if (arrays.length) {
+    out.remaining = arrays[0] || [];
+    out.drops = arrays[1] || [];
+    out.unboxings = arrays[2] || [];
+    out.price = arrays[3] || [];
+  }
+
+  return isGoodSeries(out) ? out : null;
+}
+
+function extractKeyBased(obj) {
+  if (!obj || typeof obj !== "object" || Array.isArray(obj)) return null;
+
+  const keys = Object.keys(obj);
+  const findKey = (needles) =>
+    keys.find((k) => needles.some((n) => k.toLowerCase().includes(n)));
+
+  const kDates = findKey(["date", "dates", "month", "months", "label", "labels", "time", "x"]);
+  const kRemaining = findKey(["remain", "remaining", "supply", "circulation"]);
+  const kDrops = findKey(["drop"]);
+  const kUnbox = findKey(["unbox", "open"]);
+  const kPrice = findKey(["price", "value", "median"]);
+
+  const dates = kDates ? obj[kDates] : null;
+  if (!Array.isArray(dates) || dates.length < 12) return null;
+
+  const out = makeEmptySeries();
+  out.dates = dates;
+  out.remaining = Array.isArray(obj[kRemaining]) ? obj[kRemaining] : [];
+  out.drops = Array.isArray(obj[kDrops]) ? obj[kDrops] : [];
+  out.unboxings = Array.isArray(obj[kUnbox]) ? obj[kUnbox] : [];
+  out.price = Array.isArray(obj[kPrice]) ? obj[kPrice] : [];
+
+  return isGoodSeries(out) ? out : null;
+}
+
+/**
+ * Handles shapes like:
+ * {
+ *   "2014-01": 123,
+ *   "2014-02": 456
+ * }
+ *
+ * or
+ *
+ * {
+ *   "2014-01": { unboxings: 123 },
+ *   "2014-02": { unboxings: 456 }
+ * }
+ *
+ * or
+ *
+ * {
+ *   "2014-01": { value: 123, price: 1.2 }
+ * }
+ */
+function extractMonthlyObject(inner) {
+  if (!inner || typeof inner !== "object" || Array.isArray(inner)) return null;
+
+  const keys = Object.keys(inner);
+  if (keys.length < 12) return null;
+
+  // Heuristic: month/date-like keys
+  const dateishKeys = keys.filter((k) => /\d{4}[-/]\d{1,2}/.test(k) || /^\d{4}-\d{2}$/.test(k));
+  const useKeys = dateishKeys.length >= 12 ? dateishKeys : keys;
+
+  const dates = sortDateStrings(useKeys);
+  if (dates.length < 12) return null;
+
+  // Case 1: direct numeric values => assume unboxings
+  if (dates.every((d) => isNumericLike(inner[d]))) {
+    return {
+      dates,
       remaining: [],
       drops: [],
-      unboxings: [],
+      unboxings: dates.map((d) => toNumberOrNull(inner[d])),
       price: [],
     };
+  }
 
-    // First pass: try map by label
-    for (const ds of datasets) {
-      if (!ds || typeof ds !== "object") continue;
-      const data = ds.data;
-      if (!Array.isArray(data) || data.length < 12) continue;
+  // Case 2: nested objects per month
+  if (dates.every((d) => inner[d] && typeof inner[d] === "object" && !Array.isArray(inner[d]))) {
+    const sample = inner[dates[0]];
+    const sampleKeys = Object.keys(sample || {});
+    const findNested = (needles) =>
+      sampleKeys.find((k) => needles.some((n) => k.toLowerCase().includes(n)));
 
-      const field = mapDatasetToField(ds.label);
-      if (field) out[field] = data;
+    const kRemaining = findNested(["remain", "remaining", "supply", "circulation"]);
+    const kDrops = findNested(["drop"]);
+    const kUnbox = findNested(["unbox", "open", "value", "count"]);
+    const kPrice = findNested(["price", "median"]);
+
+    const out = makeEmptySeries();
+    out.dates = dates;
+    out.remaining = kRemaining ? dates.map((d) => toNumberOrNull(inner[d][kRemaining])) : [];
+    out.drops = kDrops ? dates.map((d) => toNumberOrNull(inner[d][kDrops])) : [];
+    out.unboxings = kUnbox ? dates.map((d) => toNumberOrNull(inner[d][kUnbox])) : [];
+    out.price = kPrice ? dates.map((d) => toNumberOrNull(inner[d][kPrice])) : [];
+
+    return isGoodSeries(out) ? out : null;
+  }
+
+  return null;
+}
+
+/**
+ * Handles shapes like:
+ * [
+ *   { month: "2014-01", value: 123 },
+ *   { month: "2014-02", value: 456 }
+ * ]
+ */
+function extractRowsArray(arr) {
+  if (!Array.isArray(arr) || arr.length < 12) return null;
+  const rows = arr.filter((r) => r && typeof r === "object" && !Array.isArray(r));
+  if (rows.length < 12) return null;
+
+  const keys = Array.from(new Set(rows.flatMap((r) => Object.keys(r))));
+  const findKey = (needles) =>
+    keys.find((k) => needles.some((n) => k.toLowerCase().includes(n)));
+
+  const kDate = findKey(["date", "month", "time", "period", "label"]);
+  if (!kDate) return null;
+
+  const kRemaining = findKey(["remain", "remaining", "supply", "circulation"]);
+  const kDrops = findKey(["drop"]);
+  const kUnbox = findKey(["unbox", "open", "value", "count"]);
+  const kPrice = findKey(["price", "median"]);
+
+  const sorted = [...rows].sort((a, b) => String(a[kDate]).localeCompare(String(b[kDate])));
+  const out = makeEmptySeries();
+  out.dates = sorted.map((r) => r[kDate]);
+  out.remaining = kRemaining ? sorted.map((r) => toNumberOrNull(r[kRemaining])) : [];
+  out.drops = kDrops ? sorted.map((r) => toNumberOrNull(r[kDrops])) : [];
+  out.unboxings = kUnbox ? sorted.map((r) => toNumberOrNull(r[kUnbox])) : [];
+  out.price = kPrice ? sorted.map((r) => toNumberOrNull(r[kPrice])) : [];
+
+  return isGoodSeries(out) ? out : null;
+}
+
+/**
+ * Main fix:
+ * case_unboxing_monthly.json has shape:
+ * {
+ *   "Winter Offensive Weapon Case": <inner-shape>,
+ *   "Falchion Case": <inner-shape>,
+ *   ...
+ * }
+ */
+function extractFromCaseUnboxingMonthly(root, caseName) {
+  if (!root || typeof root !== "object" || Array.isArray(root)) return null;
+
+  const targetKey = Object.keys(root).find(
+    (k) => normalizeCaseName(k) === normalizeCaseName(caseName)
+  );
+  if (!targetKey) return null;
+
+  const inner = root[targetKey];
+
+  // 1) direct monthly object
+  let found = extractMonthlyObject(inner);
+  if (found) return found;
+
+  // 2) rows array
+  found = extractRowsArray(inner);
+  if (found) return found;
+
+  // 3) generic parsers
+  found = extractChartLike(inner);
+  if (found) return found;
+
+  found = extractKeyBased(inner);
+  if (found) return found;
+
+  // 4) one level deeper
+  if (inner && typeof inner === "object" && !Array.isArray(inner)) {
+    for (const v of Object.values(inner)) {
+      found = extractMonthlyObject(v);
+      if (found) return found;
+
+      found = extractRowsArray(v);
+      if (found) return found;
+
+      found = extractChartLike(v);
+      if (found) return found;
+
+      found = extractKeyBased(v);
+      if (found) return found;
     }
+  }
 
-    const populated =
-      out.remaining.length >= 12 ||
-      out.drops.length >= 12 ||
-      out.unboxings.length >= 12 ||
-      out.price.length >= 12;
+  return null;
+}
 
-    if (populated) return out;
+function extractFromAnyJson(data, caseName, url = "") {
+  if (!data) return null;
 
-    // Fallback: assign first datasets if labels didn't match
-    const dataSetsOnly = datasets
-      .map((ds) => (ds && Array.isArray(ds.data) ? ds.data : []))
-      .filter((a) => a.length >= 12);
+  // Most important special-case first
+  if (url.includes("case_unboxing_monthly.json")) {
+    const special = extractFromCaseUnboxingMonthly(data, caseName);
+    if (special) return special;
+  }
 
-    if (dataSetsOnly.length >= 1) out.remaining = dataSetsOnly[0];
-    if (dataSetsOnly.length >= 2) out.drops = dataSetsOnly[1];
-    if (dataSetsOnly.length >= 3) out.unboxings = dataSetsOnly[2];
-    if (dataSetsOnly.length >= 4) out.price = dataSetsOnly[3];
+  let found = extractChartLike(data);
+  if (found) return found;
 
-    const fallbackPopulated =
-      out.remaining.length >= 12 ||
-      out.drops.length >= 12 ||
-      out.unboxings.length >= 12 ||
-      out.price.length >= 12;
+  found = extractKeyBased(data);
+  if (found) return found;
 
-    return fallbackPopulated ? out : null;
-  };
+  found = extractRowsArray(data);
+  if (found) return found;
 
-  const walk = (x) => {
-    if (!x || typeof x !== "object") return;
+  if (typeof data === "object" && !Array.isArray(data)) {
+    for (const v of Object.values(data)) {
+      found = extractChartLike(v);
+      if (found) return found;
 
-    // 1) Chart.js attempt
-    const cj = tryChartJs(x);
-    if (cj) {
-      best = cj;
-      return;
+      found = extractKeyBased(v);
+      if (found) return found;
+
+      found = extractRowsArray(v);
+      if (found) return found;
+
+      found = extractMonthlyObject(v);
+      if (found) return found;
     }
+  }
 
-    // 2) Key-based attempt
-    if (!Array.isArray(x)) {
-      const kDates = pickKey(x, ["date", "month", "label", "x"]);
-      const kRem = pickKey(x, ["remain", "supply"]);
-      const kDrops = pickKey(x, ["drop"]);
-      const kUnbox = pickKey(x, ["unbox"]);
-      const kPrice = pickKey(x, ["price"]);
-
-      const dates = kDates ? x[kDates] : null;
-      const remaining = kRem ? x[kRem] : null;
-      const drops = kDrops ? x[kDrops] : null;
-      const unboxings = kUnbox ? x[kUnbox] : null;
-      const price = kPrice ? x[kPrice] : null;
-
-      const arrs = [dates, remaining, drops, unboxings, price].filter(
-        (a) => Array.isArray(a) && a.length >= 12
-      );
-
-      if (Array.isArray(dates) && dates.length >= 12 && arrs.length >= 2) {
-        best = {
-          dates,
-          remaining: Array.isArray(remaining) ? remaining : [],
-          drops: Array.isArray(drops) ? drops : [],
-          unboxings: Array.isArray(unboxings) ? unboxings : [],
-          price: Array.isArray(price) ? price : [],
-        };
-        return;
-      }
-    }
-
-    // Recurse
-    if (Array.isArray(x)) {
-      for (let i = 0; i < Math.min(x.length, 300); i++) {
-        if (best) return;
-        walk(x[i]);
-      }
-    } else {
-      for (const k of Object.keys(x)) {
-        if (best) return;
-        walk(x[k]);
-      }
-    }
-  };
-
-  walk(obj);
-  return best;
+  return null;
 }
 
 async function clickChartToggles(page) {
-  await page
-    .evaluate(() => {
-      // Click "All" button if exists
-      const btns = Array.from(document.querySelectorAll("button"));
-      const allBtn = btns.find(
-        (b) => (b.textContent || "").trim().toLowerCase() === "all"
-      );
-      if (allBtn) allBtn.click();
+  try {
+    await page.evaluate(() => {
+      const txt = (el) => (el?.textContent || "").trim().toLowerCase();
 
-      // Find the "SUPPLY OVER TIME" section root
-      const h = Array.from(document.querySelectorAll("h2,h3")).find((x) =>
-        (x.textContent || "").toUpperCase().includes("SUPPLY OVER TIME")
-      );
-      const root = h?.parentElement || document;
+      for (const btn of Array.from(document.querySelectorAll("button"))) {
+        const t = txt(btn);
+        if (t === "all" || t === "max") btn.click();
+      }
 
-      // Toggle all checkboxes ON
-      const cbs = Array.from(root.querySelectorAll('input[type="checkbox"]'));
-      cbs.forEach((cb) => {
+      for (const cb of Array.from(document.querySelectorAll('input[type="checkbox"]'))) {
         if (!cb.checked) cb.click();
-      });
-    })
-    .catch(() => {});
+      }
+    });
+  } catch {}
 }
 
 (async () => {
   if (!fs.existsSync(CASES_FILE)) {
-    console.error(`❌ Missing ${CASES_FILE} in current folder`);
+    console.error(`Missing ${CASES_FILE}`);
     process.exit(1);
   }
 
-  const cases = JSON.parse(fs.readFileSync(CASES_FILE, "utf8")).cases.map(
-    (x) => x.case
-  );
+  const parsed = JSON.parse(fs.readFileSync(CASES_FILE, "utf8"));
+  const cases = (parsed.cases || []).map((x) => x.case).filter(Boolean);
 
   const browser = await chromium.launch({ headless: true });
-
-  // Use a "real" UA to reduce headless differences
   const context = await browser.newContext({
     userAgent:
       "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
     viewport: { width: 1440, height: 900 },
   });
 
-  const page = await context.newPage();
+  await context.addInitScript(() => {
+    window.__CAPTURED_JSON__ = [];
+    window.__CAPTURED_TEXT__ = [];
+
+    const pushJson = (url, data) => {
+      try {
+        window.__CAPTURED_JSON__.push({ url, data });
+      } catch {}
+    };
+
+    const pushText = (url, text) => {
+      try {
+        window.__CAPTURED_TEXT__.push({ url, text: String(text).slice(0, 200000) });
+      } catch {}
+    };
+
+    const origFetch = window.fetch;
+    window.fetch = async (...args) => {
+      const res = await origFetch(...args);
+      try {
+        const clone = res.clone();
+        const url = clone.url || String(args[0] || "");
+        const ct = clone.headers.get("content-type") || "";
+        const text = await clone.text();
+
+        if (ct.includes("json") || text.trim().startsWith("{") || text.trim().startsWith("[")) {
+          try {
+            pushJson(url, JSON.parse(text));
+          } catch {
+            pushText(url, text);
+          }
+        }
+      } catch {}
+      return res;
+    };
+
+    const origOpen = XMLHttpRequest.prototype.open;
+    const origSend = XMLHttpRequest.prototype.send;
+
+    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+      this.__url = url;
+      return origOpen.call(this, method, url, ...rest);
+    };
+
+    XMLHttpRequest.prototype.send = function(...args) {
+      this.addEventListener("load", function() {
+        try {
+          const text = this.responseText;
+          const url = this.__url || "";
+          if (!text) return;
+
+          const t = String(text).trim();
+          if (t.startsWith("{") || t.startsWith("[")) {
+            try {
+              pushJson(url, JSON.parse(t));
+            } catch {
+              pushText(url, t);
+            }
+          }
+        } catch {}
+      });
+
+      return origSend.call(this, ...args);
+    };
+  });
 
   const out = {};
   const failures = [];
 
-  // Capture URLs + JSON responses
-  let netUrls = new Set();
-  let jsonBodies = []; // { url, j }
-
-  page.on("request", (req) => {
-    try {
-      netUrls.add(req.url());
-    } catch {}
-  });
-
-  page.on("response", async (res) => {
-    try {
-      const url = res.url();
-      const headers = await res.headers();
-      const ct = (headers["content-type"] || "").toLowerCase();
-
-      // only likely JSON
-      const isJson =
-        ct.includes("application/json") ||
-        url.includes("/_next/data/") ||
-        url.endsWith(".json");
-
-      if (!isJson) return;
-
-      // read as text, then parse
-      const text = await res.text();
-      const j = safeJsonParse(text);
-      if (j) jsonBodies.push({ url, j });
-    } catch {}
-  });
-
   for (const name of cases) {
-    console.log(`▶ Scraping: ${name}`);
+    let page;
+    try {
+      console.log(`Scraping: ${name}`);
 
-    netUrls = new Set();
-    jsonBodies = [];
+      page = await context.newPage();
+      const url = "https://csstonks.com/case/" + encodeURIComponent(name);
+      const safeName = name.replace(/[^a-z0-9]+/gi, "_");
 
-    const url = "https://csstonks.com/case/" + encodeURIComponent(name);
-    const safeName = name.replace(/[^a-z0-9]+/gi, "_");
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+      if (page.isClosed()) throw new Error("Page closed after goto");
 
-    // Load fully
-    await page.goto(url, { waitUntil: "networkidle", timeout: 60000 });
+      await page.waitForTimeout(2500);
+      await clickChartToggles(page);
 
-    // Ensure section exists (best-effort)
-    await page
-      .waitForSelector("h2:has-text('SUPPLY OVER TIME')", { timeout: 20000 })
-      .catch(() => {});
-    await page.waitForTimeout(800);
+      if (page.isClosed()) throw new Error("Page closed after toggle");
+      await page.waitForTimeout(2500);
 
-    // Click toggles
-    await clickChartToggles(page);
-    await page.waitForTimeout(2500);
+      const debug = await page.evaluate(() => {
+        return {
+          nextData: (() => {
+            const el = document.querySelector("#__NEXT_DATA__");
+            if (!el) return null;
+            try {
+              return JSON.parse(el.textContent || "");
+            } catch {
+              return null;
+            }
+          })(),
+          capturedJson: window.__CAPTURED_JSON__ || [],
+          capturedText: window.__CAPTURED_TEXT__ || [],
+        };
+      });
 
-    // Dump request URLs and JSON urls for debugging
-    fs.writeFileSync(
-      `net-urls-${safeName}.json`,
-      JSON.stringify(Array.from(netUrls), null, 2),
-      "utf8"
-    );
-    fs.writeFileSync(
-      `json-urls-${safeName}.json`,
-      JSON.stringify(jsonBodies.map((x) => x.url), null, 2),
-      "utf8"
-    );
+      const shapeSummary = debug.capturedJson.map((x) => ({
+        url: x.url,
+        isArray: Array.isArray(x.data),
+        len: Array.isArray(x.data) ? x.data.length : undefined,
+        keys: Array.isArray(x.data)
+          ? Object.keys(x.data[0] || {})
+          : Object.keys(x.data || {}).slice(0, 25),
+      }));
 
-    // 1) Try extract from __NEXT_DATA__
-    let found = null;
-    const nextData = await page.evaluate(() => {
-      const el = document.querySelector("#__NEXT_DATA__");
-      if (!el) return null;
-      try {
-        return JSON.parse(el.textContent || "");
-      } catch {
-        return null;
-      }
-    });
-
-    if (nextData) {
-      const series = extractSeries(nextData);
-      if (series) found = series;
-    }
-
-    // 2) If not found, scan JSON responses (fast filter first)
-    if (!found) {
-      for (const item of jsonBodies) {
-        if (!looksLikeSeriesObj(item.j)) continue;
-        const series = extractSeries(item.j);
-        if (series) {
-          found = series;
-          break;
-        }
-      }
-    }
-
-    // 3) If still not found, do a broader scan (slower but helpful)
-    if (!found) {
-      for (const item of jsonBodies) {
-        const series = extractSeries(item.j);
-        if (series) {
-          found = series;
-          break;
-        }
-      }
-    }
-
-    if (!found) {
-      console.log(
-        `❌ No timeseries found for ${name} (jsonBodies=${jsonBodies.length})`
+      fs.writeFileSync(
+        `debug-${safeName}.json`,
+        JSON.stringify({ ...debug, shapeSummary }, null, 2),
+        "utf8"
       );
+
+      let found = null;
+
+      if (debug.nextData) {
+        found = extractFromAnyJson(debug.nextData, name, "__NEXT_DATA__");
+      }
+
+      if (!found) {
+        for (const item of debug.capturedJson) {
+          found = extractFromAnyJson(item.data, name, item.url);
+          if (found) break;
+        }
+      }
+
+      if (!found) {
+        for (const item of debug.capturedText) {
+          const parsedText = safeJsonParse(item.text);
+          if (!parsedText) continue;
+          found = extractFromAnyJson(parsedText, name, item.url);
+          if (found) break;
+        }
+      }
+
+      if (!found) {
+        failures.push(name);
+        console.log(`No timeseries found for ${name}`);
+        await page.screenshot({ path: `debug-${safeName}.png`, fullPage: true }).catch(() => {});
+      } else {
+        out[name] = found;
+        console.log(`OK: ${name} (${found.dates.length} points)`);
+      }
+
+      await page.close().catch(() => {});
+    } catch (err) {
       failures.push(name);
-
-      // Debug screenshot
-      try {
-        await page.screenshot({ path: `debug-${safeName}.png`, fullPage: true });
-      } catch {}
-
-      // Dump one full JSON body for inspection
-      try {
-        const pick =
-          jsonBodies.find((x) => x.url.includes("/_next/data/")) ||
-          jsonBodies[0] ||
-          null;
-
-        fs.writeFileSync(
-          `json-full-first-${safeName}.json`,
-          JSON.stringify(pick ? { url: pick.url, body: pick.j } : null, null, 2),
-          "utf8"
-        );
-      } catch {}
-
-      continue;
+      console.log(`FAIL: ${name} -> ${err.message}`);
+      if (page && !page.isClosed()) {
+        await page.close().catch(() => {});
+      }
     }
-
-    out[name] = found;
-    console.log(
-      `✔ OK: ${name} (dates=${found.dates.length}, jsonBodies=${jsonBodies.length})`
-    );
   }
 
   fs.writeFileSync(
     OUT_FILE,
     JSON.stringify(
-      { generatedAt: new Date().toISOString(), out, failures },
+      {
+        generatedAt: new Date().toISOString(),
+        out,
+        failures,
+      },
       null,
       2
     ),
     "utf8"
   );
 
-  await browser.close();
-  console.log(`✅ DONE -> ${OUT_FILE}`);
-  if (failures.length) console.log(`⚠ Failures: ${failures.length}`);
-})().catch((e) => {
-  console.error("Fatal:", e);
-  process.exit(1);
-});
+  await context.close().catch(() => {});
+  await browser.close().catch(() => {});
+  console.log(`DONE -> ${OUT_FILE}`);
+})();

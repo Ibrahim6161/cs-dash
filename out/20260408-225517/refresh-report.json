@@ -1,0 +1,14 @@
+{
+  "source": "cli",
+  "steps": [
+    {
+      "id": "skinbaron",
+      "label": "SkinBaron prices",
+      "durationMs": 5209,
+      "success": true
+    }
+  ],
+  "startedAt": "2026-04-08T20:55:12.529Z",
+  "finishedAt": "2026-04-08T20:55:17.738Z",
+  "success": true
+}
