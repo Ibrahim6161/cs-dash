@@ -2,6 +2,7 @@ const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const { URL } = require("url");
+
 const { DashboardService } = require("./lib/dashboard-service");
 const { fetchSteamMarket } = require("./lib/steam-market");
 const {
@@ -14,10 +15,6 @@ const {
   normalizeSteamProfileQuery,
   resolvePublicSteamProfile,
 } = require("./lib/steam-public-profile");
-const {
-  createSteamDebugLogger,
-  serializeError,
-} = require("./lib/steam-debug-log");
 
 const ROOT = process.cwd();
 const PORT = Number(process.env.PORT || 8000);
@@ -63,6 +60,7 @@ function readSteamDebugFile() {
 function readBody(req) {
   return new Promise((resolve, reject) => {
     let body = "";
+
     req.on("data", (chunk) => {
       body += chunk.toString();
       if (body.length > 1024 * 1024) {
@@ -70,44 +68,71 @@ function readBody(req) {
         req.destroy();
       }
     });
+
     req.on("end", () => {
       if (!body.trim()) {
         resolve({});
         return;
       }
+
       try {
         resolve(JSON.parse(body));
       } catch {
         reject(new Error("Invalid JSON body."));
       }
     });
+
     req.on("error", reject);
   });
 }
 
 function resolveStaticPath(urlPath) {
   const decoded = decodeURIComponent(urlPath);
-  const target = decoded === "/" ? "/dashboard-v2.html" : decoded;
+
+  const target =
+    decoded === "/"
+      ? "/dashboard-v2.html"
+      : decoded === "/dashboard"
+        ? "/dashboard-v2.html"
+        : decoded === "/inventory"
+          ? "/inventory.html"
+          : decoded;
+
   const absolutePath = path.resolve(ROOT, "." + target);
+
   if (!absolutePath.startsWith(ROOT)) {
     throw new Error("Forbidden path.");
   }
+
   return absolutePath;
+}
+
+function createNullValuationLookup() {
+  return () => ({
+    matched: false,
+    source: null,
+    unitPriceEur: null,
+    listingUrl: null,
+    dashboardKey: null,
+    dashboardItem: null,
+  });
 }
 
 async function start() {
   const service = new DashboardService(ROOT);
   const steamInventoryCache = new Map();
   const livePriceCache = new Map();
-  const debugLog = createSteamDebugLogger(ROOT);
 
   if (process.argv.includes("--refresh-once")) {
     await service.initialize({ autoStart: false });
+
     try {
       await service.triggerRefresh("cli");
+
       while (service.getStatus().running) {
         await new Promise((resolve) => setTimeout(resolve, 500));
       }
+
       const status = service.getStatus();
       if (status.state === "error") {
         console.error(status.lastError || "Refresh failed.");
@@ -117,6 +142,7 @@ async function start() {
       console.error(error && error.message ? error.message : String(error));
       process.exitCode = 1;
     }
+
     return;
   }
 
@@ -126,261 +152,8 @@ async function start() {
     try {
       const url = new URL(req.url || "/", `http://${req.headers.host || `${HOST}:${PORT}`}`);
 
-      const getDashboardIndex = () => {
-        const dashboard = service.getDashboard().dashboard;
-        const byKey = new Map();
-        const byName = new Map();
-        for (const item of dashboard.items || []) {
-          byKey.set(item.key, item);
-          byName.set(String(item.name || "").trim().toLowerCase(), item);
-        }
-        return { byKey, byName };
-      };
-
-      const buildValuationLookup = (dashboardIndex) => (inventoryItem) => {
-        const dashboardItem =
-          dashboardIndex.byKey.get(inventoryItem.key) ||
-          dashboardIndex.byName.get(String(inventoryItem.name || "").trim().toLowerCase()) ||
-          null;
-
-        const unitPriceEur =
-          dashboardItem?.price?.steamPriceEur ??
-          dashboardItem?.price?.steamMedianEur ??
-          null;
-
-        return {
-          matched: unitPriceEur != null,
-          source: unitPriceEur != null ? "dashboard-steam-cache" : null,
-          unitPriceEur,
-          listingUrl: dashboardItem?.urls?.steam || null,
-          dashboardKey: dashboardItem?.key || null,
-          dashboardItem: dashboardItem
-            ? {
-                key: dashboardItem.key,
-                name: dashboardItem.name,
-                category: dashboardItem.category,
-                grade: dashboardItem.grade,
-                scores: dashboardItem.scores,
-              }
-            : null,
-        };
-      };
-
       if (url.pathname === "/api/dashboard" && req.method === "GET") {
         sendJson(res, 200, service.getDashboard());
-        return;
-      }
-
-      if (url.pathname === "/api/steam/public-inventory" && req.method === "POST") {
-        debugLog.reset();
-
-        const requestStartedAt = Date.now();
-        const body = await readBody(req);
-        const rawQuery = String(body.query || "").trim();
-        const normalizedQuery = normalizeSteamProfileQuery(rawQuery);
-
-        debugLog.write("request_start", {
-          rawQuery,
-          normalizedQuery,
-          forceRefresh: body.refresh === true,
-          ip: req.socket?.remoteAddress || null,
-          userAgent: req.headers["user-agent"] || null,
-        });
-
-        if (!rawQuery) {
-          debugLog.write("request_invalid", {
-            reason: "empty_query",
-          });
-
-          sendJson(res, 400, {
-            ok: false,
-            error: "Enter a Steam profile URL, vanity URL, or SteamID64.",
-            code: "STEAM_QUERY_REQUIRED",
-          });
-          return;
-        }
-
-        let profile;
-        try {
-          debugLog.write("profile_resolve_start", { rawQuery, normalizedQuery });
-          profile = await resolvePublicSteamProfile(rawQuery);
-          debugLog.write("profile_resolve_success", { profile });
-        } catch (error) {
-          debugLog.write("profile_resolve_failed", {
-            error: serializeError(error),
-          });
-
-          sendJson(res, 400, {
-            ok: false,
-            error: error?.message || "Could not resolve Steam profile.",
-            code: error?.code || "STEAM_PROFILE_RESOLVE_FAILED",
-            debugLogPath: debugLog.path,
-            debug: error?.debug || null,
-          });
-          return;
-        }
-
-        const forceRefresh = body.refresh === true;
-        const cacheKey = profile.steamId;
-        const cached = steamInventoryCache.get(cacheKey);
-
-        if (!forceRefresh && cached && Date.now() - cached.cachedAt < 1000 * 60 * 3) {
-          debugLog.write("cache_hit", {
-            steamId: profile.steamId,
-            ageMs: Date.now() - cached.cachedAt,
-          });
-
-          sendJson(res, 200, {
-            ok: true,
-            ...cached.payload,
-            cached: true,
-            debugLogPath: debugLog.path,
-          });
-          return;
-        }
-
-        try {
-          debugLog.write("inventory_fetch_start", {
-            steamId: profile.steamId,
-          });
-
-          const inventoryRaw = await fetchSteamInventory(profile.steamId);
-
-          debugLog.write("inventory_fetch_success", {
-            steamId: profile.steamId,
-            assetCount: Array.isArray(inventoryRaw.assets) ? inventoryRaw.assets.length : 0,
-            descriptionCount:
-              inventoryRaw.descriptions instanceof Map ? inventoryRaw.descriptions.size : 0,
-            inventoryDebug: inventoryRaw.debug || null,
-          });
-
-          debugLog.write("group_items_start", {
-            steamId: profile.steamId,
-          });
-
-          const items = groupInventoryItems(
-            inventoryRaw,
-            buildValuationLookup(getDashboardIndex())
-          );
-
-          debugLog.write("group_items_success", {
-            steamId: profile.steamId,
-            groupedItems: items.length,
-          });
-
-          debugLog.write("live_price_enrichment_start", {
-            steamId: profile.steamId,
-            groupedItems: items.length,
-            limit: 0,
-            note: "Temporarily disabled for debugging",
-          });
-
-          await enrichWithLivePrices(items, livePriceCache, 0);
-
-          debugLog.write("live_price_enrichment_success", {
-            steamId: profile.steamId,
-          });
-
-          debugLog.write("summarize_start", {
-            steamId: profile.steamId,
-          });
-
-          const payload = summarizeInventory(profile, items);
-
-          debugLog.write("summarize_success", {
-            steamId: profile.steamId,
-            totals: payload.totals,
-          });
-
-          const responsePayload = {
-            ...payload,
-            query: rawQuery,
-            normalizedQuery,
-            steamId: profile.steamId,
-            cached: false,
-            debugLogPath: debugLog.path,
-          };
-
-          steamInventoryCache.set(cacheKey, {
-            cachedAt: Date.now(),
-            payload: responsePayload,
-          });
-
-          writeSteamDebugFile({
-            ok: true,
-            savedAt: new Date().toISOString(),
-            elapsedMs: Date.now() - requestStartedAt,
-            query: rawQuery,
-            normalizedQuery,
-            steamId: profile.steamId,
-            profile,
-            raw: {
-              assetCount: Array.isArray(inventoryRaw.assets) ? inventoryRaw.assets.length : 0,
-              descriptionCount:
-                inventoryRaw.descriptions instanceof Map
-                  ? inventoryRaw.descriptions.size
-                  : 0,
-              debug: inventoryRaw.debug || null,
-            },
-            payload: responsePayload,
-            debugLogPath: debugLog.path,
-          });
-
-          debugLog.write("request_success", {
-            steamId: profile.steamId,
-            elapsedMs: Date.now() - requestStartedAt,
-          });
-
-          sendJson(res, 200, { ok: true, ...responsePayload });
-        } catch (error) {
-          const code = error?.code || "STEAM_INVENTORY_ERROR";
-          const statusCode = code === "STEAM_INVENTORY_PRIVATE" ? 403 : 502;
-
-          debugLog.write("request_failed", {
-            steamId: profile?.steamId || null,
-            elapsedMs: Date.now() - requestStartedAt,
-            code,
-            error: serializeError(error),
-          });
-
-          writeSteamDebugFile({
-            ok: false,
-            savedAt: new Date().toISOString(),
-            elapsedMs: Date.now() - requestStartedAt,
-            query: rawQuery,
-            normalizedQuery,
-            steamId: profile?.steamId || null,
-            profile: profile || null,
-            error: error?.message || String(error),
-            code,
-            debug: error?.debug || null,
-            debugLogPath: debugLog.path,
-          });
-
-          sendJson(res, statusCode, {
-            ok: false,
-            error: error?.message || String(error),
-            code,
-            steamId: profile?.steamId || null,
-            profile: profile || null,
-            debugLogPath: debugLog.path,
-            debug: error?.debug || null,
-          });
-        }
-        return;
-      }
-
-      if (url.pathname === "/api/steam/inventory-debug" && req.method === "GET") {
-        const debugFile = readSteamDebugFile();
-        if (!debugFile) {
-          sendJson(res, 404, { ok: false, error: "No Steam inventory debug file found yet." });
-          return;
-        }
-        sendJson(res, 200, {
-          ok: true,
-          debug: debugFile,
-          path: path.basename(STEAM_DEBUG_PATH),
-        });
         return;
       }
 
@@ -397,14 +170,21 @@ async function start() {
       if (url.pathname === "/api/config" && req.method === "POST") {
         const patch = await readBody(req);
         const config = await service.updateConfig(patch);
-        sendJson(res, 200, { ok: true, config, status: service.getStatus() });
+        sendJson(res, 200, {
+          ok: true,
+          config,
+          status: service.getStatus(),
+        });
         return;
       }
 
       if (url.pathname === "/api/refresh" && req.method === "POST") {
         try {
           await service.triggerRefresh("manual");
-          sendJson(res, 202, { ok: true, status: service.getStatus() });
+          sendJson(res, 202, {
+            ok: true,
+            status: service.getStatus(),
+          });
         } catch (error) {
           const statusCode = error && error.code === "REFRESH_IN_PROGRESS" ? 409 : 500;
           sendJson(res, statusCode, {
@@ -418,10 +198,15 @@ async function start() {
 
       if (url.pathname === "/api/item-market" && req.method === "GET") {
         const name = (url.searchParams.get("name") || "").trim();
+
         if (!name) {
-          sendJson(res, 400, { ok: false, error: "Missing item name." });
+          sendJson(res, 400, {
+            ok: false,
+            error: "Missing item name.",
+          });
           return;
         }
+
         try {
           const market = await fetchSteamMarket(name, { includeOrderbook: true });
           sendJson(res, 200, { ok: true, name, market });
@@ -434,12 +219,144 @@ async function start() {
         return;
       }
 
+      if (url.pathname === "/api/steam/public-inventory" && req.method === "POST") {
+        const body = await readBody(req);
+        const rawQuery = String(body.query || "").trim();
+
+        if (!rawQuery) {
+          sendJson(res, 400, {
+            ok: false,
+            error: "Enter a Steam profile URL, vanity URL, or SteamID64.",
+            code: "STEAM_QUERY_REQUIRED",
+          });
+          return;
+        }
+
+        const normalizedQuery = normalizeSteamProfileQuery(rawQuery);
+
+        let profile;
+        try {
+          profile = await resolvePublicSteamProfile(rawQuery);
+        } catch (error) {
+          sendJson(res, 400, {
+            ok: false,
+            error: error?.message || "Could not resolve Steam profile.",
+            code: error?.code || "STEAM_PROFILE_RESOLVE_FAILED",
+            debug: error?.debug || null,
+          });
+          return;
+        }
+
+        const forceRefresh = body.refresh === true;
+        const cacheKey = profile.steamId;
+        const cached = steamInventoryCache.get(cacheKey);
+
+        if (!forceRefresh && cached && Date.now() - cached.cachedAt < 1000 * 60 * 3) {
+          sendJson(res, 200, {
+            ok: true,
+            ...cached.payload,
+            cached: true,
+          });
+          return;
+        }
+
+        try {
+          const inventoryRaw = await fetchSteamInventory(profile.steamId);
+
+          const items = groupInventoryItems(
+            inventoryRaw,
+            createNullValuationLookup()
+          );
+
+          await enrichWithLivePrices(items, livePriceCache, 24);
+
+          const payload = summarizeInventory(profile, items);
+          const responsePayload = {
+            ...payload,
+            query: rawQuery,
+            normalizedQuery,
+            steamId: profile.steamId,
+            cached: false,
+          };
+
+          steamInventoryCache.set(cacheKey, {
+            cachedAt: Date.now(),
+            payload: responsePayload,
+          });
+
+          writeSteamDebugFile({
+            ok: true,
+            savedAt: new Date().toISOString(),
+            query: rawQuery,
+            normalizedQuery,
+            steamId: profile.steamId,
+            profile,
+            raw: {
+              assetCount: Array.isArray(inventoryRaw.assets) ? inventoryRaw.assets.length : 0,
+              descriptionCount:
+                inventoryRaw.descriptions instanceof Map
+                  ? inventoryRaw.descriptions.size
+                  : 0,
+              debug: inventoryRaw.debug || null,
+            },
+            payload: responsePayload,
+          });
+
+          sendJson(res, 200, { ok: true, ...responsePayload });
+        } catch (error) {
+          const code = error?.code || "STEAM_INVENTORY_ERROR";
+          const statusCode = code === "STEAM_INVENTORY_PRIVATE" ? 403 : 502;
+
+          writeSteamDebugFile({
+            ok: false,
+            savedAt: new Date().toISOString(),
+            query: rawQuery,
+            normalizedQuery,
+            steamId: profile?.steamId || null,
+            profile: profile || null,
+            error: error?.message || String(error),
+            code,
+            debug: error?.debug || null,
+          });
+
+          sendJson(res, statusCode, {
+            ok: false,
+            error: error?.message || String(error),
+            code,
+            steamId: profile?.steamId || null,
+            profile: profile || null,
+            debug: error?.debug || null,
+          });
+        }
+        return;
+      }
+
+      if (url.pathname === "/api/steam/inventory-debug" && req.method === "GET") {
+        const debugFile = readSteamDebugFile();
+
+        if (!debugFile) {
+          sendJson(res, 404, {
+            ok: false,
+            error: "No Steam inventory debug file found yet.",
+          });
+          return;
+        }
+
+        sendJson(res, 200, {
+          ok: true,
+          debug: debugFile,
+          path: path.basename(STEAM_DEBUG_PATH),
+        });
+        return;
+      }
+
       if (req.method !== "GET" && req.method !== "HEAD") {
         sendJson(res, 405, { error: "Method not allowed." });
         return;
       }
 
       let filePath = resolveStaticPath(url.pathname);
+
       if (fs.existsSync(filePath) && fs.statSync(filePath).isDirectory()) {
         filePath = path.join(filePath, "index.html");
       }
@@ -451,6 +368,7 @@ async function start() {
 
       const ext = path.extname(filePath).toLowerCase();
       const noCache = ext === ".html" || ext === ".js" || ext === ".css";
+
       res.writeHead(200, {
         "Content-Type": MIME[ext] || "application/octet-stream",
         "Cache-Control": noCache ? "no-cache, no-store, must-revalidate" : "public, max-age=60",
@@ -471,7 +389,6 @@ async function start() {
 
   server.listen(PORT, HOST, () => {
     console.log(`Dashboard server running at http://${HOST}:${PORT}`);
-    console.log(`Steam debug log: ${path.join(ROOT, "steam_public_inventory_debug.log")}`);
   });
 }
 

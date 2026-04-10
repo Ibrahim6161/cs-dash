@@ -2,7 +2,6 @@ const state = {
   portfolio: null,
   loading: false,
   error: null,
-  query: "",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -26,12 +25,12 @@ function fmtNumber(value, digits = 0) {
 }
 
 function fmtMoney(value, currency = "EUR", digits = 2) {
-  if (value == null || !Number.isFinite(value)) return "—";
+  if (value == null || !Number.isFinite(Number(value))) return "—";
   return new Intl.NumberFormat(undefined, {
     style: "currency",
     currency,
     maximumFractionDigits: digits,
-  }).format(value);
+  }).format(Number(value));
 }
 
 function fmtRelative(value) {
@@ -51,8 +50,8 @@ function showToast(message, isError = false) {
   const toast = $("toast");
   toast.textContent = message;
   toast.style.borderColor = isError
-    ? "rgba(255, 117, 102, 0.36)"
-    : "rgba(88, 184, 255, 0.36)";
+    ? "rgba(255, 111, 111, 0.28)"
+    : "rgba(90, 183, 255, 0.28)";
   toast.classList.add("show");
   clearTimeout(showToast._timer);
   showToast._timer = setTimeout(() => toast.classList.remove("show"), 2200);
@@ -74,7 +73,7 @@ async function api(path, options = {}) {
   return payload;
 }
 
-function inferItemType(item) {
+function inferType(item) {
   const text = `${item.type || ""} ${item.name || ""}`.toLowerCase();
 
   if (text.includes("sticker")) return "Sticker";
@@ -84,37 +83,47 @@ function inferItemType(item) {
   if (text.includes("case")) return "Case";
   if (text.includes("medal")) return "Medal";
   if (text.includes("collectible")) return "Collectible";
-  if (
-    text.includes("rifle") ||
-    text.includes("sniper") ||
-    text.includes("pistol") ||
-    text.includes("smg") ||
-    text.includes("shotgun") ||
-    text.includes("machinegun") ||
-    text.includes("knife") ||
-    text.includes("gloves")
-  ) return "Weapon";
+  if (text.includes("knife")) return "Knife";
+  if (text.includes("gloves")) return "Gloves";
+  if (text.includes("rifle")) return "Rifle";
+  if (text.includes("sniper")) return "Sniper";
+  if (text.includes("pistol")) return "Pistol";
+  if (text.includes("smg")) return "SMG";
 
   return item.type || "Other";
 }
 
-function getFilteredItems() {
+function renderTypeFilter() {
+  const select = $("typeFilter");
   const items = state.portfolio?.items || [];
+  const current = select.value || "ALL";
+
+  const types = [...new Set(items.map((item) => inferType(item)).filter(Boolean))].sort();
+
+  select.innerHTML = [
+    `<option value="ALL">All</option>`,
+    ...types.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`),
+  ].join("");
+
+  select.value = types.includes(current) ? current : "ALL";
+}
+
+function getFilteredItems() {
+  const items = (state.portfolio?.items || []).map((item) => ({
+    ...item,
+    uiType: inferType(item),
+  }));
+
   const search = $("searchInput").value.trim().toLowerCase();
   const typeFilter = $("typeFilter").value;
   const marketableFilter = $("marketableFilter").value;
   const tradableFilter = $("tradableFilter").value;
   const sort = $("sortSelect").value;
 
-  let filtered = items.map((item) => ({
-    ...item,
-    uiType: inferItemType(item),
-  }));
+  let filtered = [...items];
 
   if (search) {
-    filtered = filtered.filter((item) =>
-      String(item.name || "").toLowerCase().includes(search)
-    );
+    filtered = filtered.filter((item) => String(item.name || "").toLowerCase().includes(search));
   }
 
   if (typeFilter !== "ALL") {
@@ -145,32 +154,13 @@ function getFilteredItems() {
   return filtered;
 }
 
-function renderTypeFilter() {
-  const select = $("typeFilter");
-  const current = select.value || "ALL";
-  const items = state.portfolio?.items || [];
-
-  const types = [...new Set(items.map((item) => inferItemType(item)).filter(Boolean))].sort();
-
-  select.innerHTML = [
-    `<option value="ALL">All</option>`,
-    ...types.map((type) => `<option value="${escapeHtml(type)}">${escapeHtml(type)}</option>`),
-  ].join("");
-
-  if (types.includes(current)) {
-    select.value = current;
-  } else {
-    select.value = "ALL";
-  }
-}
-
-function renderProfile() {
+function renderProfileCard() {
   const card = $("profileCard");
 
   if (state.loading) {
     card.innerHTML = `
       <strong>Loading inventory…</strong>
-      <span class="muted">Reading public Steam inventory.</span>
+      <span>Reading public Steam inventory.</span>
     `;
     return;
   }
@@ -178,7 +168,7 @@ function renderProfile() {
   if (state.error) {
     card.innerHTML = `
       <strong>Could not load profile</strong>
-      <span class="muted">${escapeHtml(state.error)}</span>
+      <span>${escapeHtml(state.error)}</span>
     `;
     return;
   }
@@ -186,7 +176,7 @@ function renderProfile() {
   if (!state.portfolio) {
     card.innerHTML = `
       <strong>No profile loaded</strong>
-      <span class="muted">Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
+      <span>Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
     `;
     return;
   }
@@ -194,20 +184,24 @@ function renderProfile() {
   const profile = state.portfolio.profile || {};
 
   card.innerHTML = `
-    <div class="inventory-profile">
-      ${profile.avatar ? `<img src="${escapeHtml(profile.avatar)}" alt="" />` : ""}
-      <div>
-        <strong>${escapeHtml(profile.personaName || profile.steamId || "Steam profile")}</strong>
-        <div class="muted">${escapeHtml(profile.steamId || "—")}</div>
-      </div>
-    </div>
-    <span class="muted">${state.portfolio.cached ? "cached" : "fresh"} · ${fmtRelative(state.portfolio.fetchedAt)}</span>
-    ${profile.profileUrl ? `<span class="muted"><a href="${escapeHtml(profile.profileUrl)}" target="_blank" rel="noopener">Open Steam profile</a></span>` : ""}
+    <strong>${escapeHtml(profile.personaName || profile.steamId || "Steam profile")}</strong>
+    <span>${escapeHtml(profile.steamId || "—")}</span>
+    <span>${state.portfolio.cached ? "cached" : "fresh"} · ${fmtRelative(state.portfolio.fetchedAt)}</span>
+    ${profile.profileUrl ? `<a href="${escapeHtml(profile.profileUrl)}" target="_blank" rel="noopener">Open Steam profile</a>` : ""}
   `;
 }
 
-function renderStats() {
+function renderHeroStats() {
   const totals = state.portfolio?.totals || {};
+
+  $("inventoryHeroValue").textContent = fmtMoney(totals.estimatedValueEur);
+  $("inventoryHeroValueMeta").textContent = state.portfolio ? `${fmtRelative(state.portfolio.fetchedAt)}` : "Load a public profile";
+
+  $("inventoryHeroUnique").textContent = fmtNumber(totals.uniqueItems);
+  $("inventoryHeroUniqueMeta").textContent = "Distinct grouped items";
+
+  $("inventoryHeroQuantity").textContent = fmtNumber(totals.totalQuantity);
+  $("inventoryHeroQuantityMeta").textContent = "Grouped item quantity";
 
   $("statValue").textContent = fmtMoney(totals.estimatedValueEur);
   $("statUnique").textContent = fmtNumber(totals.uniqueItems);
@@ -221,7 +215,7 @@ function renderInfo(filteredItems) {
   if (state.loading) {
     info.innerHTML = `
       <strong>Loading inventory</strong>
-      <span class="muted">Please wait while the public inventory is fetched.</span>
+      <span>Please wait while the public inventory is fetched.</span>
     `;
     return;
   }
@@ -229,7 +223,7 @@ function renderInfo(filteredItems) {
   if (state.error) {
     info.innerHTML = `
       <strong>Inventory failed</strong>
-      <span class="muted">${escapeHtml(state.error)}</span>
+      <span>${escapeHtml(state.error)}</span>
     `;
     return;
   }
@@ -237,7 +231,7 @@ function renderInfo(filteredItems) {
   if (!state.portfolio) {
     info.innerHTML = `
       <strong>Nothing loaded yet</strong>
-      <span class="muted">Load a public Steam inventory to browse it here.</span>
+      <span>Load a public Steam inventory to browse it here.</span>
     `;
     return;
   }
@@ -245,7 +239,7 @@ function renderInfo(filteredItems) {
   const profile = state.portfolio.profile || {};
   info.innerHTML = `
     <strong>${escapeHtml(profile.personaName || profile.steamId || "Steam profile")}</strong>
-    <span class="muted">${fmtNumber(filteredItems.length)} visible items after filters · ${fmtRelative(state.portfolio.fetchedAt)}</span>
+    <span>${fmtNumber(filteredItems.length)} visible items after filters · ${fmtRelative(state.portfolio.fetchedAt)}</span>
   `;
 }
 
@@ -253,17 +247,17 @@ function renderGrid() {
   const grid = $("inventoryGrid");
 
   if (state.loading) {
-    grid.innerHTML = `<div class="inventory-empty">Loading inventory…</div>`;
+    grid.innerHTML = `<div class="empty-state">Loading inventory…</div>`;
     return;
   }
 
   if (state.error) {
-    grid.innerHTML = `<div class="inventory-empty">${escapeHtml(state.error)}</div>`;
+    grid.innerHTML = `<div class="empty-state">${escapeHtml(state.error)}</div>`;
     return;
   }
 
   if (!state.portfolio) {
-    grid.innerHTML = `<div class="inventory-empty">No inventory loaded yet.</div>`;
+    grid.innerHTML = `<div class="empty-state">No inventory loaded yet.</div>`;
     return;
   }
 
@@ -271,19 +265,21 @@ function renderGrid() {
   renderInfo(items);
 
   if (!items.length) {
-    grid.innerHTML = `<div class="inventory-empty">No items match the current filters.</div>`;
+    grid.innerHTML = `<div class="empty-state">No items match the current filters.</div>`;
     return;
   }
 
   grid.innerHTML = items.map((item) => `
-    <article class="inventory-card">
-      <div class="inventory-card-top">
-        ${item.iconUrl ? `<img src="${escapeHtml(item.iconUrl)}" alt="" loading="lazy" />` : ""}
+    <article class="skin-card">
+      <div class="skin-card-top">
+        <div class="skin-card-media">
+          ${item.iconUrl ? `<img src="${escapeHtml(item.iconUrl)}" alt="" loading="lazy" />` : ""}
+        </div>
+
         <div>
-          <h3 class="inventory-card-title">${escapeHtml(item.name)}</h3>
-          <div class="inventory-tags">
+          <h3 class="skin-card-title">${escapeHtml(item.name)}</h3>
+          <div class="skin-card-tags">
             <span class="category-pill">${escapeHtml(item.uiType)}</span>
-            <span class="metric-pill ${item.matched ? "good" : "warn"}">${item.matched ? "Matched" : "Live only"}</span>
             <span class="metric-pill">x${fmtNumber(item.quantity)}</span>
             ${item.marketable ? `<span class="metric-pill good">Marketable</span>` : `<span class="metric-pill warn">Non-marketable</span>`}
             ${item.tradable ? `<span class="metric-pill good">Tradable</span>` : `<span class="metric-pill warn">Trade locked</span>`}
@@ -291,20 +287,20 @@ function renderGrid() {
         </div>
       </div>
 
-      <div class="muted">${escapeHtml(item.type || "Steam item")}</div>
+      <div class="skin-card-copy">${escapeHtml(item.type || "Steam item")}</div>
 
-      <div class="inventory-card-values">
+      <div class="skin-card-values">
         <strong>${fmtMoney(item.totalPriceEur)}</strong>
-        <span class="muted">${fmtMoney(item.unitPriceEur)} each</span>
-        ${item.listingUrl ? `<a class="muted" href="${escapeHtml(item.listingUrl)}" target="_blank" rel="noopener">Open market listing</a>` : ""}
+        <span>${fmtMoney(item.unitPriceEur)} each</span>
+        ${item.listingUrl ? `<a href="${escapeHtml(item.listingUrl)}" target="_blank" rel="noopener">Open market listing</a>` : ""}
       </div>
     </article>
   `).join("");
 }
 
 function render() {
-  renderProfile();
-  renderStats();
+  renderProfileCard();
+  renderHeroStats();
   renderTypeFilter();
   renderGrid();
 }
@@ -318,7 +314,6 @@ async function loadInventory(forceRefresh = false) {
 
   state.loading = true;
   state.error = null;
-  state.query = query;
   render();
 
   try {
@@ -329,6 +324,7 @@ async function loadInventory(forceRefresh = false) {
         refresh: forceRefresh,
       }),
     });
+
     state.portfolio = payload;
     state.error = null;
   } catch (error) {
@@ -341,7 +337,17 @@ async function loadInventory(forceRefresh = false) {
   }
 }
 
+function bootFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const profile = params.get("profile");
+  if (profile) {
+    $("profileInput").value = profile;
+    loadInventory(false);
+  }
+}
+
 function wire() {
+  $("lookupButton").addEventListener("click", () => loadInventory(false));
   $("loadInventoryButton").addEventListener("click", () => loadInventory(false));
   $("refreshInventoryButton").addEventListener("click", () => loadInventory(true));
 
@@ -357,15 +363,6 @@ function wire() {
   $("marketableFilter").addEventListener("change", render);
   $("tradableFilter").addEventListener("change", render);
   $("sortSelect").addEventListener("change", render);
-}
-
-function bootFromUrl() {
-  const params = new URLSearchParams(window.location.search);
-  const profile = params.get("profile");
-  if (profile) {
-    $("profileInput").value = profile;
-    loadInventory(false);
-  }
 }
 
 wire();

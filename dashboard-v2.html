@@ -3,543 +3,378 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CS Market Dashboard</title>
+  <title>CS2 Investment Platform</title>
   <link rel="stylesheet" href="dashboard-v2.css" />
-  <style>
-    .tabbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 12px;
-      margin-bottom: 14px;
-    }
-
-    .tab-button {
-      border: 1px solid rgba(115, 148, 176, 0.22);
-      background: rgba(18, 25, 37, 0.72);
-      color: #dbe7f5;
-      border-radius: 999px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font: inherit;
-      transition: 160ms ease;
-    }
-
-    .tab-button:hover {
-      border-color: rgba(88, 184, 255, 0.4);
-      transform: translateY(-1px);
-    }
-
-    .tab-button.active {
-      background: rgba(30, 71, 108, 0.9);
-      border-color: rgba(88, 184, 255, 0.55);
-      box-shadow: 0 10px 24px rgba(29, 70, 105, 0.28);
-    }
-
-    .skins-workspace {
-      display: none;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .skins-workspace.active {
-      display: flex;
-    }
-
-    .skin-hero-card {
-      border: 1px solid rgba(115, 148, 176, 0.18);
-      background: linear-gradient(180deg, rgba(19, 27, 40, 0.92), rgba(13, 19, 31, 0.96));
-      border-radius: 22px;
-      padding: 18px;
-      display: grid;
-      grid-template-columns: 96px 1fr auto;
-      gap: 16px;
-      align-items: start;
-    }
-
-    .skin-hero-card img {
-      width: 96px;
-      height: 96px;
-      object-fit: contain;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.04);
-      padding: 8px;
-    }
-
-    .skin-hero-title {
-      margin: 0;
-      font-size: 30px;
-      line-height: 1.05;
-    }
-
-    .skin-hero-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .skin-hero-actions {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .skin-grid-toolbar {
-      display: grid;
-      grid-template-columns: minmax(220px, 1.3fr) repeat(4, minmax(120px, 0.6fr));
-      gap: 12px;
-    }
-
-    .skin-grid-toolbar label {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .skin-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 14px;
-    }
-
-    .skin-card {
-      border: 1px solid rgba(115, 148, 176, 0.18);
-      background: linear-gradient(180deg, rgba(18, 25, 37, 0.9), rgba(13, 19, 31, 0.96));
-      border-radius: 18px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-height: 220px;
-      cursor: pointer;
-      transition: 150ms ease;
-    }
-
-    .skin-card:hover {
-      transform: translateY(-2px);
-      border-color: rgba(88, 184, 255, 0.38);
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
-    }
-
-    .skin-card.active {
-      border-color: rgba(88, 184, 255, 0.55);
-      box-shadow: 0 12px 30px rgba(24, 86, 138, 0.18);
-    }
-
-    .skin-card-top {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .skin-card img {
-      width: 68px;
-      height: 68px;
-      object-fit: contain;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.04);
-      padding: 6px;
-      flex: 0 0 auto;
-    }
-
-    .skin-card h3 {
-      margin: 0;
-      font-size: 15px;
-      line-height: 1.35;
-    }
-
-    .skin-card-values {
-      margin-top: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .skin-card-values strong {
-      font-size: 18px;
-    }
-
-    .skin-card-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .skin-stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-
-    .skin-stat-card {
-      border: 1px solid rgba(115, 148, 176, 0.18);
-      border-radius: 18px;
-      padding: 14px;
-      background: rgba(17, 24, 36, 0.72);
-    }
-
-    .skin-stat-card span {
-      display: block;
-      color: #8ca0b8;
-      font-size: 12px;
-      margin-bottom: 6px;
-    }
-
-    .skin-stat-card strong {
-      font-size: 22px;
-      line-height: 1.1;
-    }
-
-    .explorer-subcopy {
-      margin-top: 8px;
-      margin-bottom: 4px;
-      color: #8ca0b8;
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 1220px) {
-      .skin-grid-toolbar {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .skin-stats-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .skin-hero-card {
-        grid-template-columns: 80px 1fr;
-      }
-
-      .skin-hero-actions {
-        grid-column: 1 / -1;
-        justify-content: flex-start;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .skin-grid-toolbar,
-      .skin-stats-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .skin-hero-card {
-        grid-template-columns: 1fr;
-      }
-
-      .skin-hero-card img {
-        width: 88px;
-        height: 88px;
-      }
-    }
-  </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="topbar panel">
-      <div class="hero-copy">
-        <p class="eyebrow">Steam + CSStonks + SkinBaron</p>
-        <h1>CS market dashboard</h1>
-        <p class="subcopy">
-          Containers stay in the classic explorer. Skins get a dedicated grid view so the homepage stays fast and usable.
-        </p>
-      </div>
-      <div class="topbar-actions">
-        <div class="status-pill" id="statusPill">Connecting…</div>
-        <button class="button primary" id="refreshButton">Refresh data</button>
-        <button class="button" id="saveConfigButton">Save automation</button>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <div class="eyebrow">Steam-based CS2 investment intelligence</div>
+          <h1>Track, analyze and grow your CS2 portfolio</h1>
+          <p class="hero-text">
+            Explore case opportunities, browse the skin market, and value public inventories with a premium,
+            Steam-first investment dashboard.
+          </p>
+
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="heroInventoryButton" type="button">Check inventory</button>
+            <button class="btn btn-secondary" id="heroExploreButton" type="button">Explore market</button>
+          </div>
+
+          <div class="hero-pills">
+            <div class="hero-pill">
+              <span>Refresh state</span>
+              <strong id="statusPill">Connecting…</strong>
+            </div>
+            <div class="hero-pill">
+              <span>Last updated</span>
+              <strong id="lastSyncedAt">—</strong>
+            </div>
+            <div class="hero-pill">
+              <span>Tracked universe</span>
+              <strong id="heroUniverse">0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <div class="hero-side-card">
+            <span class="card-label">Top setup</span>
+            <strong class="card-value" id="heroTopName">—</strong>
+            <p class="card-meta" id="heroTopMeta">No ranking yet</p>
+          </div>
+
+          <div class="hero-side-card">
+            <span class="card-label">Most liquid case</span>
+            <strong class="card-value" id="heroDiscount">—</strong>
+            <p class="card-meta" id="heroDiscountMeta">Waiting for Steam coverage</p>
+          </div>
+
+          <div class="hero-side-card">
+            <span class="card-label">Skin universe</span>
+            <strong class="card-value" id="heroTrend">—</strong>
+            <p class="card-meta" id="heroTrendMeta">Waiting for skin scrape</p>
+          </div>
+        </div>
       </div>
     </header>
 
-    <section class="overview-grid">
-      <article class="overview-card panel">
-        <span class="overview-label">Universe</span>
-        <strong id="heroUniverse">0</strong>
-        <p id="heroUniverseMeta" class="muted">Waiting for data</p>
-      </article>
-      <article class="overview-card panel accent">
-        <span class="overview-label">Top setup</span>
-        <strong id="heroTopName">—</strong>
-        <p id="heroTopMeta" class="muted">No ranking yet</p>
-      </article>
-      <article class="overview-card panel">
-        <span class="overview-label">Best Steam gap</span>
-        <strong id="heroDiscount">—</strong>
-        <p id="heroDiscountMeta" class="muted">Waiting for Steam coverage</p>
-      </article>
-      <article class="overview-card panel">
-        <span class="overview-label">Steam mover</span>
-        <strong id="heroTrend">—</strong>
-        <p id="heroTrendMeta" class="muted">Waiting for trend data</p>
-      </article>
-    </section>
+    <main class="main-shell">
+      <section class="quick-stats">
+        <article class="stat-card">
+          <span class="stat-label">Universe</span>
+          <strong class="stat-value" id="statUniverse">—</strong>
+          <span class="stat-meta" id="statUniverseMeta">Waiting for data</span>
+        </article>
 
-    <main class="workspace">
-      <aside class="panel explorer">
-        <div class="section-head">
-          <div>
-            <p class="eyebrow">Explorer</p>
-            <h2 id="explorerTitle">Market explorer</h2>
-            <p class="explorer-subcopy" id="explorerSubcopy">
-              Containers use the classic list. Skins switch to a fast grid view.
-            </p>
-          </div>
-          <div class="mini-status" id="lastSyncedAt">—</div>
-        </div>
+        <article class="stat-card">
+          <span class="stat-label">Cases tracked</span>
+          <strong class="stat-value" id="statCases">—</strong>
+          <span class="stat-meta" id="statCasesMeta">Steam-fed case market</span>
+        </article>
 
-        <div class="tabbar">
-          <button class="tab-button active" id="tabContainers" type="button">Containers</button>
-          <button class="tab-button" id="tabSkins" type="button">Skins</button>
-        </div>
+        <article class="stat-card">
+          <span class="stat-label">Skins tracked</span>
+          <strong class="stat-value" id="statSkins">—</strong>
+          <span class="stat-meta" id="statSkinsMeta">Scrape-fed skin grid</span>
+        </article>
 
-        <div class="filter-grid" id="containerFilters">
-          <label>
-            <span>Search</span>
-            <input id="searchInput" type="search" placeholder="Case, capsule, souvenir..." />
-          </label>
-          <label>
-            <span>Category</span>
-            <select id="categoryFilter">
-              <option value="ALL">All</option>
-              <option value="case">Cases</option>
-              <option value="capsule">Capsules</option>
-              <option value="souvenir">Souvenirs</option>
-              <option value="pins">Pins</option>
-              <option value="container">Other containers</option>
-            </select>
-          </label>
-          <label>
-            <span>Grade</span>
-            <select id="gradeFilter">
-              <option value="ALL">All</option>
-              <option value="GOOD">Green</option>
-              <option value="WARN">Orange</option>
-              <option value="BAD">Red</option>
-            </select>
-          </label>
-          <label>
-            <span>Sort</span>
-            <select id="sortSelect">
-              <option value="score">Investment score</option>
-              <option value="discount">Steam discount</option>
-              <option value="trend">Steam trend</option>
-              <option value="liquidity">Liquidity</option>
-              <option value="scarcity">Scarcity</option>
-            </select>
-          </label>
-        </div>
+        <article class="stat-card">
+          <span class="stat-label">Good setups</span>
+          <strong class="stat-value" id="statGood">—</strong>
+          <span class="stat-meta" id="statGoodMeta">Highest-scoring cases</span>
+        </article>
+      </section>
 
-        <div class="filter-grid hidden" id="skinFilters">
-          <label>
-            <span>Search skin</span>
-            <input id="skinSearchInput" type="search" placeholder="AK-47, Redline, AWP..." />
-          </label>
-          <label>
-            <span>Type</span>
-            <select id="skinTypeFilter">
-              <option value="ALL">All</option>
-            </select>
-          </label>
-          <label>
-            <span>Marketable</span>
-            <select id="skinMarketableFilter">
-              <option value="ALL">All</option>
-              <option value="MARKETABLE">Marketable</option>
-              <option value="NON_MARKETABLE">Non-marketable</option>
-            </select>
-          </label>
-          <label>
-            <span>Sort</span>
-            <select id="skinSortSelect">
-              <option value="value_desc">Highest price</option>
-              <option value="value_asc">Lowest price</option>
-              <option value="qty_desc">Highest quantity</option>
-              <option value="name_asc">Name A-Z</option>
-              <option value="name_desc">Name Z-A</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="case-list" id="caseList"></div>
-        <div class="source-card hidden" id="skinsSidebarInfo">
-          <strong>Skins tab active</strong>
-          <span class="muted">
-            Use the grid in the main workspace. This keeps the homepage usable even when the skin scrape grows large.
-          </span>
-        </div>
-      </aside>
-
-      <section class="panel detail">
-        <div id="focusContent" class="empty-state">
-          <p>Select an item to load score drivers, Steam chart, orderbook, and CSStonks context.</p>
-        </div>
-
-        <div id="skinsWorkspace" class="skins-workspace">
-          <section class="skin-stats-grid">
-            <article class="skin-stat-card">
-              <span>Visible skins</span>
-              <strong id="skinsVisibleCount">—</strong>
-            </article>
-            <article class="skin-stat-card">
-              <span>Tracked skins</span>
-              <strong id="skinsTotalCount">—</strong>
-            </article>
-            <article class="skin-stat-card">
-              <span>Marketable</span>
-              <strong id="skinsMarketableCount">—</strong>
-            </article>
-            <article class="skin-stat-card">
-              <span>Avg Steam price</span>
-              <strong id="skinsAvgPrice">—</strong>
-            </article>
-          </section>
-
-          <section class="skin-hero-card" id="skinHeroCard">
-            <div class="empty-state" style="grid-column: 1 / -1;">
-              <p>Select a skin card to view the detail panel.</p>
-            </div>
-          </section>
-
-          <section class="skin-grid-toolbar">
-            <label>
-              <span>Search</span>
-              <input id="skinSearchInputWide" type="search" placeholder="Search the loaded skin universe..." />
-            </label>
-            <label>
-              <span>Type</span>
-              <select id="skinTypeFilterWide">
-                <option value="ALL">All</option>
-              </select>
-            </label>
-            <label>
-              <span>Marketability</span>
-              <select id="skinMarketableFilterWide">
-                <option value="ALL">All</option>
-                <option value="MARKETABLE">Marketable</option>
-                <option value="NON_MARKETABLE">Non-marketable</option>
-              </select>
-            </label>
-            <label>
-              <span>Tradable</span>
-              <select id="skinTradableFilterWide">
-                <option value="ALL">All</option>
-                <option value="TRADABLE">Tradable</option>
-                <option value="LOCKED">Trade locked</option>
-              </select>
-            </label>
-            <label>
-              <span>Sort</span>
-              <select id="skinSortSelectWide">
-                <option value="value_desc">Highest price</option>
-                <option value="value_asc">Lowest price</option>
-                <option value="qty_desc">Highest quantity</option>
-                <option value="name_asc">Name A-Z</option>
-                <option value="name_desc">Name Z-A</option>
-              </select>
-            </label>
-          </section>
-
-          <section class="skin-grid" id="skinsGrid"></section>
+      <section class="surface tabs-surface">
+        <div class="tabs">
+          <button class="tab is-active" id="tabCases" type="button">Cases</button>
+          <button class="tab" id="tabSkins" type="button">Skins</button>
         </div>
       </section>
 
-      <aside class="panel side">
-        <div class="side-section">
-          <p class="eyebrow">Portfolio</p>
-          <h2>Public Steam inventory</h2>
-
-          <div class="control-stack">
-            <label>
-              <span>Steam profile</span>
-              <input
-                id="steamProfileInput"
-                type="text"
-                placeholder="https://steamcommunity.com/id/naam or 7656119..."
-              />
-            </label>
-            <div class="topbar-actions" style="justify-content:flex-start; margin-top:10px;">
-              <button class="button primary" id="steamLookupButton" type="button">Check profile</button>
-              <button class="button" id="steamRefreshButton" type="button">Refresh inventory</button>
-              <button class="button" id="openInventoryPageButton" type="button">Open full inventory</button>
+      <section class="workspace">
+        <aside class="surface sidebar">
+          <div class="sidebar-head">
+            <div>
+              <div class="eyebrow">Explorer</div>
+              <h2 id="explorerTitle">Case market</h2>
+              <p class="section-copy" id="explorerCopy">
+                Browse Steam-first case opportunities with supply and conviction context.
+              </p>
             </div>
           </div>
 
-          <div id="portfolioSummary" class="source-card">
-            <strong>No profile loaded</strong>
-            <span class="muted">Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
-          </div>
-          <div id="portfolioList" class="portfolio-list"></div>
-        </div>
+          <div id="caseSidebarBlock">
+            <div class="filter-grid">
+              <label class="field">
+                <span>Search</span>
+                <input id="searchInput" type="search" placeholder="Dreams, fracture, recoil..." />
+              </label>
 
-        <div class="side-section">
-          <p class="eyebrow">Refresh</p>
-          <h2>Pipeline</h2>
-          <div class="progress-shell">
-            <div class="progress-bar"><span id="progressFill"></span></div>
-            <div class="progress-meta">
-              <span id="progressLabel">0%</span>
-              <span id="progressHint">Ready</span>
+              <label class="field">
+                <span>Category</span>
+                <select id="categoryFilter">
+                  <option value="ALL">All</option>
+                  <option value="case">Cases</option>
+                  <option value="souvenir">Souvenirs</option>
+                  <option value="capsule">Capsules</option>
+                  <option value="pins">Pins</option>
+                  <option value="container">Other containers</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Grade</span>
+                <select id="gradeFilter">
+                  <option value="ALL">All</option>
+                  <option value="GOOD">Good</option>
+                  <option value="WARN">Watch</option>
+                  <option value="BAD">Risky</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Sort</span>
+                <select id="sortSelect">
+                  <option value="score">Investment score</option>
+                  <option value="listings">Steam listings</option>
+                  <option value="price">Steam price</option>
+                  <option value="scarcity">Scarcity</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="sidebar-results-meta" id="caseResultsMeta">Loading cases…</div>
+            <div class="list-stack" id="caseList"></div>
+          </div>
+
+          <div id="skinSidebarBlock" class="hidden">
+            <div class="filter-grid">
+              <label class="field">
+                <span>Search</span>
+                <input id="skinSearchInput" type="search" placeholder="AK-47, Redline, AWP..." />
+              </label>
+
+              <label class="field">
+                <span>Type</span>
+                <select id="skinTypeFilter">
+                  <option value="ALL">All</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Marketability</span>
+                <select id="skinMarketableFilter">
+                  <option value="ALL">All</option>
+                  <option value="MARKETABLE">Marketable</option>
+                  <option value="NON_MARKETABLE">Non-marketable</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Sort</span>
+                <select id="skinSortSelect">
+                  <option value="value_desc">Highest price</option>
+                  <option value="value_asc">Lowest price</option>
+                  <option value="qty_desc">Highest quantity</option>
+                  <option value="name_asc">Name A-Z</option>
+                  <option value="name_desc">Name Z-A</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="sidebar-results-meta" id="skinResultsMeta">Loading skins…</div>
+
+            <div class="skin-mini-summary">
+              <div class="mini-stat">
+                <span>Visible</span>
+                <strong id="skinsVisibleCount">—</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Total</span>
+                <strong id="skinsTotalCount">—</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Marketable</span>
+                <strong id="skinsMarketableCount">—</strong>
+              </div>
+              <div class="mini-stat">
+                <span>Avg price</span>
+                <strong id="skinsAvgPrice">—</strong>
+              </div>
             </div>
           </div>
-          <p id="syncHeadline" class="headline-copy">Waiting for dashboard data</p>
-          <p id="syncSubline" class="muted">No refresh activity yet.</p>
-        </div>
+        </aside>
 
-        <div class="side-section">
-          <p class="eyebrow">Automation</p>
-          <h2>Settings</h2>
-          <form id="configForm" class="control-stack">
-            <label class="toggle-row">
-              <span>Scheduler enabled</span>
-              <input type="checkbox" id="cfgSchedulerEnabled" />
-            </label>
-            <label>
-              <span>Interval (minutes)</span>
-              <input type="number" id="cfgIntervalMinutes" min="15" max="1440" step="15" />
-            </label>
-            <label class="toggle-row">
-              <span>Run on startup</span>
-              <input type="checkbox" id="cfgRunOnStartup" />
-            </label>
-            <label class="toggle-row">
-              <span>Headless browser</span>
-              <input type="checkbox" id="cfgHeadless" />
-            </label>
-            <label>
-              <span>SkinBaron scrape limit</span>
-              <input type="number" id="cfgPriceLimit" min="5" max="1000" step="1" />
-            </label>
-            <label class="toggle-row">
-              <span>Run CSStonks timeseries</span>
-              <input type="checkbox" id="cfgTimeseries" />
-            </label>
-            <label>
-              <span>Rating strictness</span>
-              <input type="range" id="cfgStrictness" min="0" max="100" step="1" />
-              <strong id="cfgStrictnessValue">55</strong>
-            </label>
-          </form>
-        </div>
+        <section class="surface content">
+          <div id="caseContent">
+            <div id="caseDetail"></div>
+          </div>
 
-        <div class="side-section">
-          <p class="eyebrow">Freshness</p>
-          <h2>Sources</h2>
-          <div id="sourcesList" class="source-list"></div>
-        </div>
+          <div id="skinsContent" class="hidden">
+            <div id="skinHero"></div>
 
-        <div class="side-section">
-          <p class="eyebrow">Logs</p>
-          <h2>Recent activity</h2>
-          <div id="logList" class="log-list"></div>
-        </div>
-      </aside>
+            <div class="skin-toolbar">
+              <label class="field">
+                <span>Search</span>
+                <input id="skinSearchInputWide" type="search" placeholder="Search loaded skins..." />
+              </label>
+
+              <label class="field">
+                <span>Type</span>
+                <select id="skinTypeFilterWide">
+                  <option value="ALL">All</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Marketability</span>
+                <select id="skinMarketableFilterWide">
+                  <option value="ALL">All</option>
+                  <option value="MARKETABLE">Marketable</option>
+                  <option value="NON_MARKETABLE">Non-marketable</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Tradable</span>
+                <select id="skinTradableFilterWide">
+                  <option value="ALL">All</option>
+                  <option value="TRADABLE">Tradable</option>
+                  <option value="LOCKED">Trade locked</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Sort</span>
+                <select id="skinSortSelectWide">
+                  <option value="value_desc">Highest price</option>
+                  <option value="value_asc">Lowest price</option>
+                  <option value="qty_desc">Highest quantity</option>
+                  <option value="name_asc">Name A-Z</option>
+                  <option value="name_desc">Name Z-A</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="skin-grid" id="skinsGrid"></div>
+          </div>
+        </section>
+
+        <aside class="surface rightbar">
+          <section class="right-section">
+            <div class="eyebrow">Portfolio</div>
+            <h2>Public inventory</h2>
+
+            <div class="field-stack">
+              <label class="field">
+                <span>Steam profile</span>
+                <input
+                  id="steamProfileInput"
+                  type="text"
+                  placeholder="https://steamcommunity.com/id/name or 7656119..."
+                />
+              </label>
+
+              <div class="button-row">
+                <button class="btn btn-primary" id="steamLookupButton" type="button">Check profile</button>
+                <button class="btn btn-secondary" id="steamRefreshButton" type="button">Refresh</button>
+                <button class="btn btn-secondary" id="openInventoryPageButton" type="button">Open full page</button>
+              </div>
+            </div>
+
+            <div class="info-card" id="portfolioSummary">
+              <strong>No profile loaded</strong>
+              <span>Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
+            </div>
+
+            <div class="portfolio-list" id="portfolioList"></div>
+          </section>
+
+          <section class="right-section">
+            <div class="eyebrow">Pipeline</div>
+            <h2>Backend refresh</h2>
+
+            <div class="progress-shell">
+              <div class="progress-bar">
+                <span id="progressFill"></span>
+              </div>
+              <div class="progress-meta">
+                <span id="progressLabel">0%</span>
+                <span id="progressHint">Ready</span>
+              </div>
+            </div>
+
+            <div class="info-card compact">
+              <strong id="syncHeadline">Waiting for dashboard data</strong>
+              <span id="syncSubline">No refresh activity yet.</span>
+            </div>
+          </section>
+
+          <section class="right-section">
+            <div class="eyebrow">Settings</div>
+            <h2>Automation</h2>
+
+            <form id="configForm" class="field-stack">
+              <label class="toggle">
+                <span>Scheduler enabled</span>
+                <input type="checkbox" id="cfgSchedulerEnabled" />
+              </label>
+
+              <label class="field">
+                <span>Interval (minutes)</span>
+                <input type="number" id="cfgIntervalMinutes" min="15" max="1440" step="15" />
+              </label>
+
+              <label class="toggle">
+                <span>Run on startup</span>
+                <input type="checkbox" id="cfgRunOnStartup" />
+              </label>
+
+              <label class="toggle">
+                <span>Headless browser</span>
+                <input type="checkbox" id="cfgHeadless" />
+              </label>
+
+              <label class="field">
+                <span>Steam scrape limit</span>
+                <input type="number" id="cfgPriceLimit" min="5" max="1000" step="1" />
+              </label>
+
+              <label class="toggle">
+                <span>Run CSStonks timeseries</span>
+                <input type="checkbox" id="cfgTimeseries" />
+              </label>
+
+              <label class="field">
+                <span>Rating strictness</span>
+                <input type="range" id="cfgStrictness" min="0" max="100" step="1" />
+                <strong id="cfgStrictnessValue">55</strong>
+              </label>
+
+              <div class="button-row">
+                <button class="btn btn-primary" id="refreshButton" type="button">Refresh now</button>
+                <button class="btn btn-secondary" id="saveConfigButton" type="button">Save settings</button>
+              </div>
+            </form>
+          </section>
+
+          <section class="right-section">
+            <div class="eyebrow">Sources</div>
+            <h2>Freshness</h2>
+            <div class="source-list" id="sourcesList"></div>
+          </section>
+
+          <section class="right-section">
+            <div class="eyebrow">Logs</div>
+            <h2>Recent activity</h2>
+            <div class="log-list" id="logList"></div>
+          </section>
+        </aside>
+      </section>
     </main>
   </div>
 
