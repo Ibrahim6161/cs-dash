@@ -7,12 +7,7 @@ const state = {
   selectedCaseKey: null,
   selectedSkinKey: null,
   activeTab: "cases",
-  liveMarket: new Map(),
-  loadingMarketKey: null,
-  steamQueue: [],
-  liveFillQueue: new Set(),
-  steamBackoffUntil: 0,
-  steamQueueTimer: null,
+  chartRange: "7d",
 };
 
 const $ = (id) => document.getElementById(id);
@@ -65,6 +60,28 @@ function fmtDate(value) {
   }).format(date);
 }
 
+function fmtShortDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat(undefined, {
+    day: "numeric",
+    month: "short",
+  }).format(date);
+}
+
+function fmtSteamTooltipDate(value) {
+  if (!value) return "Unknown date";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "Unknown date";
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
 function fmtRelative(value) {
   if (!value) return "—";
   const date = new Date(value);
@@ -109,7 +126,34 @@ async function api(path, options = {}) {
   return payload;
 }
 
-function chartSvg(values, color = "#58b8ff") {
+function getCaseItems() {
+  return Array.isArray(state.payload?.dashboard?.items) ? state.payload.dashboard.items : [];
+}
+
+function getSkinItems() {
+  return Array.isArray(state.payload?.dashboard?.skins) ? state.payload.dashboard.skins : [];
+}
+
+function getResolvedSteamPrice(item) {
+  return item?.price?.steamPriceEur
+    ?? item?.steamPriceEur
+    ?? item?.unitPriceEur
+    ?? null;
+}
+
+function getResolvedTrend(item) {
+  return item?.metrics?.steamChange30dPct
+    ?? item?.change30dPct
+    ?? null;
+}
+
+function getResolvedListings(item) {
+  return item?.price?.steamVolume
+    ?? item?.sellListings
+    ?? null;
+}
+
+function renderSimpleSpark(values, color = "#35d07f") {
   const points = (Array.isArray(values) ? values : []).filter(
     (value) => value != null && Number.isFinite(value)
   );
@@ -132,7 +176,7 @@ function chartSvg(values, color = "#58b8ff") {
   });
 
   return `
-    <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+    <svg viewBox="0 0 640 190" preserveAspectRatio="none" aria-hidden="true">
       <polyline
         fill="none"
         stroke="${color}"
@@ -143,139 +187,536 @@ function chartSvg(values, color = "#58b8ff") {
   `;
 }
 
-function getCaseItems() {
-  return Array.isArray(state.payload?.dashboard?.items) ? state.payload.dashboard.items : [];
+function getRawSteamHistory(item) {
+  if (Array.isArray(item?.charts?.steamHistory) && item.charts.steamHistory.length) {
+    return item.charts.steamHistory;
+  }
+
+  if (Array.isArray(item?.steamHistory) && item.steamHistory.length) {
+    return item.steamHistory;
+  }
+
+  return [];
 }
 
-function getSkinItems() {
-  return Array.isArray(state.payload?.dashboard?.skins) ? state.payload.dashboard.skins : [];
-}
+function normalizeHistoryPoint(point, index = 0) {
+  if (!point) return null;
 
-function getResolvedSteamPrice(item) {
-  const live = state.liveMarket.get(item.key);
-  return live?.overview?.lowestPriceEur
-    ?? live?.overview?.medianPriceEur
-    ?? live?.summary?.latestPriceEur
-    ?? item.price?.steamPriceEur
-    ?? item.steamPriceEur
-    ?? item.unitPriceEur
-    ?? null;
-}
+  if (typeof point === "number") {
+    return {
+      date: null,
+      ts: index,
+      priceEur: Number(point),
+      volume: null,
+    };
+  }
 
-function getResolvedTrend(item) {
-  const live = state.liveMarket.get(item.key);
-  return live?.summary?.change30dPct
-    ?? item.metrics?.steamChange30dPct
-    ?? item.change30dPct
-    ?? null;
-}
-
-function queueSteamItems(items, prioritize = false) {
-  const next = items.filter((item) =>
-    item &&
-    item.key &&
-    item.name &&
-    !state.liveMarket.has(item.key) &&
-    !state.liveFillQueue.has(item.key) &&
-    !state.steamQueue.some((queued) => queued.key === item.key)
+  const priceEur = Number(
+    point.priceEur ??
+    point.price ??
+    point.value ??
+    point.close ??
+    point.medianPriceEur ??
+    point.lowestPriceEur
   );
 
-  if (!next.length) return;
-  state.steamQueue = prioritize
-    ? [...next, ...state.steamQueue]
-    : [...state.steamQueue, ...next];
+  if (!Number.isFinite(priceEur)) return null;
+
+  const rawDate = point.date || point.time || point.timestamp || null;
+  const parsed = rawDate ? new Date(rawDate) : null;
+  const ts = parsed && !Number.isNaN(parsed.getTime()) ? parsed.getTime() : index;
+
+  return {
+    date: parsed && !Number.isNaN(parsed.getTime()) ? parsed.toISOString() : null,
+    ts,
+    priceEur,
+    volume: Number.isFinite(Number(point.volume)) ? Number(point.volume) : null,
+  };
 }
 
-function startSteamQueue() {
-  if (state.steamQueueTimer) return;
+function getNormalizedSteamHistory(item) {
+  return getRawSteamHistory(item)
+    .map((point, index) => normalizeHistoryPoint(point, index))
+    .filter(Boolean)
+    .sort((a, b) => a.ts - b.ts);
+}
 
-  state.steamQueueTimer = setInterval(async () => {
-    if (!state.steamQueue.length) return;
-    if (Date.now() < state.steamBackoffUntil) return;
+function getRangeConfig(range) {
+  switch (range) {
+    case "7d":
+      return { days: 7, bucketMs: 12 * 60 * 60 * 1000, smoothWindow: 2 };
+    case "30d":
+      return { days: 30, bucketMs: 24 * 60 * 60 * 1000, smoothWindow: 2 };
+    case "180d":
+      return { days: 180, bucketMs: 3 * 24 * 60 * 60 * 1000, smoothWindow: 3 };
+    case "365d":
+      return { days: 365, bucketMs: 7 * 24 * 60 * 60 * 1000, smoothWindow: 3 };
+    case "all":
+    default:
+      return { days: null, bucketMs: 14 * 24 * 60 * 60 * 1000, smoothWindow: 3 };
+  }
+}
 
-    const item = state.steamQueue.shift();
-    if (!item || !item.name || state.liveFillQueue.has(item.key) || state.liveMarket.has(item.key)) return;
+function filterHistoryByRange(points, range) {
+  const rows = Array.isArray(points) ? points : [];
+  if (!rows.length) return [];
 
-    state.liveFillQueue.add(item.key);
-    try {
-      const payload = await api(`/api/item-market?name=${encodeURIComponent(item.name)}`);
-      state.liveMarket.set(item.key, payload.market);
-      state.steamBackoffUntil = Date.now() + 1200;
-    } catch (error) {
-      const message = String(error?.message || error);
-      if (message.includes("429") || message.includes("502")) {
-        state.steamBackoffUntil = Date.now() + 5000;
-        state.steamQueue.push(item);
-      }
-    } finally {
-      state.liveFillQueue.delete(item.key);
-      render();
+  const config = getRangeConfig(range);
+  if (!config.days) return rows;
+
+  const latestTs = rows[rows.length - 1]?.ts;
+  if (!Number.isFinite(latestTs)) return rows;
+
+  const cutoff = latestTs - (config.days * 24 * 60 * 60 * 1000);
+  const filtered = rows.filter((point) => Number.isFinite(point.ts) && point.ts >= cutoff);
+
+  return filtered.length ? filtered : rows;
+}
+
+function bucketizeHistory(points, bucketMs) {
+  const rows = Array.isArray(points) ? points : [];
+  if (!rows.length) return [];
+
+  const buckets = new Map();
+
+  for (const point of rows) {
+    const bucketKey = Math.floor(point.ts / bucketMs) * bucketMs;
+    const existing = buckets.get(bucketKey) || {
+      ts: bucketKey,
+      date: new Date(bucketKey).toISOString(),
+      prices: [],
+      volumes: [],
+    };
+
+    existing.prices.push(point.priceEur);
+    if (point.volume != null && Number.isFinite(point.volume)) {
+      existing.volumes.push(point.volume);
     }
-  }, 1500);
+
+    buckets.set(bucketKey, existing);
+  }
+
+  return [...buckets.values()]
+    .sort((a, b) => a.ts - b.ts)
+    .map((bucket) => {
+      const avgPrice =
+        bucket.prices.reduce((sum, value) => sum + value, 0) / Math.max(1, bucket.prices.length);
+
+      const avgVolume = bucket.volumes.length
+        ? bucket.volumes.reduce((sum, value) => sum + value, 0) / bucket.volumes.length
+        : null;
+
+      return {
+        ts: bucket.ts,
+        date: bucket.date,
+        priceEur: avgPrice,
+        volume: avgVolume,
+      };
+    });
 }
 
-function renderHero(payload) {
-  const cases = getCaseItems();
-  const skins = getSkinItems();
-  const overview = payload.dashboard.overview || {};
+function smoothHistory(points, windowSize = 2) {
+  const rows = Array.isArray(points) ? points : [];
+  if (!rows.length || windowSize <= 1) return rows;
 
-  $("heroUniverse").textContent = fmtNumber((cases.length || 0) + (skins.length || 0));
-  $("lastSyncedAt").textContent = payload.dashboard.updatedAt ? fmtDate(payload.dashboard.updatedAt) : "—";
+  return rows.map((point, index) => {
+    const start = Math.max(0, index - windowSize + 1);
+    const slice = rows.slice(start, index + 1);
+    const avgPrice = slice.reduce((sum, row) => sum + row.priceEur, 0) / slice.length;
 
-  $("heroTopName").textContent = overview.topCandidate?.name || cases[0]?.name || "—";
-  $("heroTopMeta").textContent = overview.topCandidate
-    ? `${overview.topCandidate.category} · score ${fmtScore(overview.topCandidate.score)}`
-    : "No ranking yet";
-
-  const mostLiquid = [...cases].sort((a, b) => (b.price?.steamVolume ?? -1) - (a.price?.steamVolume ?? -1))[0];
-  $("heroDiscount").textContent = mostLiquid?.name || "—";
-  $("heroDiscountMeta").textContent = mostLiquid?.price?.steamVolume != null
-    ? `${fmtNumber(mostLiquid.price.steamVolume)} listings`
-    : "Waiting for Steam coverage";
-
-  $("heroTrend").textContent = skins.length ? fmtNumber(skins.length) : "—";
-  $("heroTrendMeta").textContent = skins.length ? "Scrape-fed skin universe ready" : "Waiting for skin scrape";
-
-  $("statUniverse").textContent = fmtNumber((cases.length || 0) + (skins.length || 0));
-  $("statUniverseMeta").textContent = `${fmtNumber(cases.length)} cases · ${fmtNumber(skins.length)} skins`;
-
-  $("statCases").textContent = fmtNumber(cases.length);
-  $("statCasesMeta").textContent = "Steam-priced case dataset";
-
-  $("statSkins").textContent = fmtNumber(skins.length);
-  $("statSkinsMeta").textContent = "Steam-priced skin dataset";
-
-  $("statGood").textContent = fmtNumber(overview.goodCount);
-  $("statGoodMeta").textContent = `${fmtNumber(overview.warnCount)} watch · ${fmtNumber(overview.badCount)} risky`;
+    return {
+      ...point,
+      priceEur: avgPrice,
+    };
+  });
 }
 
-function renderStatus(payload) {
-  const status = payload.status;
-  $("statusPill").textContent = status.running
-    ? `Running · ${status.currentStep || "starting"}`
-    : status.state === "error"
-      ? "Refresh error"
-      : status.lastSuccessAt
-        ? `Ready · ${fmtRelative(status.lastSuccessAt)}`
-        : "Idle";
+function prepareChartHistory(item, range) {
+  const raw = getNormalizedSteamHistory(item);
+  const filtered = filterHistoryByRange(raw, range);
 
-  const percent = status.running ? 55 : status.state === "error" ? 100 : payload.dashboard.updatedAt ? 100 : 0;
-  $("progressFill").style.width = `${percent}%`;
-  $("progressLabel").textContent = `${percent}%`;
-  $("progressHint").textContent = status.running
-    ? (status.currentStep || "Running")
-    : status.state === "error"
-      ? "Failed"
-      : "Ready";
+  if (!filtered.length) return [];
 
-  $("syncHeadline").textContent = status.running
-    ? "Refresh in progress"
-    : status.state === "error"
-      ? "Last refresh failed"
-      : "Refresh complete";
+  const config = getRangeConfig(range);
+  const bucketed = bucketizeHistory(filtered, config.bucketMs);
+  const smoothed = smoothHistory(bucketed, config.smoothWindow);
 
-  $("syncSubline").textContent = status.lastError
-    || (payload.dashboard.updatedAt ? `Updated ${fmtRelative(payload.dashboard.updatedAt)}.` : "No refresh activity yet.");
+  return smoothed;
+}
+
+function getHistorySummary(points) {
+  const rows = Array.isArray(points) ? points : [];
+  const prices = rows.map((point) => point.priceEur).filter((value) => value != null && Number.isFinite(value));
+
+  if (!prices.length) {
+    return {
+      min: null,
+      max: null,
+      first: null,
+      last: null,
+      changePct: null,
+      latestDate: null,
+    };
+  }
+
+  const first = prices[0];
+  const last = prices[prices.length - 1];
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+
+  return {
+    min,
+    max,
+    first,
+    last,
+    changePct: first && first !== 0 ? ((last - first) / first) * 100 : null,
+    latestDate: rows[rows.length - 1]?.date || null,
+  };
+}
+
+function getChartRangeLabel(range) {
+  const labels = {
+    "7d": "1 week",
+    "30d": "1 maand",
+    "180d": "6 maanden",
+    "365d": "1 jaar",
+    "all": "Alles",
+  };
+  return labels[range] || "1 week";
+}
+
+function renderChartRangeControls(context) {
+  const ranges = [
+    { key: "7d", label: "1 week" },
+    { key: "30d", label: "1 maand" },
+    { key: "180d", label: "6 maanden" },
+    { key: "365d", label: "1 jaar" },
+    { key: "all", label: "Alles" },
+  ];
+
+  return `
+    <div class="chart-panel-head">
+      <div>
+        <div class="chart-title-eyebrow">Laatste verkoopprijzen</div>
+        <h4 class="chart-panel-title">Steam</h4>
+      </div>
+
+      <div class="chart-range-group" data-chart-context="${escapeHtml(context)}">
+        ${ranges.map((range) => `
+          <button
+            class="chart-range-btn ${state.chartRange === range.key ? "is-active" : ""}"
+            type="button"
+            data-chart-range="${escapeHtml(range.key)}"
+            data-chart-context="${escapeHtml(context)}"
+          >${escapeHtml(range.label)}</button>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function renderChartMeta(points, fallbackChangePct = null) {
+  const summary = getHistorySummary(points);
+
+  return `
+    <div class="chart-meta-row">
+      <div class="chart-meta-pill">
+        <span>Range</span>
+        <strong>${escapeHtml(getChartRangeLabel(state.chartRange))}</strong>
+      </div>
+      <div class="chart-meta-pill">
+        <span>Start</span>
+        <strong>${summary.first != null ? fmtMoney(summary.first) : "—"}</strong>
+      </div>
+      <div class="chart-meta-pill">
+        <span>Laatste</span>
+        <strong>${summary.last != null ? fmtMoney(summary.last) : "—"}</strong>
+      </div>
+      <div class="chart-meta-pill">
+        <span>Verandering</span>
+        <strong>${fmtPct(summary.changePct ?? fallbackChangePct)}</strong>
+      </div>
+      <div class="chart-meta-pill">
+        <span>Laatste punt</span>
+        <strong>${summary.latestDate ? fmtShortDate(summary.latestDate) : "—"}</strong>
+      </div>
+    </div>
+  `;
+}
+
+function renderDatedPriceChart(points, chartId) {
+  const rows = Array.isArray(points) ? points : [];
+  const prices = rows.map((point) => point.priceEur).filter((value) => value != null && Number.isFinite(value));
+
+  if (!prices.length) {
+    return `<div class="empty-state">No chart data available.</div>`;
+  }
+
+  const width = 860;
+  const height = 280;
+  const paddingTop = 20;
+  const paddingRight = 18;
+  const paddingBottom = 34;
+  const paddingLeft = 56;
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  const range = max - min || 1;
+
+  const minTs = rows[0].ts;
+  const maxTs = rows[rows.length - 1].ts;
+
+  const usableWidth = width - paddingLeft - paddingRight;
+  const usableHeight = height - paddingTop - paddingBottom;
+
+  const coords = rows.map((point) => {
+    const xRatio = (point.ts - minTs) / Math.max(1, maxTs - minTs);
+    const x = paddingLeft + (xRatio * usableWidth);
+    const y = paddingTop + ((max - point.priceEur) / range) * usableHeight;
+
+    return {
+      x,
+      y,
+      ts: point.ts,
+      date: point.date,
+      priceEur: point.priceEur,
+    };
+  });
+
+  const polyline = coords.map((point) => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(" ");
+
+  const yTicks = 5;
+  const yLabels = Array.from({ length: yTicks }, (_, idx) => {
+    const ratio = idx / Math.max(1, yTicks - 1);
+    const value = max - ((max - min) * ratio);
+    const y = paddingTop + (usableHeight * ratio);
+    return { value, y };
+  });
+
+  const xLabelIndexes = rows.length <= 2
+    ? rows.map((_, index) => index)
+    : Array.from(new Set([
+        0,
+        Math.floor((rows.length - 1) * 0.25),
+        Math.floor((rows.length - 1) * 0.5),
+        Math.floor((rows.length - 1) * 0.75),
+        rows.length - 1,
+      ]));
+
+  const xLabels = xLabelIndexes.map((index) => {
+    const point = rows[index];
+    const coord = coords[index];
+    return {
+      x: coord?.x ?? paddingLeft,
+      label: point?.date ? fmtShortDate(point.date) : `${index + 1}`,
+    };
+  });
+
+  const fillPath = [
+    `M ${coords[0].x.toFixed(1)} ${height - paddingBottom}`,
+    ...coords.map((point) => `L ${point.x.toFixed(1)} ${point.y.toFixed(1)}`),
+    `L ${coords[coords.length - 1].x.toFixed(1)} ${height - paddingBottom}`,
+    "Z",
+  ].join(" ");
+
+  const interactionRects = coords.map((point, index) => {
+    const prevX = index > 0 ? coords[index - 1].x : paddingLeft;
+    const nextX = index < coords.length - 1 ? coords[index + 1].x : width - paddingRight;
+    const left = index === 0 ? paddingLeft : (prevX + point.x) / 2;
+    const right = index === coords.length - 1 ? width - paddingRight : (point.x + nextX) / 2;
+    const rectWidth = Math.max(12, right - left);
+
+    return `
+      <rect
+        x="${left.toFixed(1)}"
+        y="${paddingTop}"
+        width="${rectWidth.toFixed(1)}"
+        height="${usableHeight}"
+        fill="transparent"
+        data-chart-point="1"
+        data-chart-id="${escapeHtml(chartId)}"
+        data-point-index="${index}"
+        data-price="${point.priceEur}"
+        data-date="${escapeHtml(point.date || "")}"
+        data-x="${point.x.toFixed(1)}"
+        data-y="${point.y.toFixed(1)}"
+        style="cursor: crosshair;"
+      ></rect>
+    `;
+  }).join("");
+
+  return `
+    <div
+      class="chart-rich"
+      data-steam-chart="${escapeHtml(chartId)}"
+      style="position:relative;width:100%;height:100%;"
+    >
+      <div
+        data-chart-tooltip="${escapeHtml(chartId)}"
+        style="
+          position:absolute;
+          top:10px;
+          left:10px;
+          opacity:0;
+          pointer-events:none;
+          transform:translateY(4px);
+          transition:opacity 120ms ease, transform 120ms ease;
+          z-index:3;
+          min-width:132px;
+          padding:10px 12px;
+          border-radius:12px;
+          background:rgba(24, 30, 39, 0.96);
+          border:1px solid rgba(255,255,255,0.08);
+          box-shadow:0 14px 30px rgba(0,0,0,0.35);
+          color:#fff;
+        "
+      >
+        <div data-chart-tooltip-date style="font-size:12px;font-weight:700;line-height:1.2;"></div>
+        <div data-chart-tooltip-price style="margin-top:4px;font-size:22px;font-weight:800;line-height:1;"></div>
+      </div>
+
+      <svg viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true" style="width:100%;height:100%;">
+        <defs>
+          <linearGradient id="steam-chart-gradient-${escapeHtml(chartId)}" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="rgba(90, 183, 255, 0.24)"></stop>
+            <stop offset="100%" stop-color="rgba(90, 183, 255, 0.01)"></stop>
+          </linearGradient>
+        </defs>
+
+        ${yLabels.map((tick) => `
+          <line
+            x1="${paddingLeft}"
+            y1="${tick.y.toFixed(1)}"
+            x2="${width - paddingRight}"
+            y2="${tick.y.toFixed(1)}"
+            stroke="rgba(121, 149, 181, 0.10)"
+            stroke-width="1"
+          ></line>
+        `).join("")}
+
+        <path d="${fillPath}" fill="url(#steam-chart-gradient-${escapeHtml(chartId)})"></path>
+
+        <polyline
+          fill="none"
+          stroke="#5ab7ff"
+          stroke-width="3"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          points="${polyline}"
+        ></polyline>
+
+        <line
+          data-chart-crosshair-x="${escapeHtml(chartId)}"
+          x1="${coords[coords.length - 1].x.toFixed(1)}"
+          y1="${paddingTop}"
+          x2="${coords[coords.length - 1].x.toFixed(1)}"
+          y2="${height - paddingBottom}"
+          stroke="rgba(255,255,255,0.18)"
+          stroke-width="1"
+          opacity="0"
+          stroke-dasharray="4 4"
+        ></line>
+
+        <circle
+          data-chart-marker="${escapeHtml(chartId)}"
+          cx="${coords[coords.length - 1].x.toFixed(1)}"
+          cy="${coords[coords.length - 1].y.toFixed(1)}"
+          r="4.5"
+          fill="#5ab7ff"
+          stroke="rgba(255,255,255,0.85)"
+          stroke-width="1.5"
+          opacity="0"
+        ></circle>
+
+        ${yLabels.map((tick) => `
+          <text
+            x="${paddingLeft - 10}"
+            y="${(tick.y + 4).toFixed(1)}"
+            text-anchor="end"
+            fill="rgba(145, 166, 190, 0.95)"
+            font-size="11"
+          >${escapeHtml(fmtMoney(tick.value))}</text>
+        `).join("")}
+
+        ${xLabels.map((tick) => `
+          <text
+            x="${tick.x.toFixed(1)}"
+            y="${height - 10}"
+            text-anchor="middle"
+            fill="rgba(145, 166, 190, 0.95)"
+            font-size="11"
+          >${escapeHtml(tick.label)}</text>
+        `).join("")}
+
+        ${interactionRects}
+      </svg>
+    </div>
+  `;
+}
+
+function wireChartInteractions(scope) {
+  scope.querySelectorAll("[data-steam-chart]").forEach((container) => {
+    const chartId = container.getAttribute("data-steam-chart");
+    if (!chartId) return;
+
+    const tooltip = container.querySelector(`[data-chart-tooltip="${chartId}"]`);
+    const tooltipDate = tooltip?.querySelector("[data-chart-tooltip-date]");
+    const tooltipPrice = tooltip?.querySelector("[data-chart-tooltip-price]");
+    const marker = container.querySelector(`[data-chart-marker="${chartId}"]`);
+    const crosshair = container.querySelector(`[data-chart-crosshair-x="${chartId}"]`);
+    const hotspots = container.querySelectorAll(`[data-chart-point][data-chart-id="${chartId}"]`);
+
+    const showPoint = (node) => {
+      if (!tooltip || !tooltipDate || !tooltipPrice || !marker || !crosshair) return;
+
+      const price = Number(node.getAttribute("data-price"));
+      const date = node.getAttribute("data-date") || "";
+      const x = Number(node.getAttribute("data-x"));
+      const y = Number(node.getAttribute("data-y"));
+
+      tooltipDate.textContent = fmtSteamTooltipDate(date);
+      tooltipPrice.textContent = fmtMoney(price);
+
+      tooltip.style.opacity = "1";
+      tooltip.style.transform = "translateY(0)";
+      tooltip.style.left = `${Math.max(10, Math.min(container.clientWidth - 150, (x / 860) * container.clientWidth - 40))}px`;
+      tooltip.style.top = "10px";
+
+      marker.setAttribute("cx", String(x));
+      marker.setAttribute("cy", String(y));
+      marker.setAttribute("opacity", "1");
+
+      crosshair.setAttribute("x1", String(x));
+      crosshair.setAttribute("x2", String(x));
+      crosshair.setAttribute("opacity", "1");
+    };
+
+    const hidePoint = () => {
+      if (!tooltip || !marker || !crosshair) return;
+      tooltip.style.opacity = "0";
+      tooltip.style.transform = "translateY(4px)";
+      marker.setAttribute("opacity", "0");
+      crosshair.setAttribute("opacity", "0");
+    };
+
+    hotspots.forEach((node) => {
+      node.addEventListener("mouseenter", () => showPoint(node));
+      node.addEventListener("mousemove", () => showPoint(node));
+      node.addEventListener("focus", () => showPoint(node));
+    });
+
+    container.addEventListener("mouseleave", hidePoint);
+  });
+}
+
+function metricCard(label, value, note) {
+  return `
+    <article class="metric-card">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+      <p>${escapeHtml(note)}</p>
+    </article>
+  `;
 }
 
 function applyCaseFilters(items) {
@@ -300,8 +741,8 @@ function applyCaseFilters(items) {
 
   const sorters = {
     score: (item) => item.scores?.total ?? -1,
-    listings: (item) => item.price?.steamVolume ?? -1,
-    price: (item) => item.price?.steamPriceEur ?? -1,
+    listings: (item) => getResolvedListings(item) ?? -1,
+    price: (item) => getResolvedSteamPrice(item) ?? -1,
     scarcity: (item) => item.scores?.scarcity ?? -1,
   };
 
@@ -343,7 +784,7 @@ function renderCaseList(items) {
         </div>
         <div class="score-cell">
           <span>Listings</span>
-          <strong>${fmtNumber(item.price?.steamVolume)}</strong>
+          <strong>${fmtNumber(getResolvedListings(item))}</strong>
         </div>
         <div class="score-cell">
           <span>Burn</span>
@@ -359,8 +800,6 @@ function renderCaseList(items) {
     node.addEventListener("click", () => {
       state.selectedCaseKey = node.dataset.key;
       render();
-      const picked = items.find((item) => item.key === state.selectedCaseKey);
-      if (picked) queueSteamItems([picked], true);
     });
   });
 
@@ -376,9 +815,9 @@ function renderCaseDetail(items) {
     return;
   }
 
-  const live = state.liveMarket.get(selected.key);
-  const steamChart = live?.history?.map((point) => point.price) || selected.charts?.steam || [];
+  const historyVisible = prepareChartHistory(selected, state.chartRange);
   const activityChart = selected.charts?.activity || [];
+  const chartId = `case-${selected.key}-${state.chartRange}`;
 
   target.innerHTML = `
     <section class="case-hero">
@@ -410,8 +849,8 @@ function renderCaseDetail(items) {
     </section>
 
     <section class="metrics-grid">
-      ${metricCard("Steam price", fmtMoney(getResolvedSteamPrice(selected)), "Taken from steam-cases.json or live Steam market")}
-      ${metricCard("Listings", fmtNumber(selected.price?.steamVolume), "Steam sell listing count")}
+      ${metricCard("Steam price", fmtMoney(getResolvedSteamPrice(selected)), "Taken directly from steam-cases.json")}
+      ${metricCard("Listings", fmtNumber(getResolvedListings(selected)), "Steam sell listing count from static dataset")}
       ${metricCard("Burn ratio", selected.metrics?.burnRatio != null ? selected.metrics.burnRatio.toFixed(2) : "—", "Higher historical consumption is better")}
       ${metricCard("12m supply", selected.metrics?.momentum12m != null ? fmtPct(selected.metrics.momentum12m) : "—", "Negative means supply kept shrinking")}
       ${metricCard("Remaining supply", selected.metrics?.remaining != null ? fmtNumber(selected.metrics.remaining) : "—", "Current tracked remaining supply")}
@@ -421,7 +860,7 @@ function renderCaseDetail(items) {
     <section class="two-col-grid">
       <article class="panel-card">
         <h3>Supply and activity</h3>
-        <div class="chart-shell">${chartSvg(activityChart, "#35d07f")}</div>
+        <div class="chart-shell">${renderSimpleSpark(activityChart, "#35d07f")}</div>
         <div class="market-list" style="margin-top:14px;">
           <div class="market-row"><span>Burn ratio</span><strong>${selected.metrics?.burnRatio != null ? selected.metrics.burnRatio.toFixed(2) : "—"}</strong></div>
           <div class="market-row"><span>12m supply</span><strong>${selected.metrics?.momentum12m != null ? fmtPct(selected.metrics.momentum12m) : "—"}</strong></div>
@@ -430,12 +869,14 @@ function renderCaseDetail(items) {
       </article>
 
       <article class="panel-card">
-        <h3>Steam market</h3>
-        <div class="chart-shell">${chartSvg(steamChart, "#58b8ff")}</div>
+        ${renderChartRangeControls("case")}
+        ${renderChartMeta(historyVisible, selected.metrics?.steamChange30dPct ?? null)}
+        <div class="chart-shell chart-shell--rich">${renderDatedPriceChart(historyVisible, chartId)}</div>
         <div class="market-list" style="margin-top:14px;">
           <div class="market-row"><span>Current Steam price</span><strong>${fmtMoney(getResolvedSteamPrice(selected))}</strong></div>
-          <div class="market-row"><span>30d trend</span><strong>${fmtPct(getResolvedTrend(selected))}</strong></div>
-          <div class="market-row"><span>Listings</span><strong>${fmtNumber(selected.price?.steamVolume)}</strong></div>
+          <div class="market-row"><span>7d trend</span><strong>${fmtPct(selected.metrics?.steamChange7dPct)}</strong></div>
+          <div class="market-row"><span>30d trend</span><strong>${fmtPct(selected.metrics?.steamChange30dPct)}</strong></div>
+          <div class="market-row"><span>Listings</span><strong>${fmtNumber(getResolvedListings(selected))}</strong></div>
         </div>
       </article>
     </section>
@@ -455,34 +896,10 @@ function renderCaseDetail(items) {
         </div>
       </article>
     </section>
-
-    ${(selected.screenshots?.chartUrl || selected.screenshots?.pageUrl) ? `
-      <section class="screenshot-grid">
-        ${selected.screenshots?.chartUrl ? `
-          <article class="screenshot-card">
-            <span>Chart screenshot</span>
-            <img src="${escapeHtml(selected.screenshots.chartUrl)}" alt="" />
-          </article>
-        ` : ""}
-        ${selected.screenshots?.pageUrl ? `
-          <article class="screenshot-card">
-            <span>Page screenshot</span>
-            <img src="${escapeHtml(selected.screenshots.pageUrl)}" alt="" />
-          </article>
-        ` : ""}
-      </section>
-    ` : ""}
   `;
-}
 
-function metricCard(label, value, note) {
-  return `
-    <article class="metric-card">
-      <span>${escapeHtml(label)}</span>
-      <strong>${escapeHtml(value)}</strong>
-      <p>${escapeHtml(note)}</p>
-    </article>
-  `;
+  wireChartRangeButtons(target);
+  wireChartInteractions(target);
 }
 
 function populateSkinTypeFilters(items) {
@@ -604,7 +1021,7 @@ function renderSkins() {
 
       <div class="skin-card-values">
         <strong>${fmtMoney(getResolvedSteamPrice(item))}</strong>
-        <span>${item.sellListings != null ? `${fmtNumber(item.sellListings)} listings` : "Listings unknown"}</span>
+        <span>${getResolvedListings(item) != null ? `${fmtNumber(getResolvedListings(item))} listings` : "Listings unknown"}</span>
       </div>
     </article>
   `).join("");
@@ -613,8 +1030,6 @@ function renderSkins() {
     node.addEventListener("click", () => {
       state.selectedSkinKey = node.dataset.key;
       render();
-      const picked = visible.find((item) => item.key === state.selectedSkinKey);
-      if (picked) queueSteamItems([picked], true);
     });
   });
 }
@@ -625,6 +1040,9 @@ function renderSkinHero(item) {
     target.innerHTML = `<div class="empty-state">No skin selected.</div>`;
     return;
   }
+
+  const historyVisible = prepareChartHistory(item, state.chartRange);
+  const chartId = `skin-${item.key}-${state.chartRange}`;
 
   target.innerHTML = `
     <section class="skin-hero">
@@ -641,11 +1059,11 @@ function renderSkinHero(item) {
             <span class="metric-pill ${item.marketable !== false ? "good" : "warn"}">${item.marketable !== false ? "Marketable" : "Non-marketable"}</span>
             <span class="metric-pill ${item.tradable !== false ? "good" : "warn"}">${item.tradable !== false ? "Tradable" : "Trade locked"}</span>
             <span class="metric-pill">x${fmtNumber(item.quantity ?? 1)}</span>
-            ${item.sellListings != null ? `<span class="metric-pill">${fmtNumber(item.sellListings)} listings</span>` : ""}
+            ${getResolvedListings(item) != null ? `<span class="metric-pill">${fmtNumber(getResolvedListings(item))} listings</span>` : ""}
           </div>
 
           <p>
-            This skin card is fully fed by the Steam skin scraper output, including image, Steam price, listings and market URL.
+            This skin card is fully fed by the Steam skin scraper output and the static Steam market timeseries cache.
           </p>
         </div>
 
@@ -657,11 +1075,38 @@ function renderSkinHero(item) {
 
     <section class="metrics-grid">
       ${metricCard("Steam price", fmtMoney(getResolvedSteamPrice(item)), "Taken directly from the skin scraper output")}
-      ${metricCard("Listings", item.sellListings != null ? fmtNumber(item.sellListings) : "—", "Steam sell listing count")}
+      ${metricCard("Listings", getResolvedListings(item) != null ? fmtNumber(getResolvedListings(item)) : "—", "Steam sell listing count")}
       ${metricCard("Quantity", fmtNumber(item.quantity ?? 1), "Grouped quantity in dataset")}
-      ${metricCard("30d trend", fmtPct(getResolvedTrend(item)), "Shown when live Steam market data exists")}
+      ${metricCard("30d trend", fmtPct(item.change30dPct), "Taken from static Steam timeseries")}
+    </section>
+
+    <section class="two-col-grid">
+      <article class="panel-card">
+        ${renderChartRangeControls("skin")}
+        ${renderChartMeta(historyVisible, item.change30dPct ?? null)}
+        <div class="chart-shell chart-shell--rich">${renderDatedPriceChart(historyVisible, chartId)}</div>
+        <div class="market-list" style="margin-top:14px;">
+          <div class="market-row"><span>Current Steam price</span><strong>${fmtMoney(getResolvedSteamPrice(item))}</strong></div>
+          <div class="market-row"><span>7d trend</span><strong>${fmtPct(item.change7dPct)}</strong></div>
+          <div class="market-row"><span>30d trend</span><strong>${fmtPct(item.change30dPct)}</strong></div>
+          <div class="market-row"><span>Listings</span><strong>${fmtNumber(getResolvedListings(item))}</strong></div>
+        </div>
+      </article>
+
+      <article class="panel-card">
+        <h3>Steam overview</h3>
+        <div class="market-list">
+          <div class="market-row"><span>Type</span><strong>${escapeHtml(item.type || item.category || "Skin")}</strong></div>
+          <div class="market-row"><span>Marketable</span><strong>${item.marketable !== false ? "Yes" : "No"}</strong></div>
+          <div class="market-row"><span>Tradable</span><strong>${item.tradable !== false ? "Yes" : "Locked"}</strong></div>
+          <div class="market-row"><span>History points</span><strong>${fmtNumber(item.sources?.steamPoints)}</strong></div>
+        </div>
+      </article>
     </section>
   `;
+
+  wireChartRangeButtons(target);
+  wireChartInteractions(target);
 }
 
 function renderSources(payload) {
@@ -796,6 +1241,81 @@ function setActiveTab(tab) {
     : "Browse an image-first skin grid fully fed by the Steam skin scraper output.";
 
   render();
+}
+
+function wireChartRangeButtons(scope) {
+  scope.querySelectorAll("[data-chart-range]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextRange = button.getAttribute("data-chart-range");
+      if (!nextRange || nextRange === state.chartRange) return;
+      state.chartRange = nextRange;
+      render();
+    });
+  });
+}
+
+function renderHero(payload) {
+  const cases = getCaseItems();
+  const skins = getSkinItems();
+  const overview = payload.dashboard.overview || {};
+
+  $("heroUniverse").textContent = fmtNumber((cases.length || 0) + (skins.length || 0));
+  $("lastSyncedAt").textContent = payload.dashboard.updatedAt ? fmtDate(payload.dashboard.updatedAt) : "—";
+
+  $("heroTopName").textContent = overview.topCandidate?.name || cases[0]?.name || "—";
+  $("heroTopMeta").textContent = overview.topCandidate
+    ? `${overview.topCandidate.category} · score ${fmtScore(overview.topCandidate.score)}`
+    : "No ranking yet";
+
+  const mostLiquid = [...cases].sort((a, b) => (getResolvedListings(b) ?? -1) - (getResolvedListings(a) ?? -1))[0];
+  $("heroDiscount").textContent = mostLiquid?.name || "—";
+  $("heroDiscountMeta").textContent = getResolvedListings(mostLiquid) != null
+    ? `${fmtNumber(getResolvedListings(mostLiquid))} listings`
+    : "Waiting for Steam coverage";
+
+  $("heroTrend").textContent = skins.length ? fmtNumber(skins.length) : "—";
+  $("heroTrendMeta").textContent = skins.length ? "Scrape-fed skin universe ready" : "Waiting for skin scrape";
+
+  $("statUniverse").textContent = fmtNumber((cases.length || 0) + (skins.length || 0));
+  $("statUniverseMeta").textContent = `${fmtNumber(cases.length)} cases · ${fmtNumber(skins.length)} skins`;
+
+  $("statCases").textContent = fmtNumber(cases.length);
+  $("statCasesMeta").textContent = "Steam-priced case dataset";
+
+  $("statSkins").textContent = fmtNumber(skins.length);
+  $("statSkinsMeta").textContent = "Steam-priced skin dataset";
+
+  $("statGood").textContent = fmtNumber(overview.goodCount);
+  $("statGoodMeta").textContent = `${fmtNumber(overview.warnCount)} watch · ${fmtNumber(overview.badCount)} risky`;
+}
+
+function renderStatus(payload) {
+  const status = payload.status;
+  $("statusPill").textContent = status.running
+    ? `Running · ${status.currentStep || "starting"}`
+    : status.state === "error"
+      ? "Refresh error"
+      : status.lastSuccessAt
+        ? `Ready · ${fmtRelative(status.lastSuccessAt)}`
+        : "Idle";
+
+  const percent = status.running ? 55 : status.state === "error" ? 100 : payload.dashboard.updatedAt ? 100 : 0;
+  $("progressFill").style.width = `${percent}%`;
+  $("progressLabel").textContent = `${percent}%`;
+  $("progressHint").textContent = status.running
+    ? (status.currentStep || "Running")
+    : status.state === "error"
+      ? "Failed"
+      : "Ready";
+
+  $("syncHeadline").textContent = status.running
+    ? "Refresh in progress"
+    : status.state === "error"
+      ? "Last refresh failed"
+      : "Refresh complete";
+
+  $("syncSubline").textContent = status.lastError
+    || (payload.dashboard.updatedAt ? `Updated ${fmtRelative(payload.dashboard.updatedAt)}.` : "No refresh activity yet.");
 }
 
 function render() {
@@ -963,6 +1483,5 @@ function wire() {
 }
 
 wire();
-startSteamQueue();
 loadDashboard();
 setInterval(() => loadDashboard(true), 10000);

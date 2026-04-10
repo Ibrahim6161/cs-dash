@@ -580,6 +580,80 @@ img {
   font-size: 18px;
 }
 
+.chart-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.chart-title-eyebrow {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.chart-panel-title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.chart-range-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chart-range-btn {
+  border: 1px solid rgba(121, 149, 181, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  border-radius: 12px;
+  padding: 9px 12px;
+  cursor: pointer;
+  transition: 160ms ease;
+  font-weight: 600;
+}
+
+.chart-range-btn:hover {
+  color: var(--text);
+  border-color: rgba(90, 183, 255, 0.32);
+}
+
+.chart-range-btn.is-active {
+  color: var(--text);
+  border-color: rgba(90, 183, 255, 0.48);
+  background: rgba(90, 183, 255, 0.1);
+}
+
+.chart-meta-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.chart-meta-pill {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  padding: 10px 12px;
+}
+
+.chart-meta-pill span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+
+.chart-meta-pill strong {
+  display: block;
+  font-size: 14px;
+}
+
 .chart-shell {
   width: 100%;
   height: 190px;
@@ -591,7 +665,17 @@ img {
   justify-content: center;
 }
 
+.chart-shell--rich {
+  height: 280px;
+  align-items: stretch;
+}
+
 .chart-shell svg {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-rich {
   width: 100%;
   height: 100%;
 }
@@ -958,6 +1042,10 @@ img {
   .skin-toolbar {
     grid-template-columns: 1fr 1fr;
   }
+
+  .chart-meta-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 1180px) {
@@ -980,6 +1068,11 @@ img {
   .hero-side-actions {
     justify-content: flex-start;
   }
+
+  .chart-panel-head {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 @media (max-width: 720px) {
@@ -997,7 +1090,8 @@ img {
   .metrics-grid,
   .skin-mini-summary,
   .score-row,
-  .skin-toolbar {
+  .skin-toolbar,
+  .chart-meta-row {
     grid-template-columns: 1fr;
   }
 
@@ -1021,5 +1115,13 @@ img {
 
   .portfolio-values {
     text-align: left;
+  }
+
+  .chart-range-group {
+    width: 100%;
+  }
+
+  .chart-range-btn {
+    flex: 1 1 calc(50% - 8px);
   }
 }
