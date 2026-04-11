@@ -84,8 +84,8 @@ img {
 
 .hero-copy {
   border-radius: 34px;
-  padding: 34px;
-  min-height: 320px;
+  padding: 28px;
+  min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -102,8 +102,8 @@ img {
 
 .hero-copy h1 {
   margin: 0;
-  font-size: clamp(34px, 4.2vw, 58px);
-  line-height: 0.98;
+  font-size: clamp(28px, 3.2vw, 46px);
+  line-height: 1.02;
   max-width: 720px;
   letter-spacing: -0.03em;
 }
@@ -271,9 +271,13 @@ img {
 
 .workspace {
   display: grid;
-  grid-template-columns: 350px minmax(0, 1fr) 360px;
+  grid-template-columns: 320px minmax(0, 1.35fr) 300px;
   gap: 18px;
   align-items: start;
+}
+
+.full-width-panel {
+  margin-top: 16px;
 }
 
 .sidebar,
@@ -320,7 +324,7 @@ img {
 .field select {
   width: 100%;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.03);
+  background: #0f1b2c;
   color: var(--text);
   border-radius: 14px;
   padding: 12px 14px;
@@ -331,6 +335,41 @@ img {
 .field select:focus {
   border-color: rgba(90, 183, 255, 0.45);
   box-shadow: 0 0 0 4px rgba(90, 183, 255, 0.08);
+}
+
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: var(--text);
+  background-color: #0f1b2c;
+}
+
+.field select option {
+  color: var(--text);
+  background-color: #0f1b2c;
+}
+
+.field select option:checked {
+  color: var(--text);
+  background-color: #1f6feb;
+}
+
+.field select option:hover {
+  color: var(--text);
+  background-color: #16304d;
+}
+.field select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--muted) 50%),
+    linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 2px),
+    calc(100% - 12px) calc(50% - 2px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 34px;
 }
 
 .sidebar-results-meta {
@@ -465,8 +504,8 @@ img {
 .list-item-copy {
   margin: 10px 0 0;
   color: var(--muted);
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12px;
+  line-height: 1.45;
 }
 
 .case-hero,
@@ -529,8 +568,8 @@ img {
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
   margin-top: 16px;
 }
 
@@ -550,7 +589,7 @@ img {
 
 .metric-card strong {
   display: block;
-  font-size: 24px;
+  font-size: 21px;
   line-height: 1.1;
 }
 
@@ -836,6 +875,8 @@ img {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: sticky;
+  top: 20px;
 }
 
 .right-section {
@@ -846,7 +887,73 @@ img {
 
 .right-section h2 {
   margin: 0;
-  font-size: 24px;
+  font-size: 22px;
+}
+
+.list-item--terminal {
+  padding: 12px;
+}
+
+.list-item-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.terminal-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.terminal-metric {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 10px;
+}
+
+.terminal-metric span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+
+.terminal-metric strong {
+  font-size: 13px;
+  line-height: 1.1;
+}
+
+.terminal-submetrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.terminal-submetric {
+  border-top: 1px solid rgba(121, 149, 181, 0.08);
+  padding-top: 8px;
+}
+
+.terminal-submetric span {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  margin-bottom: 4px;
+}
+
+.terminal-submetric strong {
+  font-size: 12px;
+}
+
+.metric-good {
+  color: var(--good);
+}
+
+.metric-bad {
+  color: var(--bad);
 }
 
 .button-row {

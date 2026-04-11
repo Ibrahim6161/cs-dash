@@ -12,6 +12,40 @@ const state = {
 
 const $ = (id) => document.getElementById(id);
 
+function hideById(id) {
+  const el = $(id);
+  if (!el) return;
+  el.style.display = "none";
+}
+
+function hideAdminUi() {
+  const labelsToHide = new Set(["pipeline", "settings", "sources", "logs"]);
+
+  const allNodes = [...document.querySelectorAll("body *")];
+
+  for (const node of allNodes) {
+    const text = (node.textContent || "").trim().toLowerCase();
+
+    if (!labelsToHide.has(text)) continue;
+
+    // hide the section label itself
+    node.style.display = "none";
+
+    // hide everything after it until the next section label
+    let next = node.nextElementSibling;
+    while (next) {
+      const nextText = (next.textContent || "").trim().toLowerCase();
+
+      if (labelsToHide.has(nextText)) {
+        break;
+      }
+
+      next.style.display = "none";
+      next = next.nextElementSibling;
+    }
+  }
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -135,14 +169,22 @@ function getSkinItems() {
 }
 
 function getResolvedSteamPrice(item) {
-  return item?.price?.steamPriceEur
+  const history = getNormalizedSteamHistory(item);
+  const latest = history.length ? history[history.length - 1] : null;
+
+  return latest?.priceEur
+    ?? item?.price?.steamPriceEur
     ?? item?.steamPriceEur
     ?? item?.unitPriceEur
     ?? null;
 }
 
 function getResolvedTrend(item) {
-  return item?.metrics?.steamChange30dPct
+  const historyVisible = prepareChartHistory(item, state.chartRange);
+  const summary = getHistorySummary(historyVisible);
+
+  return summary.changePct
+    ?? item?.metrics?.steamChange30dPct
     ?? item?.change30dPct
     ?? null;
 }
@@ -764,37 +806,59 @@ function renderCaseList(items) {
     state.selectedCaseKey = items[0].key;
   }
 
-  target.innerHTML = items.map((item) => `
-    <article class="list-item ${item.key === state.selectedCaseKey ? "is-active" : ""}" data-key="${escapeHtml(item.key)}">
-      <div class="list-item-top">
-        <div>
-          <h3 class="list-item-title">${escapeHtml(item.name)}</h3>
-          <div class="badge-row">
-            <span class="category-pill">${escapeHtml(item.category?.label || "Case")}</span>
-            <span class="grade-pill ${String(item.grade?.tone || "warn")}">${escapeHtml(item.grade?.label || "WARN")}</span>
+  target.innerHTML = items.map((item) => {
+    const steamPrice = getResolvedSteamPrice(item);
+    const listings = getResolvedListings(item);
+    const burn = item.metrics?.burnRatio;
+    const supply12m = item.metrics?.momentum12m;
+    const score = fmtScore(item.scores?.total);
+    const entry = fmtScore(item.scores?.entry);
+    const risk = fmtScore(item.scores?.risk);
+    const confidence = fmtScore(item.scores?.confidence);
+
+    return `
+      <article class="list-item list-item--terminal ${item.key === state.selectedCaseKey ? "is-active" : ""}" data-key="${escapeHtml(item.key)}">
+        <div class="list-item-top">
+          <div class="list-item-heading">
+            <h3 class="list-item-title">${escapeHtml(item.name)}</h3>
+            <div class="badge-row">
+              <span class="category-pill">${escapeHtml(item.category?.label || "Case")}</span>
+              <span class="grade-pill ${String(item.grade?.tone || "warn")}">${escapeHtml(item.grade?.label || "WARN")}</span>
+            </div>
+          </div>
+
+          <div class="score-badge">${score}</div>
+        </div>
+
+        <div class="terminal-metrics-grid">
+          <div class="terminal-metric">
+            <span>Steam</span>
+            <strong>${fmtMoney(steamPrice)}</strong>
+          </div>
+          <div class="terminal-metric">
+            <span>Listings</span>
+            <strong>${fmtNumber(listings)}</strong>
+          </div>
+          <div class="terminal-metric">
+            <span>Burn</span>
+            <strong class="${burn != null && burn >= 0.9 ? "metric-good" : ""}">${burn != null ? burn.toFixed(2) : "—"}</strong>
+          </div>
+          <div class="terminal-metric">
+            <span>12m supply</span>
+            <strong class="${supply12m != null && supply12m < 0 ? "metric-good" : supply12m != null && supply12m > 0 ? "metric-bad" : ""}">${supply12m != null ? fmtPct(supply12m) : "—"}</strong>
           </div>
         </div>
-        <div class="score-badge">${fmtScore(item.scores?.total)}</div>
-      </div>
 
-      <div class="score-row">
-        <div class="score-cell">
-          <span>Steam</span>
-          <strong>${fmtMoney(getResolvedSteamPrice(item))}</strong>
+        <div class="terminal-submetrics">
+          <div class="terminal-submetric"><span>Entry</span><strong>${entry}</strong></div>
+          <div class="terminal-submetric"><span>Risk</span><strong>${risk}</strong></div>
+          <div class="terminal-submetric"><span>Confidence</span><strong>${confidence}</strong></div>
         </div>
-        <div class="score-cell">
-          <span>Listings</span>
-          <strong>${fmtNumber(getResolvedListings(item))}</strong>
-        </div>
-        <div class="score-cell">
-          <span>Burn</span>
-          <strong>${item.metrics?.burnRatio != null ? item.metrics.burnRatio.toFixed(2) : "—"}</strong>
-        </div>
-      </div>
 
-      <p class="list-item-copy">${escapeHtml(item.grade?.reason || item.summary || "Mixed setup")}</p>
-    </article>
-  `).join("");
+        <p class="list-item-copy">${escapeHtml(item.summary || item.grade?.reason || "Mixed setup")}</p>
+      </article>
+    `;
+  }).join("");
 
   target.querySelectorAll(".list-item").forEach((node) => {
     node.addEventListener("click", () => {
@@ -816,6 +880,7 @@ function renderCaseDetail(items) {
   }
 
   const historyVisible = prepareChartHistory(selected, state.chartRange);
+  const historySummary = getHistorySummary(historyVisible);
   const activityChart = selected.charts?.activity || [];
   const chartId = `case-${selected.key}-${state.chartRange}`;
 
@@ -849,12 +914,27 @@ function renderCaseDetail(items) {
     </section>
 
     <section class="metrics-grid">
-      ${metricCard("Steam price", fmtMoney(getResolvedSteamPrice(selected)), "Taken directly from steam-cases.json")}
-      ${metricCard("Listings", fmtNumber(getResolvedListings(selected)), "Steam sell listing count from static dataset")}
+      ${metricCard("Steam price", fmtMoney(historySummary.last ?? getResolvedSteamPrice(selected)), "Latest Steam history point")}
+      ${metricCard("Listings", fmtNumber(getResolvedListings(selected)), "Steam sell listing count")}
       ${metricCard("Burn ratio", selected.metrics?.burnRatio != null ? selected.metrics.burnRatio.toFixed(2) : "—", "Higher historical consumption is better")}
       ${metricCard("12m supply", selected.metrics?.momentum12m != null ? fmtPct(selected.metrics.momentum12m) : "—", "Negative means supply kept shrinking")}
       ${metricCard("Remaining supply", selected.metrics?.remaining != null ? fmtNumber(selected.metrics.remaining) : "—", "Current tracked remaining supply")}
       ${metricCard("Extinction", selected.metrics?.extinctionMonths != null ? `${selected.metrics.extinctionMonths.toFixed(1)} mo` : "—", "Projected scarcity horizon")}
+    </section>
+
+    <section class="full-width-panel">
+      <article class="panel-card">
+        ${renderChartRangeControls("case")}
+        ${renderChartMeta(historyVisible, selected.metrics?.steamChange30dPct ?? null)}
+        <div class="chart-shell chart-shell--rich">${renderDatedPriceChart(historyVisible, chartId)}</div>
+        <div class="market-list" style="margin-top:14px;">
+          <div class="market-row"><span>Current Steam price</span><strong>${fmtMoney(historySummary.last ?? getResolvedSteamPrice(selected))}</strong></div>
+          <div class="market-row"><span>Range trend</span><strong>${fmtPct(historySummary.changePct)}</strong></div>
+          <div class="market-row"><span>7d trend</span><strong>${fmtPct(selected.metrics?.steamChange7dPct)}</strong></div>
+          <div class="market-row"><span>30d trend</span><strong>${fmtPct(selected.metrics?.steamChange30dPct)}</strong></div>
+          <div class="market-row"><span>Listings</span><strong>${fmtNumber(getResolvedListings(selected))}</strong></div>
+        </div>
+      </article>
     </section>
 
     <section class="two-col-grid">
@@ -869,30 +949,28 @@ function renderCaseDetail(items) {
       </article>
 
       <article class="panel-card">
-        ${renderChartRangeControls("case")}
-        ${renderChartMeta(historyVisible, selected.metrics?.steamChange30dPct ?? null)}
-        <div class="chart-shell chart-shell--rich">${renderDatedPriceChart(historyVisible, chartId)}</div>
-        <div class="market-list" style="margin-top:14px;">
-          <div class="market-row"><span>Current Steam price</span><strong>${fmtMoney(getResolvedSteamPrice(selected))}</strong></div>
-          <div class="market-row"><span>7d trend</span><strong>${fmtPct(selected.metrics?.steamChange7dPct)}</strong></div>
-          <div class="market-row"><span>30d trend</span><strong>${fmtPct(selected.metrics?.steamChange30dPct)}</strong></div>
-          <div class="market-row"><span>Listings</span><strong>${fmtNumber(getResolvedListings(selected))}</strong></div>
+        <h3>Investment thesis</h3>
+        <div class="market-list">
+          ${(selected.thesis || []).map((line) => `<div class="market-row"><span>${escapeHtml(line)}</span></div>`).join("")}
         </div>
       </article>
     </section>
 
     <section class="two-col-grid">
       <article class="panel-card">
-        <h3>Investment thesis</h3>
+        <h3>Main risks</h3>
         <div class="market-list">
-          ${(selected.thesis || []).map((line) => `<div class="market-row"><span>${escapeHtml(line)}</span></div>`).join("")}
+          ${(selected.risks || []).map((line) => `<div class="market-row"><span>${escapeHtml(line)}</span></div>`).join("")}
         </div>
       </article>
 
       <article class="panel-card">
-        <h3>Main risks</h3>
+        <h3>Positioning</h3>
         <div class="market-list">
-          ${(selected.risks || []).map((line) => `<div class="market-row"><span>${escapeHtml(line)}</span></div>`).join("")}
+          <div class="market-row"><span>Investment score</span><strong>${fmtScore(selected.scores?.total)}</strong></div>
+          <div class="market-row"><span>Entry score</span><strong>${fmtScore(selected.scores?.entry)}</strong></div>
+          <div class="market-row"><span>Risk score</span><strong>${fmtScore(selected.scores?.risk)}</strong></div>
+          <div class="market-row"><span>Confidence</span><strong>${fmtScore(selected.scores?.confidence)}</strong></div>
         </div>
       </article>
     </section>
@@ -1085,12 +1163,12 @@ function renderSkinHero(item) {
         ${renderChartRangeControls("skin")}
         ${renderChartMeta(historyVisible, item.change30dPct ?? null)}
         <div class="chart-shell chart-shell--rich">${renderDatedPriceChart(historyVisible, chartId)}</div>
-        <div class="market-list" style="margin-top:14px;">
-          <div class="market-row"><span>Current Steam price</span><strong>${fmtMoney(getResolvedSteamPrice(item))}</strong></div>
-          <div class="market-row"><span>7d trend</span><strong>${fmtPct(item.change7dPct)}</strong></div>
-          <div class="market-row"><span>30d trend</span><strong>${fmtPct(item.change30dPct)}</strong></div>
-          <div class="market-row"><span>Listings</span><strong>${fmtNumber(getResolvedListings(item))}</strong></div>
-        </div>
+		<div class="market-list" style="margin-top:14px;">
+		  <div class="market-row"><span>Current Steam price</span><strong>${fmtMoney(getHistorySummary(historyVisible).last ?? getResolvedSteamPrice(item))}</strong></div>
+		  <div class="market-row"><span>7d trend</span><strong>${state.chartRange === "7d" ? fmtPct(getHistorySummary(historyVisible).changePct) : fmtPct(item.change7dPct)}</strong></div>
+		  <div class="market-row"><span>30d trend</span><strong>${state.chartRange === "30d" ? fmtPct(getHistorySummary(historyVisible).changePct) : fmtPct(item.change30dPct)}</strong></div>
+		  <div class="market-row"><span>Listings</span><strong>${fmtNumber(getResolvedListings(item))}</strong></div>
+		</div>
       </article>
 
       <article class="panel-card">
@@ -1109,28 +1187,8 @@ function renderSkinHero(item) {
   wireChartInteractions(target);
 }
 
-function renderSources(payload) {
-  $("sourcesList").innerHTML = Object.values(payload.dashboard.sources || {}).map((source) => `
-    <article class="source-card">
-      <strong>${escapeHtml(source.label || "Source")}</strong>
-      <span>${escapeHtml(source.path || "—")}</span>
-      <span>${source.timestamp ? `${fmtRelative(source.timestamp)} · ${fmtDate(source.timestamp)}` : "No timestamp"}</span>
-      ${source.matched != null ? `<span>${fmtNumber(source.matched)} matched</span>` : ""}
-    </article>
-  `).join("");
-}
 
-function renderLogs(payload) {
-  const logs = [...(payload.status.logs || [])].slice(-12).reverse();
-  $("logList").innerHTML = logs.length
-    ? logs.map((log) => `
-      <article class="log-line">
-        <strong>${escapeHtml(log.message)}</strong>
-        <span>${fmtDate(log.time)}</span>
-      </article>
-    `).join("")
-    : `<div class="empty-state">No logs yet.</div>`;
-}
+
 
 function renderPortfolio() {
   const summary = $("portfolioSummary");
@@ -1169,7 +1227,7 @@ function renderPortfolio() {
   summary.innerHTML = `
     <strong>${fmtMoney(state.portfolio.totals?.estimatedValueEur)} estimated value</strong>
     <span>${fmtNumber(state.portfolio.totals?.uniqueItems)} unique items · ${fmtNumber(state.portfolio.totals?.totalQuantity)} total units</span>
-    <span>${escapeHtml(profile.personaName || profile.steamId || "Steam profile")} · ${state.portfolio.cached ? "cached" : "fresh"} · ${fmtRelative(state.portfolio.fetchedAt)}</span>
+    <span>${escapeHtml(profile.personaName || profile.steamId || "Steam profile")} · ${state.portfolio.cached ? "cached snapshot" : "fresh snapshot"} · ${fmtRelative(state.portfolio.fetchedAt)}</span>
     ${profile.profileUrl ? `<a href="${escapeHtml(profile.profileUrl)}" target="_blank" rel="noopener">Open Steam profile</a>` : ""}
   `;
 
@@ -1194,34 +1252,7 @@ function renderPortfolio() {
     : `<div class="empty-state">No marketable CS2 items found in this inventory.</div>`;
 }
 
-function syncConfigForm(config) {
-  $("cfgSchedulerEnabled").checked = !!config.scheduler?.enabled;
-  $("cfgIntervalMinutes").value = config.scheduler?.intervalMinutes ?? 360;
-  $("cfgRunOnStartup").checked = !!config.scheduler?.runOnStartup;
-  $("cfgHeadless").checked = !!config.refresh?.headless;
-  $("cfgPriceLimit").value = config.refresh?.priceLimit ?? 50;
-  $("cfgTimeseries").checked = !!config.refresh?.includeTimeseries;
-  $("cfgStrictness").value = config.analysis?.strictness ?? 55;
-  $("cfgStrictnessValue").textContent = config.analysis?.strictness ?? 55;
-}
 
-function collectConfigForm() {
-  return {
-    scheduler: {
-      enabled: $("cfgSchedulerEnabled").checked,
-      intervalMinutes: Number($("cfgIntervalMinutes").value),
-      runOnStartup: $("cfgRunOnStartup").checked,
-    },
-    refresh: {
-      headless: $("cfgHeadless").checked,
-      priceLimit: Number($("cfgPriceLimit").value),
-      includeTimeseries: $("cfgTimeseries").checked,
-    },
-    analysis: {
-      strictness: Number($("cfgStrictness").value),
-    },
-  };
-}
 
 function setActiveTab(tab) {
   state.activeTab = tab;
@@ -1289,46 +1320,16 @@ function renderHero(payload) {
   $("statGoodMeta").textContent = `${fmtNumber(overview.warnCount)} watch · ${fmtNumber(overview.badCount)} risky`;
 }
 
-function renderStatus(payload) {
-  const status = payload.status;
-  $("statusPill").textContent = status.running
-    ? `Running · ${status.currentStep || "starting"}`
-    : status.state === "error"
-      ? "Refresh error"
-      : status.lastSuccessAt
-        ? `Ready · ${fmtRelative(status.lastSuccessAt)}`
-        : "Idle";
-
-  const percent = status.running ? 55 : status.state === "error" ? 100 : payload.dashboard.updatedAt ? 100 : 0;
-  $("progressFill").style.width = `${percent}%`;
-  $("progressLabel").textContent = `${percent}%`;
-  $("progressHint").textContent = status.running
-    ? (status.currentStep || "Running")
-    : status.state === "error"
-      ? "Failed"
-      : "Ready";
-
-  $("syncHeadline").textContent = status.running
-    ? "Refresh in progress"
-    : status.state === "error"
-      ? "Last refresh failed"
-      : "Refresh complete";
-
-  $("syncSubline").textContent = status.lastError
-    || (payload.dashboard.updatedAt ? `Updated ${fmtRelative(payload.dashboard.updatedAt)}.` : "No refresh activity yet.");
-}
 
 function render() {
+  hideAdminUi();
+
   if (!state.payload) {
     renderPortfolio();
     return;
   }
 
-  renderStatus(state.payload);
   renderHero(state.payload);
-  syncConfigForm(state.payload.config || {});
-  renderSources(state.payload);
-  renderLogs(state.payload);
   renderPortfolio();
 
   if (state.activeTab === "skins") {
@@ -1376,28 +1377,6 @@ async function loadPortfolio(forceRefresh = false) {
   }
 }
 
-async function refreshNow() {
-  try {
-    await api("/api/refresh", { method: "POST", body: "{}" });
-    showToast("Refresh started.");
-    setTimeout(() => loadDashboard(true), 1200);
-  } catch (error) {
-    showToast(error.message, true);
-  }
-}
-
-async function saveConfig() {
-  try {
-    await api("/api/config", {
-      method: "POST",
-      body: JSON.stringify(collectConfigForm()),
-    });
-    showToast("Settings saved.");
-    loadDashboard(true);
-  } catch (error) {
-    showToast(error.message, true);
-  }
-}
 
 function wireSkinFilterMirrors() {
   $("skinSearchInput").addEventListener("input", () => {
@@ -1437,30 +1416,26 @@ function wireSkinFilterMirrors() {
 }
 
 function wire() {
-  $("heroInventoryButton").addEventListener("click", () => {
-    document.getElementById("steamProfileInput").scrollIntoView({ behavior: "smooth", block: "center" });
-    $("steamProfileInput").focus();
+  $("heroInventoryButton")?.addEventListener("click", () => {
+    document.getElementById("steamProfileInput")?.scrollIntoView({ behavior: "smooth", block: "center" });
+    $("steamProfileInput")?.focus();
   });
 
-  $("heroExploreButton").addEventListener("click", () => {
-    document.querySelector(".tabs-surface").scrollIntoView({ behavior: "smooth", block: "start" });
+  $("heroExploreButton")?.addEventListener("click", () => {
+    document.querySelector(".tabs-surface")?.scrollIntoView({ behavior: "smooth", block: "start" });
   });
 
-  $("tabCases").addEventListener("click", () => setActiveTab("cases"));
-  $("tabSkins").addEventListener("click", () => setActiveTab("skins"));
+  $("tabCases")?.addEventListener("click", () => setActiveTab("cases"));
+  $("tabSkins")?.addEventListener("click", () => setActiveTab("skins"));
 
-  $("searchInput").addEventListener("input", render);
-  $("categoryFilter").addEventListener("change", render);
-  $("gradeFilter").addEventListener("change", render);
-  $("sortSelect").addEventListener("change", render);
+  $("searchInput")?.addEventListener("input", render);
+  $("categoryFilter")?.addEventListener("change", render);
+  $("gradeFilter")?.addEventListener("change", render);
+  $("sortSelect")?.addEventListener("change", render);
 
-  $("refreshButton").addEventListener("click", refreshNow);
-  $("saveConfigButton").addEventListener("click", saveConfig);
-
-  $("steamLookupButton").addEventListener("click", () => loadPortfolio(false));
-  $("steamRefreshButton").addEventListener("click", () => loadPortfolio(true));
-  $("openInventoryPageButton").addEventListener("click", () => {
-    const query = $("steamProfileInput").value.trim() || state.portfolioQuery || "";
+  $("steamLookupButton")?.addEventListener("click", () => loadPortfolio(false));
+  $("openInventoryPageButton")?.addEventListener("click", () => {
+    const query = $("steamProfileInput")?.value.trim() || state.portfolioQuery || "";
     if (!query) {
       showToast("Enter a Steam profile first.", true);
       return;
@@ -1468,18 +1443,15 @@ function wire() {
     window.location.href = `/inventory.html?profile=${encodeURIComponent(query)}`;
   });
 
-  $("steamProfileInput").addEventListener("keydown", (event) => {
+  $("steamProfileInput")?.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
       loadPortfolio(false);
     }
   });
 
-  $("cfgStrictness").addEventListener("input", (event) => {
-    $("cfgStrictnessValue").textContent = event.target.value;
-  });
-
   wireSkinFilterMirrors();
+  hideAdminUi();
 }
 
 wire();

@@ -12,11 +12,10 @@
       <div class="hero-inner">
         <div class="hero-copy">
           <div class="eyebrow">Steam-based CS2 investment intelligence</div>
-          <h1>Track, analyze and grow your CS2 portfolio</h1>
-          <p class="hero-text">
-            Explore case opportunities, browse the skin market, and value public inventories with a premium,
-            Steam-first investment dashboard.
-          </p>
+			<h1>CS2 case investment terminal</h1>
+			<p class="hero-text">
+			  Rank cases by liquidity, scarcity, supply contraction and Steam price behavior.
+			</p>
 
           <div class="hero-actions">
             <button class="btn btn-primary" id="heroInventoryButton" type="button">Check inventory</button>
@@ -70,19 +69,19 @@
         </article>
 
         <article class="stat-card">
-          <span class="stat-label">Cases tracked</span>
+          <span class="stat-label">Tradable cases</span>
           <strong class="stat-value" id="statCases">—</strong>
           <span class="stat-meta" id="statCasesMeta">Steam-fed case market</span>
         </article>
 
         <article class="stat-card">
-          <span class="stat-label">Skins tracked</span>
+          <span class="stat-label">Steam-priced skins</span>
           <strong class="stat-value" id="statSkins">—</strong>
           <span class="stat-meta" id="statSkinsMeta">Scrape-fed skin grid</span>
         </article>
 
         <article class="stat-card">
-          <span class="stat-label">Good setups</span>
+          <span class="stat-label">High-conviction cases</span>
           <strong class="stat-value" id="statGood">—</strong>
           <span class="stat-meta" id="statGoodMeta">Highest-scoring cases</span>
         </article>
@@ -264,116 +263,47 @@
           </div>
         </section>
 
-        <aside class="surface rightbar">
-          <section class="right-section">
-            <div class="eyebrow">Portfolio</div>
-            <h2>Public inventory</h2>
+<aside class="surface rightbar">
+  <section class="right-section">
+    <div class="eyebrow">Portfolio</div>
+    <h2>Portfolio snapshot</h2>
 
-            <div class="field-stack">
-              <label class="field">
-                <span>Steam profile</span>
-                <input
-                  id="steamProfileInput"
-                  type="text"
-                  placeholder="https://steamcommunity.com/id/name or 7656119..."
-                />
-              </label>
+    <div class="field-stack">
+      <label class="field">
+        <span>Steam profile</span>
+        <input
+          id="steamProfileInput"
+          type="text"
+          placeholder="https://steamcommunity.com/id/name or 7656119..."
+        />
+      </label>
 
-              <div class="button-row">
-                <button class="btn btn-primary" id="steamLookupButton" type="button">Check profile</button>
-                <button class="btn btn-secondary" id="steamRefreshButton" type="button">Refresh</button>
-                <button class="btn btn-secondary" id="openInventoryPageButton" type="button">Open full page</button>
-              </div>
-            </div>
+      <div class="button-row">
+        <button class="btn btn-primary" id="steamLookupButton" type="button">Load snapshot</button>
+        <button class="btn btn-secondary" id="openInventoryPageButton" type="button">Open portfolio</button>
+      </div>
+    </div>
 
-            <div class="info-card" id="portfolioSummary">
-              <strong>No profile loaded</strong>
-              <span>Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
-            </div>
+    <div class="info-card" id="portfolioSummary">
+      <strong>No portfolio loaded</strong>
+      <span>Paste a public Steam profile URL, vanity URL, or SteamID64.</span>
+    </div>
 
-            <div class="portfolio-list" id="portfolioList"></div>
-          </section>
+    <div class="portfolio-list" id="portfolioList"></div>
+  </section>
 
-          <section class="right-section">
-            <div class="eyebrow">Pipeline</div>
-            <h2>Backend refresh</h2>
+  <section class="right-section">
+    <div class="eyebrow">Watchlist</div>
+    <h2>Investment view</h2>
 
-            <div class="progress-shell">
-              <div class="progress-bar">
-                <span id="progressFill"></span>
-              </div>
-              <div class="progress-meta">
-                <span id="progressLabel">0%</span>
-                <span id="progressHint">Ready</span>
-              </div>
-            </div>
-
-            <div class="info-card compact">
-              <strong id="syncHeadline">Waiting for dashboard data</strong>
-              <span id="syncSubline">No refresh activity yet.</span>
-            </div>
-          </section>
-
-          <section class="right-section">
-            <div class="eyebrow">Settings</div>
-            <h2>Automation</h2>
-
-            <form id="configForm" class="field-stack">
-              <label class="toggle">
-                <span>Scheduler enabled</span>
-                <input type="checkbox" id="cfgSchedulerEnabled" />
-              </label>
-
-              <label class="field">
-                <span>Interval (minutes)</span>
-                <input type="number" id="cfgIntervalMinutes" min="15" max="1440" step="15" />
-              </label>
-
-              <label class="toggle">
-                <span>Run on startup</span>
-                <input type="checkbox" id="cfgRunOnStartup" />
-              </label>
-
-              <label class="toggle">
-                <span>Headless browser</span>
-                <input type="checkbox" id="cfgHeadless" />
-              </label>
-
-              <label class="field">
-                <span>Steam scrape limit</span>
-                <input type="number" id="cfgPriceLimit" min="5" max="1000" step="1" />
-              </label>
-
-              <label class="toggle">
-                <span>Run CSStonks timeseries</span>
-                <input type="checkbox" id="cfgTimeseries" />
-              </label>
-
-              <label class="field">
-                <span>Rating strictness</span>
-                <input type="range" id="cfgStrictness" min="0" max="100" step="1" />
-                <strong id="cfgStrictnessValue">55</strong>
-              </label>
-
-              <div class="button-row">
-                <button class="btn btn-primary" id="refreshButton" type="button">Refresh now</button>
-                <button class="btn btn-secondary" id="saveConfigButton" type="button">Save settings</button>
-              </div>
-            </form>
-          </section>
-
-          <section class="right-section">
-            <div class="eyebrow">Sources</div>
-            <h2>Freshness</h2>
-            <div class="source-list" id="sourcesList"></div>
-          </section>
-
-          <section class="right-section">
-            <div class="eyebrow">Logs</div>
-            <h2>Recent activity</h2>
-            <div class="log-list" id="logList"></div>
-          </section>
-        </aside>
+    <div class="info-card compact">
+      <strong>Use this rail as your ownership and watchlist context</strong>
+      <span>
+        Keep your public inventory snapshot here, and use the full portfolio page for complete position analysis.
+      </span>
+    </div>
+  </section>
+</aside>
       </section>
     </main>
   </div>
