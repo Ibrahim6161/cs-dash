@@ -1,4 +1,3 @@
-// scrape-case-timeseries.js
 const { chromium } = require("playwright");
 const fs = require("fs");
 
@@ -81,7 +80,7 @@ function extractChartLike(obj) {
   for (const ds of datasets) {
     if (!ds || !Array.isArray(ds.data) || ds.data.length < 12) continue;
     const field = mapDatasetToField(ds.label);
-    if (field) out[field] = ds.data;
+    if (field) out[field] = ds.data.map(toNumberOrNull);
   }
 
   if (isGoodSeries(out)) return out;
@@ -91,10 +90,10 @@ function extractChartLike(obj) {
     .filter((a) => Array.isArray(a) && a.length >= 12);
 
   if (arrays.length) {
-    out.remaining = arrays[0] || [];
-    out.drops = arrays[1] || [];
-    out.unboxings = arrays[2] || [];
-    out.price = arrays[3] || [];
+    out.remaining = (arrays[0] || []).map(toNumberOrNull);
+    out.drops = (arrays[1] || []).map(toNumberOrNull);
+    out.unboxings = (arrays[2] || []).map(toNumberOrNull);
+    out.price = (arrays[3] || []).map(toNumberOrNull);
   }
 
   return isGoodSeries(out) ? out : null;
@@ -118,48 +117,26 @@ function extractKeyBased(obj) {
 
   const out = makeEmptySeries();
   out.dates = dates;
-  out.remaining = Array.isArray(obj[kRemaining]) ? obj[kRemaining] : [];
-  out.drops = Array.isArray(obj[kDrops]) ? obj[kDrops] : [];
-  out.unboxings = Array.isArray(obj[kUnbox]) ? obj[kUnbox] : [];
-  out.price = Array.isArray(obj[kPrice]) ? obj[kPrice] : [];
+  out.remaining = Array.isArray(obj[kRemaining]) ? obj[kRemaining].map(toNumberOrNull) : [];
+  out.drops = Array.isArray(obj[kDrops]) ? obj[kDrops].map(toNumberOrNull) : [];
+  out.unboxings = Array.isArray(obj[kUnbox]) ? obj[kUnbox].map(toNumberOrNull) : [];
+  out.price = Array.isArray(obj[kPrice]) ? obj[kPrice].map(toNumberOrNull) : [];
 
   return isGoodSeries(out) ? out : null;
 }
 
-/**
- * Handles shapes like:
- * {
- *   "2014-01": 123,
- *   "2014-02": 456
- * }
- *
- * or
- *
- * {
- *   "2014-01": { unboxings: 123 },
- *   "2014-02": { unboxings: 456 }
- * }
- *
- * or
- *
- * {
- *   "2014-01": { value: 123, price: 1.2 }
- * }
- */
 function extractMonthlyObject(inner) {
   if (!inner || typeof inner !== "object" || Array.isArray(inner)) return null;
 
   const keys = Object.keys(inner);
   if (keys.length < 12) return null;
 
-  // Heuristic: month/date-like keys
   const dateishKeys = keys.filter((k) => /\d{4}[-/]\d{1,2}/.test(k) || /^\d{4}-\d{2}$/.test(k));
   const useKeys = dateishKeys.length >= 12 ? dateishKeys : keys;
 
   const dates = sortDateStrings(useKeys);
   if (dates.length < 12) return null;
 
-  // Case 1: direct numeric values => assume unboxings
   if (dates.every((d) => isNumericLike(inner[d]))) {
     return {
       dates,
@@ -170,7 +147,6 @@ function extractMonthlyObject(inner) {
     };
   }
 
-  // Case 2: nested objects per month
   if (dates.every((d) => inner[d] && typeof inner[d] === "object" && !Array.isArray(inner[d]))) {
     const sample = inner[dates[0]];
     const sampleKeys = Object.keys(sample || {});
@@ -195,13 +171,6 @@ function extractMonthlyObject(inner) {
   return null;
 }
 
-/**
- * Handles shapes like:
- * [
- *   { month: "2014-01", value: 123 },
- *   { month: "2014-02", value: 456 }
- * ]
- */
 function extractRowsArray(arr) {
   if (!Array.isArray(arr) || arr.length < 12) return null;
   const rows = arr.filter((r) => r && typeof r === "object" && !Array.isArray(r));
@@ -230,16 +199,7 @@ function extractRowsArray(arr) {
   return isGoodSeries(out) ? out : null;
 }
 
-/**
- * Main fix:
- * case_unboxing_monthly.json has shape:
- * {
- *   "Winter Offensive Weapon Case": <inner-shape>,
- *   "Falchion Case": <inner-shape>,
- *   ...
- * }
- */
-function extractFromCaseUnboxingMonthly(root, caseName) {
+function extractFromCaseRoot(root, caseName) {
   if (!root || typeof root !== "object" || Array.isArray(root)) return null;
 
   const targetKey = Object.keys(root).find(
@@ -249,22 +209,18 @@ function extractFromCaseUnboxingMonthly(root, caseName) {
 
   const inner = root[targetKey];
 
-  // 1) direct monthly object
   let found = extractMonthlyObject(inner);
   if (found) return found;
 
-  // 2) rows array
   found = extractRowsArray(inner);
   if (found) return found;
 
-  // 3) generic parsers
   found = extractChartLike(inner);
   if (found) return found;
 
   found = extractKeyBased(inner);
   if (found) return found;
 
-  // 4) one level deeper
   if (inner && typeof inner === "object" && !Array.isArray(inner)) {
     for (const v of Object.values(inner)) {
       found = extractMonthlyObject(v);
@@ -284,16 +240,18 @@ function extractFromCaseUnboxingMonthly(root, caseName) {
   return null;
 }
 
-function extractFromAnyJson(data, caseName, url = "") {
-  if (!data) return null;
+function extractDeep(data, caseName, depth = 0, seen = new WeakSet()) {
+  if (!data || depth > 8) return null;
 
-  // Most important special-case first
-  if (url.includes("case_unboxing_monthly.json")) {
-    const special = extractFromCaseUnboxingMonthly(data, caseName);
-    if (special) return special;
+  if (typeof data === "object" && data !== null) {
+    if (seen.has(data)) return null;
+    seen.add(data);
   }
 
-  let found = extractChartLike(data);
+  let found = extractFromCaseRoot(data, caseName);
+  if (found) return found;
+
+  found = extractChartLike(data);
   if (found) return found;
 
   found = extractKeyBased(data);
@@ -302,23 +260,30 @@ function extractFromAnyJson(data, caseName, url = "") {
   found = extractRowsArray(data);
   if (found) return found;
 
-  if (typeof data === "object" && !Array.isArray(data)) {
-    for (const v of Object.values(data)) {
-      found = extractChartLike(v);
-      if (found) return found;
+  found = extractMonthlyObject(data);
+  if (found) return found;
 
-      found = extractKeyBased(v);
+  if (Array.isArray(data)) {
+    for (const item of data) {
+      found = extractDeep(item, caseName, depth + 1, seen);
       if (found) return found;
+    }
+    return null;
+  }
 
-      found = extractRowsArray(v);
-      if (found) return found;
-
-      found = extractMonthlyObject(v);
+  if (typeof data === "object" && data !== null) {
+    for (const value of Object.values(data)) {
+      found = extractDeep(value, caseName, depth + 1, seen);
       if (found) return found;
     }
   }
 
   return null;
+}
+
+function extractFromAnyJson(data, caseName) {
+  if (!data) return null;
+  return extractDeep(data, caseName);
 }
 
 async function clickChartToggles(page) {
@@ -366,7 +331,7 @@ async function clickChartToggles(page) {
 
     const pushText = (url, text) => {
       try {
-        window.__CAPTURED_TEXT__.push({ url, text: String(text).slice(0, 200000) });
+        window.__CAPTURED_TEXT__.push({ url, text: String(text).slice(0, 400000) });
       } catch {}
     };
 
@@ -439,9 +404,14 @@ async function clickChartToggles(page) {
       await clickChartToggles(page);
 
       if (page.isClosed()) throw new Error("Page closed after toggle");
-      await page.waitForTimeout(2500);
+      await page.waitForTimeout(3000);
 
       const debug = await page.evaluate(() => {
+        const scriptTexts = Array.from(document.querySelectorAll("script"))
+          .map((el) => el.textContent || "")
+          .filter(Boolean)
+          .slice(0, 200);
+
         return {
           nextData: (() => {
             const el = document.querySelector("#__NEXT_DATA__");
@@ -454,6 +424,7 @@ async function clickChartToggles(page) {
           })(),
           capturedJson: window.__CAPTURED_JSON__ || [],
           capturedText: window.__CAPTURED_TEXT__ || [],
+          scriptTexts,
         };
       });
 
@@ -468,19 +439,29 @@ async function clickChartToggles(page) {
 
       fs.writeFileSync(
         `debug-${safeName}.json`,
-        JSON.stringify({ ...debug, shapeSummary }, null, 2),
+        JSON.stringify(
+          {
+            nextData: debug.nextData,
+            capturedJsonCount: debug.capturedJson.length,
+            capturedTextCount: debug.capturedText.length,
+            scriptTextCount: debug.scriptTexts.length,
+            shapeSummary,
+          },
+          null,
+          2
+        ),
         "utf8"
       );
 
       let found = null;
 
       if (debug.nextData) {
-        found = extractFromAnyJson(debug.nextData, name, "__NEXT_DATA__");
+        found = extractFromAnyJson(debug.nextData, name);
       }
 
       if (!found) {
         for (const item of debug.capturedJson) {
-          found = extractFromAnyJson(item.data, name, item.url);
+          found = extractFromAnyJson(item.data, name);
           if (found) break;
         }
       }
@@ -489,7 +470,16 @@ async function clickChartToggles(page) {
         for (const item of debug.capturedText) {
           const parsedText = safeJsonParse(item.text);
           if (!parsedText) continue;
-          found = extractFromAnyJson(parsedText, name, item.url);
+          found = extractFromAnyJson(parsedText, name);
+          if (found) break;
+        }
+      }
+
+      if (!found) {
+        for (const scriptText of debug.scriptTexts) {
+          const parsedText = safeJsonParse(scriptText);
+          if (!parsedText) continue;
+          found = extractFromAnyJson(parsedText, name);
           if (found) break;
         }
       }

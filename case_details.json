@@ -1,32 +1,32 @@
 {
-  "timestamp": "2026-04-08T17:28:09.635Z",
+  "timestamp": "2026-04-11T12:45:54.075Z",
   "source": "E:\\githun\\cs-dash\\cases.json",
   "cases": [
     {
       "case": "Winter Offensive Weapon Case",
       "url": "https://csstonks.com/case/Winter%20Offensive%20Weapon%20Case",
       "totals": {
-        "remaining": 323480,
-        "dropped": 15046476,
-        "unboxed": 14722996,
+        "remaining": 323.48,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
       "pageCards": {
-        "currentRemainingSupply": 323480,
+        "currentRemainingSupply": 323.48,
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 323480,
+          "value": -5.659,
           "percent": -1.75
         },
         "delta6m": {
-          "value": 323480,
-          "percent": -1.75
+          "value": -70.975,
+          "percent": -21.94
         },
         "delta12m": {
-          "value": 323480,
-          "percent": -1.75
+          "value": -117.226,
+          "percent": -36.24
         },
         "extinction": {
           "months": 28.6,
@@ -34,18 +34,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Winter_Offensive_Weapon_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Winter_Offensive_Weapon_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY323.480",
+        "delta1m": "Δ 1 MONTH-5.659 (-1.75%)",
+        "delta6m": "Δ 6 MONTHS-70.975 (-21.94%)",
+        "delta12m": "Δ 12 MONTHS-117.226 (-36.24%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": null
+      },
+      "pageExtinctionText": "CS:STONKS ANALYZE SINCE THE GOLD TRADE UP UPDATES IT IS IMPOSSIBLE TO CALCULATE CASE UNBOXING NUMBERS WINTER OFFENSIVE WEAPON CASE CURRENT REMAINING SUPPLY 323.480 Δ 1 MONTH -5.659 (-1.75%) Δ 6 MONTHS -70.975 (-21.94%) Δ 12 MONTHS -117.226 (-36.24%) PRICE & MARKET CAP (STEAM) $0.00 Market Cap: $0 EXTINCTION PROJECTION ~28.6 months Approx. date: 2028-02-17 If the rate of change from the last 3 months continues indefinitely SUPPLY OVER TIME MONTHLY DROPS MONTHLY UNBOXINGS NET CHANGE REMAINING SUPPLY PRICE (USD) Zoom 6m 1y 3yr 5yr All From To 12/2013 10/2019 09/2025 CONTACT Spot an issue or have a correction? DM @khr0za on Twitter."
     },
     {
       "case": "Falchion Case",
       "url": "https://csstonks.com/case/Falchion%20Case",
       "totals": {
         "remaining": 4316245,
-        "dropped": 58682815,
-        "unboxed": 54366570,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -54,16 +63,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 4316245,
+          "value": -106.907,
           "percent": -2.48
         },
         "delta6m": {
-          "value": 4316245,
-          "percent": -2.48
+          "value": -707.068,
+          "percent": -16.38
         },
         "delta12m": {
-          "value": 4316245,
-          "percent": -2.48
+          "value": -1383531,
+          "percent": -32.05
         },
         "extinction": {
           "months": 36.9,
@@ -71,18 +80,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Falchion_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Falchion_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY4.316.245",
+        "delta1m": "Δ 1 MONTH-106.907 (-2.48%)",
+        "delta6m": "Δ 6 MONTHS-707.068 (-16.38%)",
+        "delta12m": "Δ 12 MONTHS-1.383.531 (-32.05%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~36.9 monthsApprox. date: 2028-10-27If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~36.9 monthsApprox. date: 2028-10-27If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Chroma Case",
       "url": "https://csstonks.com/case/Chroma%20Case",
       "totals": {
         "remaining": 1964505,
-        "dropped": 34832880,
-        "unboxed": 32868375,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -91,16 +109,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 1964505,
+          "value": -17.354,
           "percent": -0.88
         },
         "delta6m": {
-          "value": 1964505,
-          "percent": -0.88
+          "value": -290.639,
+          "percent": -14.79
         },
         "delta12m": {
-          "value": 1964505,
-          "percent": -0.88
+          "value": -562.922,
+          "percent": -28.65
         },
         "extinction": {
           "months": 44.2,
@@ -108,18 +126,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Chroma_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Chroma_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY1.964.505",
+        "delta1m": "Δ 1 MONTH-17.354 (-0.88%)",
+        "delta6m": "Δ 6 MONTHS-290.639 (-14.79%)",
+        "delta12m": "Δ 12 MONTHS-562.922 (-28.65%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~44.2 monthsApprox. date: 2029-06-07If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~44.2 monthsApprox. date: 2029-06-07If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Operation Phoenix Weapon Case",
       "url": "https://csstonks.com/case/Operation%20Phoenix%20Weapon%20Case",
       "totals": {
         "remaining": 3822406,
-        "dropped": 64136146,
-        "unboxed": 60313740,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -128,16 +155,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 3822406,
+          "value": -132.789,
           "percent": -3.47
         },
         "delta6m": {
-          "value": 3822406,
-          "percent": -3.47
+          "value": -572.843,
+          "percent": -14.99
         },
         "delta12m": {
-          "value": 3822406,
-          "percent": -3.47
+          "value": -1179508,
+          "percent": -30.86
         },
         "extinction": {
           "months": 45.1,
@@ -145,18 +172,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Operation_Phoenix_Weapon_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Operation_Phoenix_Weapon_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY3.822.406",
+        "delta1m": "Δ 1 MONTH-132.789 (-3.47%)",
+        "delta6m": "Δ 6 MONTHS-572.843 (-14.99%)",
+        "delta12m": "Δ 12 MONTHS-1.179.508 (-30.86%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": null
+      },
+      "pageExtinctionText": "CS:STONKS ANALYZE SINCE THE GOLD TRADE UP UPDATES IT IS IMPOSSIBLE TO CALCULATE CASE UNBOXING NUMBERS OPERATION PHOENIX WEAPON CASE CURRENT REMAINING SUPPLY 3.822.406 Δ 1 MONTH -132.789 (-3.47%) Δ 6 MONTHS -572.843 (-14.99%) Δ 12 MONTHS -1.179.508 (-30.86%) PRICE & MARKET CAP (STEAM) $0.00 Market Cap: $0 EXTINCTION PROJECTION ~45.1 months Approx. date: 2029-07-02 If the rate of change from the last 3 months continues indefinitely SUPPLY OVER TIME MONTHLY DROPS MONTHLY UNBOXINGS NET CHANGE REMAINING SUPPLY PRICE (USD) Zoom 6m 1y 3yr 5yr All From To 02/2014 11/2019 09/2025 CONTACT Spot an issue or have a correction? DM @khr0za on Twitter."
     },
     {
       "case": "Horizon Case",
       "url": "https://csstonks.com/case/Horizon%20Case",
       "totals": {
         "remaining": 11850690,
-        "dropped": 55901971,
-        "unboxed": 44051281,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -165,16 +201,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 11850690,
+          "value": -142.995,
           "percent": -1.21
         },
         "delta6m": {
-          "value": 11850690,
-          "percent": -1.21
+          "value": -1286366,
+          "percent": -10.85
         },
         "delta12m": {
-          "value": 11850690,
-          "percent": -1.21
+          "value": -2506037,
+          "percent": -21.15
         },
         "extinction": {
           "months": 60.6,
@@ -182,18 +218,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Horizon_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Horizon_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY11.850.690",
+        "delta1m": "Δ 1 MONTH-142.995 (-1.21%)",
+        "delta6m": "Δ 6 MONTHS-1.286.366 (-10.85%)",
+        "delta12m": "Δ 12 MONTHS-2.506.037 (-21.15%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": null
+      },
+      "pageExtinctionText": "CS:STONKS ANALYZE SINCE THE GOLD TRADE UP UPDATES IT IS IMPOSSIBLE TO CALCULATE CASE UNBOXING NUMBERS HORIZON CASE CURRENT REMAINING SUPPLY 11.850.690 Δ 1 MONTH -142.995 (-1.21%) Δ 6 MONTHS -1.286.366 (-10.85%) Δ 12 MONTHS -2.506.037 (-21.15%) PRICE & MARKET CAP (STEAM) $0.00 Market Cap: $0 EXTINCTION PROJECTION ~60.6 months Approx. date: 2030-10-19 If the rate of change from the last 3 months continues indefinitely SUPPLY OVER TIME MONTHLY DROPS MONTHLY UNBOXINGS NET CHANGE REMAINING SUPPLY PRICE (USD) Zoom 6m 1y 3yr 5yr All From To 08/2018 02/2022 09/2025 CONTACT Spot an issue or have a correction? DM @khr0za on Twitter."
     },
     {
       "case": "Snakebite Case",
       "url": "https://csstonks.com/case/Snakebite%20Case",
       "totals": {
         "remaining": 66668971,
-        "dropped": 159540020,
-        "unboxed": 92871049,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -202,16 +247,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 66668971,
+          "value": -594.045,
           "percent": -0.89
         },
         "delta6m": {
-          "value": 66668971,
-          "percent": -0.89
+          "value": -4032111,
+          "percent": -6.05
         },
         "delta12m": {
-          "value": 66668971,
-          "percent": -0.89
+          "value": -7610888,
+          "percent": -11.42
         },
         "extinction": {
           "months": 102.1,
@@ -219,18 +264,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Snakebite_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Snakebite_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY66.668.971",
+        "delta1m": "Δ 1 MONTH-594.045 (-0.89%)",
+        "delta6m": "Δ 6 MONTHS-4.032.111 (-6.05%)",
+        "delta12m": "Δ 12 MONTHS-7.610.888 (-11.42%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": null
+      },
+      "pageExtinctionText": "CS:STONKS ANALYZE SINCE THE GOLD TRADE UP UPDATES IT IS IMPOSSIBLE TO CALCULATE CASE UNBOXING NUMBERS SNAKEBITE CASE CURRENT REMAINING SUPPLY 66.668.971 Δ 1 MONTH -594.045 (-0.89%) Δ 6 MONTHS -4.032.111 (-6.05%) Δ 12 MONTHS -7.610.888 (-11.42%) PRICE & MARKET CAP (STEAM) $0.00 Market Cap: $0 EXTINCTION PROJECTION ~102.1 months Approx. date: 2034-04-04 If the rate of change from the last 3 months continues indefinitely SUPPLY OVER TIME MONTHLY DROPS MONTHLY UNBOXINGS NET CHANGE REMAINING SUPPLY PRICE (USD) Zoom 6m 1y 3yr 5yr All From To 05/2021 07/2023 09/2025 CONTACT Spot an issue or have a correction? DM @khr0za on Twitter."
     },
     {
       "case": "Operation Breakout Weapon Case",
       "url": "https://csstonks.com/case/Operation%20Breakout%20Weapon%20Case",
       "totals": {
         "remaining": 14363871,
-        "dropped": 80627336,
-        "unboxed": 66263465,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -239,16 +293,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 14363871,
+          "value": -125.229,
           "percent": -0.87
         },
         "delta6m": {
-          "value": 14363871,
-          "percent": -0.87
+          "value": -1003763,
+          "percent": -6.99
         },
         "delta12m": {
-          "value": 14363871,
-          "percent": -0.87
+          "value": -1822108,
+          "percent": -12.69
         },
         "extinction": {
           "months": 114.8,
@@ -256,18 +310,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Operation_Breakout_Weapon_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Operation_Breakout_Weapon_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY14.363.871",
+        "delta1m": "Δ 1 MONTH-125.229 (-0.87%)",
+        "delta6m": "Δ 6 MONTHS-1.003.763 (-6.99%)",
+        "delta12m": "Δ 12 MONTHS-1.822.108 (-12.69%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~114.8 monthsApprox. date: 2035-04-25If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~114.8 monthsApprox. date: 2035-04-25If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Spectrum Case",
       "url": "https://csstonks.com/case/Spectrum%20Case",
       "totals": {
         "remaining": 18818427,
-        "dropped": 76215235,
-        "unboxed": 57396808,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -276,16 +339,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 18818427,
+          "value": -94.448,
           "percent": -0.5
         },
         "delta6m": {
-          "value": 18818427,
-          "percent": -0.5
+          "value": -816.507,
+          "percent": -4.34
         },
         "delta12m": {
-          "value": 18818427,
-          "percent": -0.5
+          "value": -1619047,
+          "percent": -8.6
         },
         "extinction": {
           "months": 134.3,
@@ -293,18 +356,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Spectrum_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Spectrum_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY18.818.427",
+        "delta1m": "Δ 1 MONTH-94.448 (-0.50%)",
+        "delta6m": "Δ 6 MONTHS-816.507 (-4.34%)",
+        "delta12m": "Δ 12 MONTHS-1.619.047 (-8.60%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~134.3 monthsApprox. date: 2036-12-07If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~134.3 monthsApprox. date: 2036-12-07If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Spectrum 2 Case",
       "url": "https://csstonks.com/case/Spectrum%202%20Case",
       "totals": {
         "remaining": 31032960,
-        "dropped": 114953661,
-        "unboxed": 83920701,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -313,16 +385,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 2,
+          "value": -213.745,
           "percent": -0.69
         },
         "delta6m": {
-          "value": 2,
-          "percent": -0.69
+          "value": -1632995,
+          "percent": -5.26
         },
         "delta12m": {
-          "value": 2,
-          "percent": -0.69
+          "value": -3525507,
+          "percent": -11.36
         },
         "extinction": {
           "months": 138.5,
@@ -330,18 +402,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Spectrum_2_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Spectrum_2_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY31.032.960",
+        "delta1m": "Δ 1 MONTH-213.745 (-0.69%)",
+        "delta6m": "Δ 6 MONTHS-1.632.995 (-5.26%)",
+        "delta12m": "Δ 12 MONTHS-3.525.507 (-11.36%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~138.5 monthsApprox. date: 2037-04-15If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~138.5 monthsApprox. date: 2037-04-15If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Prisma 2 Case",
       "url": "https://csstonks.com/case/Prisma%202%20Case",
       "totals": {
         "remaining": 68781988,
-        "dropped": 147617694,
-        "unboxed": 78835706,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -350,16 +431,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 2,
+          "value": -410.801,
           "percent": -0.6
         },
         "delta6m": {
-          "value": 2,
-          "percent": -0.6
+          "value": -2914095,
+          "percent": -4.24
         },
         "delta12m": {
-          "value": 2,
-          "percent": -0.6
+          "value": -6236329,
+          "percent": -9.07
         },
         "extinction": {
           "months": 159.6,
@@ -367,18 +448,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Prisma_2_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Prisma_2_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY68.781.988",
+        "delta1m": "Δ 1 MONTH-410.801 (-0.60%)",
+        "delta6m": "Δ 6 MONTHS-2.914.095 (-4.24%)",
+        "delta12m": "Δ 12 MONTHS-6.236.329 (-9.07%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": null
+      },
+      "pageExtinctionText": "CS:STONKS ANALYZE SINCE THE GOLD TRADE UP UPDATES IT IS IMPOSSIBLE TO CALCULATE CASE UNBOXING NUMBERS PRISMA 2 CASE CURRENT REMAINING SUPPLY 68.781.988 Δ 1 MONTH -410.801 (-0.60%) Δ 6 MONTHS -2.914.095 (-4.24%) Δ 12 MONTHS -6.236.329 (-9.07%) PRICE & MARKET CAP (STEAM) $0.00 Market Cap: $0 EXTINCTION PROJECTION ~159.6 months Approx. date: 2039-01-17 If the rate of change from the last 3 months continues indefinitely SUPPLY OVER TIME MONTHLY DROPS MONTHLY UNBOXINGS NET CHANGE REMAINING SUPPLY PRICE (USD) Zoom 6m 1y 3yr 5yr All From To 03/2020 12/2022 09/2025 CONTACT Spot an issue or have a correction? DM @khr0za on Twitter."
     },
     {
       "case": "Shadow Case",
       "url": "https://csstonks.com/case/Shadow%20Case",
       "totals": {
         "remaining": 16343915,
-        "dropped": 55489213,
-        "unboxed": 39145298,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -387,16 +477,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 16343915,
+          "value": -103.109,
           "percent": -0.63
         },
         "delta6m": {
-          "value": 16343915,
-          "percent": -0.63
+          "value": -579.813,
+          "percent": -3.55
         },
         "delta12m": {
-          "value": 16343915,
-          "percent": -0.63
+          "value": -1134717,
+          "percent": -6.94
         },
         "extinction": {
           "months": 170.2,
@@ -404,18 +494,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Shadow_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Shadow_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY16.343.915",
+        "delta1m": "Δ 1 MONTH-103.109 (-0.63%)",
+        "delta6m": "Δ 6 MONTHS-579.813 (-3.55%)",
+        "delta12m": "Δ 12 MONTHS-1.134.717 (-6.94%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~170.2 monthsApprox. date: 2039-12-06If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~170.2 monthsApprox. date: 2039-12-06If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Chroma 2 Case",
       "url": "https://csstonks.com/case/Chroma%202%20Case",
       "totals": {
         "remaining": 31765462,
-        "dropped": 101923105,
-        "unboxed": 70157643,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -424,16 +523,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 2,
+          "value": -124.951,
           "percent": -0.39
         },
         "delta6m": {
-          "value": 2,
-          "percent": -0.39
+          "value": -1236033,
+          "percent": -3.89
         },
         "delta12m": {
-          "value": 2,
-          "percent": -0.39
+          "value": -2308506,
+          "percent": -7.27
         },
         "extinction": {
           "months": 179.4,
@@ -441,18 +540,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Chroma_2_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Chroma_2_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY31.765.462",
+        "delta1m": "Δ 1 MONTH-124.951 (-0.39%)",
+        "delta6m": "Δ 6 MONTHS-1.236.033 (-3.89%)",
+        "delta12m": "Δ 12 MONTHS-2.308.506 (-7.27%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~179.4 monthsApprox. date: 2040-09-11If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~179.4 monthsApprox. date: 2040-09-11If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Glove Case",
       "url": "https://csstonks.com/case/Glove%20Case",
       "totals": {
         "remaining": 18329562,
-        "dropped": 78424061,
-        "unboxed": 60094499,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -461,16 +569,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 18329562,
+          "value": -87.429,
           "percent": -0.48
         },
         "delta6m": {
-          "value": 18329562,
-          "percent": -0.48
+          "value": -814.763,
+          "percent": -4.45
         },
         "delta12m": {
-          "value": 18329562,
-          "percent": -0.48
+          "value": -1640668,
+          "percent": -8.95
         },
         "extinction": {
           "months": 183.4,
@@ -478,18 +586,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Glove_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Glove_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY18.329.562",
+        "delta1m": "Δ 1 MONTH-87.429 (-0.48%)",
+        "delta6m": "Δ 6 MONTHS-814.763 (-4.45%)",
+        "delta12m": "Δ 12 MONTHS-1.640.668 (-8.95%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~183.4 monthsApprox. date: 2041-01-12If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~183.4 monthsApprox. date: 2041-01-12If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Danger Zone Case",
       "url": "https://csstonks.com/case/Danger%20Zone%20Case",
       "totals": {
         "remaining": 89429908,
-        "dropped": 185525163,
-        "unboxed": 96095255,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -498,16 +615,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 89429908,
+          "value": -367.149,
           "percent": -0.41
         },
         "delta6m": {
-          "value": 89429908,
-          "percent": -0.41
+          "value": -2682083,
+          "percent": -3
         },
         "delta12m": {
-          "value": 89429908,
-          "percent": -0.41
+          "value": -5760868,
+          "percent": -6.44
         },
         "extinction": {
           "months": 214.2,
@@ -515,18 +632,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Danger_Zone_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Danger_Zone_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY89.429.908",
+        "delta1m": "Δ 1 MONTH-367.149 (-0.41%)",
+        "delta6m": "Δ 6 MONTHS-2.682.083 (-3.00%)",
+        "delta12m": "Δ 12 MONTHS-5.760.868 (-6.44%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~214.2 monthsApprox. date: 2043-08-07If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~214.2 monthsApprox. date: 2043-08-07If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Clutch Case",
       "url": "https://csstonks.com/case/Clutch%20Case",
       "totals": {
         "remaining": 107910450,
-        "dropped": 265459594,
-        "unboxed": 157549144,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -535,16 +661,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 107910450,
+          "value": -515.644,
           "percent": -0.48
         },
         "delta6m": {
-          "value": 107910450,
-          "percent": -0.48
+          "value": -3390068,
+          "percent": -3.14
         },
         "delta12m": {
-          "value": 107910450,
-          "percent": -0.48
+          "value": -6280728,
+          "percent": -5.82
         },
         "extinction": {
           "months": 214.5,
@@ -552,18 +678,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Clutch_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Clutch_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY107.910.450",
+        "delta1m": "Δ 1 MONTH-515.644 (-0.48%)",
+        "delta6m": "Δ 6 MONTHS-3.390.068 (-3.14%)",
+        "delta12m": "Δ 12 MONTHS-6.280.728 (-5.82%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~214.5 monthsApprox. date: 2043-08-16If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~214.5 monthsApprox. date: 2043-08-16If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Prisma Case",
       "url": "https://csstonks.com/case/Prisma%20Case",
       "totals": {
         "remaining": 72200434,
-        "dropped": 141399402,
-        "unboxed": 69198968,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -572,16 +707,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 72200434,
+          "value": -311.493,
           "percent": -0.43
         },
         "delta6m": {
-          "value": 72200434,
-          "percent": -0.43
+          "value": -2575852,
+          "percent": -3.57
         },
         "delta12m": {
-          "value": 72200434,
-          "percent": -0.43
+          "value": -5210204,
+          "percent": -7.22
         },
         "extinction": {
           "months": 214.8,
@@ -589,18 +724,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Prisma_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Prisma_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY72.200.434",
+        "delta1m": "Δ 1 MONTH-311.493 (-0.43%)",
+        "delta6m": "Δ 6 MONTHS-2.575.852 (-3.57%)",
+        "delta12m": "Δ 12 MONTHS-5.210.204 (-7.22%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~214.8 monthsApprox. date: 2043-08-26If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~214.8 monthsApprox. date: 2043-08-26If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Huntsman Weapon Case",
       "url": "https://csstonks.com/case/Huntsman%20Weapon%20Case",
       "totals": {
         "remaining": 3157994,
-        "dropped": 27970566,
-        "unboxed": 24812572,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -609,16 +753,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 3157994,
+          "value": -35.948,
           "percent": -1.14
         },
         "delta6m": {
-          "value": 3157994,
-          "percent": -1.14
+          "value": -114.512,
+          "percent": -3.63
         },
         "delta12m": {
-          "value": 3157994,
-          "percent": -1.14
+          "value": -217.981,
+          "percent": -6.9
         },
         "extinction": {
           "months": 219.5,
@@ -626,18 +770,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Huntsman_Weapon_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Huntsman_Weapon_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY3.157.994",
+        "delta1m": "Δ 1 MONTH-35.948 (-1.14%)",
+        "delta6m": "Δ 6 MONTHS-114.512 (-3.63%)",
+        "delta12m": "Δ 12 MONTHS-217.981 (-6.90%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~219.5 monthsApprox. date: 2044-01-14If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~219.5 monthsApprox. date: 2044-01-14If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Revolver Case",
       "url": "https://csstonks.com/case/Revolver%20Case",
       "totals": {
         "remaining": 38445678,
-        "dropped": 67303850,
-        "unboxed": 28858172,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -646,16 +799,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 38445678,
+          "value": -149.127,
           "percent": -0.39
         },
         "delta6m": {
-          "value": 38445678,
-          "percent": -0.39
+          "value": -878.171,
+          "percent": -2.28
         },
         "delta12m": {
-          "value": 38445678,
-          "percent": -0.39
+          "value": -1779026,
+          "percent": -4.63
         },
         "extinction": {
           "months": 268,
@@ -663,18 +816,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Revolver_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Revolver_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY38.445.678",
+        "delta1m": "Δ 1 MONTH-149.127 (-0.39%)",
+        "delta6m": "Δ 6 MONTHS-878.171 (-2.28%)",
+        "delta12m": "Δ 12 MONTHS-1.779.026 (-4.63%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~268.0 monthsApprox. date: 2048-01-30If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~268.0 monthsApprox. date: 2048-01-30If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Gamma Case",
       "url": "https://csstonks.com/case/Gamma%20Case",
       "totals": {
         "remaining": 30476483,
-        "dropped": 80425525,
-        "unboxed": 49949042,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -683,16 +845,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 30476483,
+          "value": -103.76,
           "percent": -0.34
         },
         "delta6m": {
-          "value": 30476483,
-          "percent": -0.34
+          "value": -789.824,
+          "percent": -2.59
         },
         "delta12m": {
-          "value": 30476483,
-          "percent": -0.34
+          "value": -1702618,
+          "percent": -5.59
         },
         "extinction": {
           "months": 287.4,
@@ -700,18 +862,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Gamma_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Gamma_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY30.476.483",
+        "delta1m": "Δ 1 MONTH-103.760 (-0.34%)",
+        "delta6m": "Δ 6 MONTHS-789.824 (-2.59%)",
+        "delta12m": "Δ 12 MONTHS-1.702.618 (-5.59%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~287.4 monthsApprox. date: 2049-09-12If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~287.4 monthsApprox. date: 2049-09-12If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "CS20 Case",
       "url": "https://csstonks.com/case/CS20%20Case",
       "totals": {
         "remaining": 38568704,
-        "dropped": 71598376,
-        "unboxed": 33029672,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -720,16 +891,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 20,
+          "value": -132.789,
           "percent": -0.34
         },
         "delta6m": {
-          "value": 20,
-          "percent": -0.34
+          "value": -1003763,
+          "percent": -2.6
         },
         "delta12m": {
-          "value": 20,
-          "percent": -0.34
+          "value": -1897708,
+          "percent": -4.92
         },
         "extinction": {
           "months": 321.2,
@@ -737,18 +908,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-CS20_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-CS20_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY38.568.704",
+        "delta1m": "Δ 1 MONTH-132.789 (-0.34%)",
+        "delta6m": "Δ 6 MONTHS-1.003.763 (-2.60%)",
+        "delta12m": "Δ 12 MONTHS-1.897.708 (-4.92%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~321.2 monthsApprox. date: 2052-07-06If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~321.2 monthsApprox. date: 2052-07-06If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Gamma 2 Case",
       "url": "https://csstonks.com/case/Gamma%202%20Case",
       "totals": {
         "remaining": 64842261,
-        "dropped": 138616240,
-        "unboxed": 73773979,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -757,16 +937,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 2,
+          "value": -157.896,
           "percent": -0.24
         },
         "delta6m": {
-          "value": 2,
-          "percent": -0.24
+          "value": -1241280,
+          "percent": -1.91
         },
         "delta12m": {
-          "value": 2,
-          "percent": -0.24
+          "value": -2566624,
+          "percent": -3.96
         },
         "extinction": {
           "months": 323.9,
@@ -774,18 +954,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Gamma_2_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Gamma_2_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY64.842.261",
+        "delta1m": "Δ 1 MONTH-157.896 (-0.24%)",
+        "delta6m": "Δ 6 MONTHS-1.241.280 (-1.91%)",
+        "delta12m": "Δ 12 MONTHS-2.566.624 (-3.96%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~323.9 monthsApprox. date: 2052-09-26If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~323.9 monthsApprox. date: 2052-09-26If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Chroma 3 Case",
       "url": "https://csstonks.com/case/Chroma%203%20Case",
       "totals": {
         "remaining": 99191981,
-        "dropped": 151326832,
-        "unboxed": 52134851,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -794,16 +983,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 3,
+          "value": -190.478,
           "percent": -0.19
         },
         "delta6m": {
-          "value": 3,
-          "percent": -0.19
+          "value": -1466802,
+          "percent": -1.48
         },
         "delta12m": {
-          "value": 3,
-          "percent": -0.19
+          "value": -2819427,
+          "percent": -2.84
         },
         "extinction": {
           "months": 422.7,
@@ -811,18 +1000,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Chroma_3_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Chroma_3_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY99.191.981",
+        "delta1m": "Δ 1 MONTH-190.478 (-0.19%)",
+        "delta6m": "Δ 6 MONTHS-1.466.802 (-1.48%)",
+        "delta12m": "Δ 12 MONTHS-2.819.427 (-2.84%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~422.7 monthsApprox. date: 2060-12-19If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~422.7 monthsApprox. date: 2060-12-19If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Operation Wildfire Case",
       "url": "https://csstonks.com/case/Operation%20Wildfire%20Case",
       "totals": {
         "remaining": 47834066,
-        "dropped": 73598547,
-        "unboxed": 25764481,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -831,16 +1029,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 47834066,
+          "value": -76.518,
           "percent": -0.16
         },
         "delta6m": {
-          "value": 47834066,
-          "percent": -0.16
+          "value": -416.471,
+          "percent": -0.87
         },
         "delta12m": {
-          "value": 47834066,
-          "percent": -0.16
+          "value": -897.303,
+          "percent": -1.88
         },
         "extinction": {
           "months": 647.5,
@@ -848,18 +1046,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Operation_Wildfire_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Operation_Wildfire_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY47.834.066",
+        "delta1m": "Δ 1 MONTH-76.518 (-0.16%)",
+        "delta6m": "Δ 6 MONTHS-416.471 (-0.87%)",
+        "delta12m": "Δ 12 MONTHS-897.303 (-1.88%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~647.5 monthsApprox. date: 2079-09-14If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~647.5 monthsApprox. date: 2079-09-14If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Operation Vanguard Weapon Case",
       "url": "https://csstonks.com/case/Operation%20Vanguard%20Weapon%20Case",
       "totals": {
         "remaining": 15957639,
-        "dropped": 36782609,
-        "unboxed": 20824970,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -868,16 +1075,16 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 15957639,
+          "value": -11.445,
           "percent": -0.07
         },
         "delta6m": {
-          "value": 15957639,
-          "percent": -0.07
+          "value": -97.463,
+          "percent": -0.61
         },
         "delta12m": {
-          "value": 15957639,
-          "percent": -0.07
+          "value": -187.362,
+          "percent": -1.17
         },
         "extinction": {
           "months": 1060.2,
@@ -885,18 +1092,27 @@
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Operation_Vanguard_Weapon_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Operation_Vanguard_Weapon_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY15.957.639",
+        "delta1m": "Δ 1 MONTH-11.445 (-0.07%)",
+        "delta6m": "Δ 6 MONTHS-97.463 (-0.61%)",
+        "delta12m": "Δ 12 MONTHS-187.362 (-1.17%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTION~1060.2 monthsApprox. date: 2114-02-04If the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTION~1060.2 monthsApprox. date: 2114-02-04If the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Fracture Case",
       "url": "https://csstonks.com/case/Fracture%20Case",
       "totals": {
         "remaining": 180779527,
-        "dropped": 343314830,
-        "unboxed": 162535303,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -905,35 +1121,44 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 180779527,
+          "value": 129.688,
           "percent": 0.07
         },
         "delta6m": {
-          "value": 180779527,
-          "percent": 0.07
+          "value": 18339603,
+          "percent": 10.14
         },
         "delta12m": {
-          "value": 180779527,
-          "percent": 0.07
+          "value": 41613853,
+          "percent": 23.02
         },
         "extinction": {
-          "months": null,
+          "months": 3,
           "approxDate": null
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Fracture_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Fracture_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY180.779.527",
+        "delta1m": "Δ 1 MONTH+129.688 (0.07%)",
+        "delta6m": "Δ 6 MONTHS+18.339.603 (10.14%)",
+        "delta12m": "Δ 12 MONTHS+41.613.853 (23.02%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Dreams & Nightmares Case",
       "url": "https://csstonks.com/case/Dreams%20%26%20Nightmares%20Case",
       "totals": {
         "remaining": 92465096,
-        "dropped": 251285528,
-        "unboxed": 158820432,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -942,35 +1167,44 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 92465096,
+          "value": 2597598,
           "percent": 2.81
         },
         "delta6m": {
-          "value": 92465096,
-          "percent": 2.81
+          "value": 16652359,
+          "percent": 18.01
         },
         "delta12m": {
-          "value": 92465096,
-          "percent": 2.81
+          "value": 36653267,
+          "percent": 39.64
         },
         "extinction": {
-          "months": null,
+          "months": 3,
           "approxDate": null
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Dreams_&_Nightmares_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Dreams_Nightmares_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY92.465.096",
+        "delta1m": "Δ 1 MONTH+2.597.598 (2.81%)",
+        "delta6m": "Δ 6 MONTHS+16.652.359 (18.01%)",
+        "delta12m": "Δ 12 MONTHS+36.653.267 (39.64%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Recoil Case",
       "url": "https://csstonks.com/case/Recoil%20Case",
       "totals": {
         "remaining": 122203079,
-        "dropped": 229693030,
-        "unboxed": 107489951,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -979,35 +1213,44 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 122203079,
+          "value": 3317521,
           "percent": 2.71
         },
         "delta6m": {
-          "value": 122203079,
-          "percent": 2.71
+          "value": 21679901,
+          "percent": 17.74
         },
         "delta12m": {
-          "value": 122203079,
-          "percent": 2.71
+          "value": 46073463,
+          "percent": 37.7
         },
         "extinction": {
-          "months": null,
+          "months": 3,
           "approxDate": null
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Recoil_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Recoil_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY122.203.079",
+        "delta1m": "Δ 1 MONTH+3.317.521 (2.71%)",
+        "delta6m": "Δ 6 MONTHS+21.679.901 (17.74%)",
+        "delta12m": "Δ 12 MONTHS+46.073.463 (37.70%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Revolution Case",
       "url": "https://csstonks.com/case/Revolution%20Case",
       "totals": {
         "remaining": 79778678,
-        "dropped": 197543159,
-        "unboxed": 117764481,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -1016,35 +1259,44 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 79778678,
+          "value": 2459553,
           "percent": 3.08
         },
         "delta6m": {
-          "value": 79778678,
-          "percent": 3.08
+          "value": 14969018,
+          "percent": 18.76
         },
         "delta12m": {
-          "value": 79778678,
-          "percent": 3.08
+          "value": 34222105,
+          "percent": 42.9
         },
         "extinction": {
-          "months": null,
+          "months": 3,
           "approxDate": null
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Revolution_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Revolution_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY79.778.678",
+        "delta1m": "Δ 1 MONTH+2.459.553 (3.08%)",
+        "delta6m": "Δ 6 MONTHS+14.969.018 (18.76%)",
+        "delta12m": "Δ 12 MONTHS+34.222.105 (42.90%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
     },
     {
       "case": "Kilowatt Case",
       "url": "https://csstonks.com/case/Kilowatt%20Case",
       "totals": {
         "remaining": 65463973,
-        "dropped": 125935427,
-        "unboxed": 60471454,
+        "dropped": null,
+        "unboxed": null,
         "price": 0,
         "marketCap": 0
       },
@@ -1053,27 +1305,37 @@
         "priceUSD": 0,
         "marketCapUSD": 0,
         "delta1m": {
-          "value": 65463973,
+          "value": 3114310,
           "percent": 4.76
         },
         "delta6m": {
-          "value": 65463973,
-          "percent": 4.76
+          "value": 20494281,
+          "percent": 31.31
         },
         "delta12m": {
-          "value": 65463973,
-          "percent": 4.76
+          "value": 44257375,
+          "percent": 67.61
         },
         "extinction": {
-          "months": null,
+          "months": 3,
           "approxDate": null
         }
       },
       "screenshots": {
-        "mode": "chart-section",
-        "chart": "chart-Kilowatt_Case.png",
-        "page": null
-      }
+        "mode": "page",
+        "chart": null,
+        "page": "page-Kilowatt_Case.png"
+      },
+      "rawCards": {
+        "current": "CURRENT REMAINING SUPPLY65.463.973",
+        "delta1m": "Δ 1 MONTH+3.114.310 (4.76%)",
+        "delta6m": "Δ 6 MONTHS+20.494.281 (31.31%)",
+        "delta12m": "Δ 12 MONTHS+44.257.375 (67.61%)",
+        "market": "PRICE & MARKET CAP (Steam)$0.00Market Cap: $0",
+        "extinction": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
+      },
+      "pageExtinctionText": "EXTINCTION PROJECTIONN/AIf the rate of change from the last 3 months continues indefinitely"
     }
-  ]
+  ],
+  "failures": []
 }

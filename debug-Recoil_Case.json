@@ -1,0 +1,180 @@
+{
+  "nextData": null,
+  "capturedJsonCount": 10,
+  "capturedTextCount": 0,
+  "scriptTextCount": 0,
+  "shapeSummary": [
+    {
+      "url": "https://csstonks.com/data/cases.json",
+      "isArray": false,
+      "keys": [
+        "WC1",
+        "WC2",
+        "WC3",
+        "WINO",
+        "ESP13",
+        "ESP13W",
+        "ESP14",
+        "BRAVO",
+        "PHOEN",
+        "HUNT",
+        "BRK",
+        "CHR1",
+        "CHR2",
+        "CHR3",
+        "FAL",
+        "SHDW",
+        "REV",
+        "WILD",
+        "GAM1",
+        "GAM2",
+        "GLOV",
+        "SPEC1",
+        "HYDRA",
+        "SPEC2",
+        "CLUT"
+      ]
+    },
+    {
+      "url": "https://csstonks.com/data/events.json",
+      "isArray": true,
+      "len": 87,
+      "keys": [
+        "date",
+        "type",
+        "case"
+      ]
+    },
+    {
+      "url": "https://csstonks.com/data/mau-data.json",
+      "isArray": true,
+      "len": 159,
+      "keys": [
+        "label",
+        "year",
+        "month",
+        "mau"
+      ]
+    },
+    {
+      "url": "https://csstonks.com/data/case_unboxing_monthly.json",
+      "isArray": false,
+      "keys": [
+        "Operation Bravo Case",
+        "eSports 2013 Case",
+        "CS:GO Weapon Case",
+        "CS:GO Weapon Case 2",
+        "eSports 2013 Winter Case",
+        "Winter Offensive Weapon Case",
+        "CS:GO Weapon Case 3",
+        "Operation Phoenix Weapon Case",
+        "Huntsman Weapon Case",
+        "Falchion Case",
+        "Chroma 2 Case",
+        "Chroma Case",
+        "Operation Vanguard Weapon Case",
+        "eSports 2014 Summer Case",
+        "Operation Breakout Weapon Case",
+        "Shadow Case",
+        "Revolver Case",
+        "Operation Wildfire Case",
+        "Chroma 3 Case",
+        "Gamma Case",
+        "Gamma 2 Case",
+        "Clutch Case",
+        "Spectrum 2 Case",
+        "Operation Hydra Case",
+        "Spectrum Case"
+      ]
+    },
+    {
+      "url": "https://csstonks.com/config/settings.json",
+      "isArray": false,
+      "keys": [
+        "dates",
+        "dropSplits",
+        "casesPerAccount",
+        "casesPerAccountDates",
+        "playerShares"
+      ]
+    },
+    {
+      "url": "https://csstonks.com/data/case_images.json",
+      "isArray": false,
+      "keys": [
+        "CS:GO Weapon Case",
+        "eSports 2013 Case",
+        "Operation Bravo Case",
+        "CS:GO Weapon Case 2",
+        "eSports 2013 Winter Case",
+        "Winter Offensive Weapon Case",
+        "CS:GO Weapon Case 3",
+        "Operation Phoenix Weapon Case",
+        "Huntsman Weapon Case",
+        "Operation Breakout Weapon Case",
+        "eSports 2014 Summer Case",
+        "Operation Vanguard Weapon Case",
+        "Chroma Case",
+        "Chroma 2 Case",
+        "Falchion Case",
+        "Shadow Case",
+        "Revolver Case",
+        "Operation Wildfire Case",
+        "Chroma 3 Case",
+        "Gamma Case",
+        "Gamma 2 Case",
+        "Glove Case",
+        "Spectrum Case",
+        "Operation Hydra Case",
+        "Spectrum 2 Case"
+      ]
+    },
+    {
+      "url": "https://csstocks.fly.dev/api/csgo/crates",
+      "isArray": false,
+      "keys": [
+        "url",
+        "isFresh",
+        "type"
+      ]
+    },
+    {
+      "url": "https://pub-8ed615d2fb8c4b66b34a1bd7870d38bb.r2.dev/csgo/crates_v1.json",
+      "isArray": true,
+      "len": 475,
+      "keys": [
+        "id",
+        "name",
+        "description",
+        "def_index",
+        "type",
+        "first_sale_date",
+        "rarity",
+        "contains",
+        "contains_rare",
+        "market_hash_name",
+        "rental",
+        "image",
+        "model_player",
+        "loot_list",
+        "original"
+      ]
+    },
+    {
+      "url": "https://csstocks.fly.dev/api/haloskins/allPrices",
+      "isArray": false,
+      "keys": [
+        "success",
+        "error"
+      ]
+    },
+    {
+      "url": "https://csstocks.fly.dev/api/haloskins/allPrices",
+      "isArray": false,
+      "keys": [
+        "success",
+        "error"
+      ]
+    }
+  ]
+}

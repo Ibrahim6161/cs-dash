@@ -7,6 +7,10 @@ const DEFAULT_CASES_FILE = path.join(ROOT, "cases.json");
 const DEFAULT_OUT_FILE = path.join(ROOT, "case_details.json");
 const DEFAULT_SHOTS_DIR = path.join(ROOT, "shots");
 
+function buildCsstonksCaseUrl(name) {
+  return `https://csstonks.com/case/${encodeURIComponent(name)}`;
+}
+
 function parseArgs(argv) {
   const args = {
     casesFile: DEFAULT_CASES_FILE,
@@ -125,49 +129,35 @@ function readJson(filePath) {
 }
 
 function parseRemaining(text) {
-  const match = cleanText(text).match(/CURRENT REMAINING SUPPLY\s+([0-9.,]+)/i);
+  const match = cleanText(text).match(/CURRENT REMAINING SUPPLY\s*([0-9.,]+)/i);
   return parseFlexibleNumber(match?.[1]);
 }
 
 function parseDelta(text) {
   const t = cleanText(text);
+  if (!t) return { value: null, percent: null };
 
-  const monthsMatch = t.match(/\b(?:Δ|delta)\s+(\d+)\s+months?\b/i);
-  const percentMatches = [...t.matchAll(/([+-]?\d+(?:[.,]\d+)?)%/g)].map((m) => parseFlexibleNumber(m[1]));
-  const rawNumberMatches = [...t.matchAll(/([+-]?\d+(?:[.,]\d+)?)/g)]
+  const percent = (() => {
+    const m = t.match(/\(([+-]?\d+(?:[.,]\d+)?)%\)/);
+    return m ? parseFlexibleNumber(m[1]) : null;
+  })();
+
+  const monthMatch = t.match(/\b(1|6|12)\s+months?\b/i);
+  const monthValue = monthMatch ? parseFlexibleNumber(monthMatch[1]) : null;
+
+  const rawNumbers = [...t.matchAll(/([+-]?\d[\d.,]*)/g)]
     .map((m) => parseFlexibleNumber(m[1]))
     .filter((v) => v != null);
 
   let value = null;
-  let percent = null;
-
-  if (percentMatches.length >= 1) {
-    percent = percentMatches[0];
+  for (const num of rawNumbers) {
+    if (monthValue != null && num === monthValue) continue;
+    if (percent != null && num === percent) continue;
+    value = num;
+    break;
   }
 
-  if (rawNumberMatches.length >= 2) {
-    // usually first numeric token is months, second is delta value, third is percent
-    if (monthsMatch) {
-      const monthsNum = parseFlexibleNumber(monthsMatch[1]);
-      const filtered = rawNumberMatches.filter((n, idx) => !(idx === 0 && n === monthsNum));
-      value = filtered.length ? filtered[0] : null;
-      if (percent == null && filtered.length >= 2) {
-        percent = filtered[1];
-      }
-    } else {
-      value = rawNumberMatches[0];
-      if (percent == null && rawNumberMatches.length >= 2) {
-        percent = rawNumberMatches[1];
-      }
-    }
-  } else if (rawNumberMatches.length === 1 && percent == null) {
-    value = rawNumberMatches[0];
-  }
-
-  return {
-    value,
-    percent,
-  };
+  return { value, percent };
 }
 
 function parsePriceMarketCap(text) {
@@ -189,8 +179,16 @@ function parsePriceMarketCap(text) {
 
 function parseExtinction(text) {
   const t = cleanText(text);
-  const months = t.match(/~\s*([0-9]+(?:[.,][0-9]+)?)\s+months?/i)?.[1] ?? null;
-  const date = t.match(/Approx\.?\s*date:\s*([0-9]{4}-[0-9]{2}-[0-9]{2})/i)?.[1] ?? null;
+
+  const months =
+    t.match(/~\s*([0-9]+(?:[.,][0-9]+)?)\s*months?/i)?.[1] ??
+    t.match(/([0-9]+(?:[.,][0-9]+)?)\s*months?/i)?.[1] ??
+    null;
+
+  const date =
+    t.match(/Approx\.?\s*date:\s*([0-9]{4}-[0-9]{2}-[0-9]{2})/i)?.[1] ??
+    t.match(/([0-9]{4}-[0-9]{2}-[0-9]{2})/)?.[1] ??
+    null;
 
   return {
     months: months != null ? parseFlexibleNumber(months) : null,
@@ -202,9 +200,22 @@ function classifyCardText(text) {
   const t = cleanText(text).toLowerCase();
 
   if (t.includes("current remaining supply")) return "current";
-  if ((t.includes("delta") || t.includes("Δ")) && t.includes("1 month")) return "delta1m";
-  if ((t.includes("delta") || t.includes("Δ")) && t.includes("6 months")) return "delta6m";
-  if ((t.includes("delta") || t.includes("Δ")) && t.includes("12 months")) return "delta12m";
+
+  if (
+    (t.includes("delta") || t.includes("Δ") || t.includes("month")) &&
+    (t.includes("1 month") || t.includes("1 months"))
+  ) return "delta1m";
+
+  if (
+    (t.includes("delta") || t.includes("Δ") || t.includes("month")) &&
+    (t.includes("6 month") || t.includes("6 months"))
+  ) return "delta6m";
+
+  if (
+    (t.includes("delta") || t.includes("Δ") || t.includes("month")) &&
+    (t.includes("12 month") || t.includes("12 months"))
+  ) return "delta12m";
+
   if (t.includes("market cap")) return "market";
   if (t.includes("extinction")) return "extinction";
 
@@ -236,9 +247,23 @@ async function getStatCards(page) {
   return [];
 }
 
+async function getPageText(page) {
+  try {
+    return await page.evaluate(() =>
+      (document.body?.innerText || "")
+        .replace(/\u00A0/g, " ")
+        .replace(/\s+/g, " ")
+        .trim()
+    );
+  } catch {
+    return "";
+  }
+}
+
+
 async function scrapeCaseDetails(browser, caseRecord, shotsDir) {
   const name = caseRecord.case || caseRecord.name;
-  const url = caseRecord.url;
+  const url = caseRecord.url || buildCsstonksCaseUrl(name);
   const page = await browser.newPage({ viewport: { width: 1440, height: 2200 } });
 
   try {
@@ -264,12 +289,18 @@ async function scrapeCaseDetails(browser, caseRecord, shotsDir) {
       }
     }
 
-    const remaining = parseRemaining(cardMap.current);
-    const delta1m = parseDelta(cardMap.delta1m);
-    const delta6m = parseDelta(cardMap.delta6m);
-    const delta12m = parseDelta(cardMap.delta12m);
-    const market = parsePriceMarketCap(cardMap.market);
-    const ext = parseExtinction(cardMap.extinction);
+const pageText = await getPageText(page);
+
+const remaining = parseRemaining(cardMap.current || pageText);
+const delta1m = parseDelta(cardMap.delta1m || pageText);
+const delta6m = parseDelta(cardMap.delta6m || pageText);
+const delta12m = parseDelta(cardMap.delta12m || pageText);
+const market = parsePriceMarketCap(cardMap.market || pageText);
+
+let ext = parseExtinction(cardMap.extinction || "");
+if (ext.months == null && ext.approxDate == null) {
+  ext = parseExtinction(pageText);
+}
 
     const pagePath = path.join(shotsDir, `page-${slugifyCaseName(name)}.png`);
 
@@ -301,6 +332,7 @@ async function scrapeCaseDetails(browser, caseRecord, shotsDir) {
         page: path.basename(pagePath),
       },
       rawCards: cardMap,
+pageExtinctionText: cleanText(cardMap.extinction || pageText),
     };
   } finally {
     await page.close().catch(() => {});
@@ -327,7 +359,7 @@ async function main() {
   try {
     for (const record of records) {
       const name = record.case || record.name;
-      if (!name || !record.url) continue;
+      if (!name) continue;
 
       try {
         console.log(`Scraping ${name}`);
