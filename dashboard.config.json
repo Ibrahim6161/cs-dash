@@ -23,7 +23,7 @@
     "steamCases": "out/steam-cases.json",
     "steamSkins": "out/steam-skins.json",
     "timeseries": "case-timeseries.json",
-	"steamMarketTimeseries": "out/steam-market-timeseries.json"
+    "steamMarketTimeseries": "out/steam-market-timeseries.json",
     "shotsDir": "shots",
     "snapshotsDir": "out"
   }

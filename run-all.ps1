@@ -55,11 +55,11 @@ $RUN   = Join-Path $OUT $STAMP
 New-Item -ItemType Directory -Force -Path $RUN | Out-Null
 
 # Script files
-$SCRIPT_CSSTONKS        = Join-Path $ROOT "scrape-csstonks.js"
-$SCRIPT_CASE_DETAILS    = Join-Path $ROOT "scrape-case-details.js"
-$SCRIPT_CASE_TIMESERIES = Join-Path $ROOT "scrape-case-timeseries.js"
-$SCRIPT_SKINBARON       = Join-Path $ROOT "scrape-skinbaron-containers-eur.cjs"
-$SCRIPT_STEAM           = Join-Path $ROOT "scrape-steam-market-data.cjs"
+$SCRIPT_CSSTONKS        = Join-Path $ROOT "scrapers\csstonks\scrape-csstonks.js"
+$SCRIPT_CASE_DETAILS    = Join-Path $ROOT "scrapers\csstonks\scrape-case-details.js"
+$SCRIPT_CASE_TIMESERIES = Join-Path $ROOT "scrapers\csstonks\scrape-case-timeseries.js"
+$SCRIPT_SKINBARON       = Join-Path $ROOT "scrapers\marketplaces\scrape-skinbaron-containers-eur.cjs"
+$SCRIPT_STEAM           = Join-Path $ROOT "scrapers\steam\scrape-steam-market-data.cjs"
 
 # Latest outputs
 $LATEST_CASES       = Join-Path $ROOT "cases.json"
